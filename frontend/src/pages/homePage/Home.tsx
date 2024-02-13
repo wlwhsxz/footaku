@@ -1,8 +1,26 @@
+import styled from 'styled-components';
 
-export default function Home() {
+import LeftSidebar from "../../components/common/LeftSidebar/LeftSidebar";
+import HotNews from "../../components/home/HotNews";
+import Story from "../../components/home/Story";
+
+const Home = () => {
   return(
-    <div>
-      Home
-    </div>
+    <HomeContainer>
+      <LeftSidebar />
+      <div>
+        <Story />
+        Home
+        <HotNews />
+      </div>
+    </HomeContainer>
   )
 }
+
+export default Home;
+
+const HomeContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+
