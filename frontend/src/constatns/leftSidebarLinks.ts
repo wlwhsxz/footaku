@@ -6,7 +6,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { SvgIconTypeMap } from '@mui/material';
 import { OverridableComponent } from '@mui/types';
 
-export interface Link {
+export interface Nav {
   icon: OverridableComponent<SvgIconTypeMap<{}, "svg">> & {
     muiName: string;
 }  
@@ -15,7 +15,7 @@ export interface Link {
 }
 
 
-export const leftSidebarLinks: Link[] = [
+export const leftSidebarLinks: Nav[] = [
   {
     icon: HomeIcon,
     route: "/",
