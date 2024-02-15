@@ -69,4 +69,15 @@ const insertDummyUsers = async () => {
   }
 };
 
+const dummyStories = {
+  userId: "user1",
+  profilePic: "",
+  pictures: [
+    {
+      DateTime: "2024.02.15T10:24:00",
+      src: "",
+    },
+  ],
+};
+
 module.exports = { insertDummyUsers };
