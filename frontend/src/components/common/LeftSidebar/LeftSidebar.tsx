@@ -10,9 +10,9 @@ const LeftSidebar: React.FC = () => {
       </LogoBox>
         {leftSidebarLinks.map((nav: Nav) => (
           <NavBox key={nav.label}>
-            <span>
+            <NavIcon>
               <nav.icon />
-            </span>
+            </NavIcon>
             <NavLabel>
               {nav.label}
             </NavLabel>
@@ -32,7 +32,8 @@ const Wrapper = styled.div`
   height: 100vh;
 
   padding: 8px 12px 20px 12px;
-  background-color: yellow;
+  background-color: black;
+  color: white;
 `;
 
 const LogoBox = styled.div`
@@ -49,6 +50,15 @@ const NavBox = styled.div`
 
   margin: 4px 0px;
   padding: 12px;
+
+  &:hover {
+    cursor: pointer;
+    background: rgb(255,255,255,0.2)
+  }
+`
+
+const NavIcon = styled.div`
+
 `
 
 const NavLabel = styled.span`
