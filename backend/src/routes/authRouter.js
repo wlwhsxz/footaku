@@ -1,38 +1,21 @@
 const { Router } = require("express");
 const router = Router();
-const { isAccessTokenValid } = require("../middlewares/jwt");
+// const tokenValidator = require('../validator/jwt/tokenValidator');
+const authController = require("../controllers/authController");
 
-const {
-  checkDuplicateUserId,
-  checkDuplicateEmail,
-  checkDuplicateUserName,
-  signUp,
-  logIn,
-  logInNonMember,
-  logOut,
-  getUserInfo,
-  updateUser,
-} = require("../services/userService");
+//[ 회원가입 ]
+router.post("/signup", authController.signUp);
 
-router.post("/signup", signUp);
+// [ 로그인 ]
+router.post("/login", authController.logIn);
 
-// 최초 로그인 이후 모든 요청에 대해 토큰 유효성 검사를 진행한다.
+// //[회원가입 아이디 중복체크]
+// router.post('/id', authController.validateUniqueUserId);
 
-router.post("/login", logIn);
+// // [ 비밀번호 체크 ]
+// router.post('/password', authController.validatePassword);
 
-// 비회원 로그인 uuid 발급
-router.post("/loginNonMember", logInNonMember);
-
-router.patch("/me", isAccessTokenValid, updateUser);
-
-router.get("/users/:id", isAccessTokenValid, getUserInfo);
-
-router.delete("/logout", logOut);
-
-router.get("/check-userid/:userId", checkDuplicateUserId);
-
-router.get("/check-email/:email", checkDuplicateEmail);
-
-router.get("/check-username/:userName", checkDuplicateUserName);
+//[ 로그아웃 ]
+// router.delete("/logout", tokenValidator, authController.logOut);
 
 module.exports = router;
