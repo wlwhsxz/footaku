@@ -8,7 +8,7 @@ const { insertDummyUsers } = require("./db/dummyData.js");
 // const { errorHandlerMiddleware } = require("./middlewares/errorHandler");
 
 const indexRouter = require("./routes/index");
-// const authRouter = require("./routes/authRouter");
+const authRouter = require("./routes/authRouter");
 const port = Number(env.PORT || 3000);
 const allowedOrigins = ["http://127.0.0.1:3000", "http://localhost:8080"];
 
@@ -25,7 +25,7 @@ const corsOptions = {
 //   fs.mkdirSync("uploads");
 // }
 
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -49,5 +49,5 @@ connectToDatabase()
   });
 
 app.use("/static", express.static("public")); // 정적파일 관리 경로
-// app.use("/auth", authRouter);
+app.use("/api/auth", authRouter);
 // app.use(errorHandlerMiddleware);
