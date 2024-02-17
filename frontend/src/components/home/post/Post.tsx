@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Content from "./Content";
-import Footer from './Footer';
+import Footer from "./footer/Footer";
 import Header from "./Header";
 
 const Post = () => {
@@ -10,8 +10,8 @@ const Post = () => {
       <Content />
       <Footer />
     </PostContainer>
-  )
-}
+  );
+};
 
 export default Post;
 
@@ -24,4 +24,4 @@ const PostContainer = styled.div`
   width: 468px;
 
   background-color: lime;
-`
+`;
