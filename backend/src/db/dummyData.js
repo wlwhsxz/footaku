@@ -61,7 +61,7 @@ const dummyUsers = [
 
 const insertDummyUsers = async () => {
   try {
-    await User.deleteMany({});
+    // await User.deleteMany({});
     await User.create(dummyUsers);
     console.log("Dummy users inserted successfully");
   } catch (error) {

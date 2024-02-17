@@ -1,42 +1,49 @@
 import styled from "styled-components";
 
+import { useRef } from "react";
+import Comment from "./Comment";
+import CommentButton from "../../../common/buttons/CommentButton";
+import LikeButton from "../../../common/buttons/LikeButton";
+import ShareButton from "../../../common/buttons/ShareButton";
+import SaveButton from "../../../common/buttons/SaveButton";
+
 const Footer = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const focusInput = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
 
   return (
     <FooterContainer>
       <ButtonSection>
         <LeftButtonBox>
-          <div>
-            <img src='https://cdn-icons-png.flaticon.com/128/7476/7476962.png' />
-          </div>
-          <div>
-            <img src='https://cdn-icons-png.flaticon.com/128/54/54467.png' /> 
-          </div>         
-          <div>
-            <img src='https://cdn-icons-png.flaticon.com/128/2990/2990295.png' />          
-          </div>
+          <LikeButton />
+          <CommentButton onCommentClick={focusInput} />
+          <ShareButton />
         </LeftButtonBox>
         <RightButtonBox>
-          <div>
-            <img src='https://cdn-icons-png.flaticon.com/128/5662/5662990.png' />
-          </div>
+          <SaveButton />
         </RightButtonBox>
       </ButtonSection>
       <TextSection>
-        <LikeText>
-          3,654,321 likes
-        </LikeText>
-        <TitleText>       
-          content text content text content text content text content text content text content text content text content text content text content text content text content text content text content text content text 
+        <LikeText>3,654,321 likes</LikeText>
+        <TitleText>
+          content text content text content text content text content text
+          content text content text content text content text content text
+          content text content text content text content text content text
+          content text
         </TitleText>
         <CommentText>
           view all 4,219 comments
-          <input placeholder="Add a comment..."/>
+          <Comment inputRef={inputRef} />
         </CommentText>
       </TextSection>
     </FooterContainer>
-  )
-}
+  );
+};
 
 export default Footer;
 
@@ -44,17 +51,15 @@ const FooterContainer = styled.div`
   display: flex;
   flex-direction: column;
 
-
   border-bottom: 1px solid gray;
 
   img {
     width: 24px;
     height: 24px;
-    display: block; 
-    layout: fill;
+    display: block;
     object-fit: cover;
   }
-`
+`;
 
 const ButtonSection = styled.div`
   display: flex;
@@ -62,7 +67,12 @@ const ButtonSection = styled.div`
 
   width: 100%;
 
-`
+  img {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+`;
 
 const LeftButtonBox = styled.div`
   display: flex;
@@ -70,21 +80,19 @@ const LeftButtonBox = styled.div`
   div {
     padding: 8px;
   }
-`
+`;
 
 const RightButtonBox = styled.div`
-div {
-  padding: 8px;
-}
-`
+  div {
+    padding: 8px;
+  }
+`;
 
 const TextSection = styled.div`
   text-align: left;
 `;
 
-const LikeText = styled.div`
-
-`
+const LikeText = styled.div``;
 
 const TitleText = styled.div`
   overflow: hidden;
@@ -92,7 +100,7 @@ const TitleText = styled.div`
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-`
+`;
 
 const CommentText = styled.div`
   display: flex;
@@ -105,10 +113,9 @@ const CommentText = styled.div`
     text-align: left;
     border: none;
     background-color: transparent;
-    
+
     &:focus {
       outline: none;
     }
   }
-  
-`
+`;
