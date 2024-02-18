@@ -4,7 +4,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const env = require("./envconfig");
 const { connectToDatabase } = require("./db/db");
-const { insertDummyUsers } = require("./db/dummyData.js");
+const { insertDummyUsers, insertDummyPosts } = require("./db/dummyData.js");
 // const { errorHandlerMiddleware } = require("./middlewares/errorHandler");
 
 const indexRouter = require("./routes/index");
@@ -35,6 +35,7 @@ connectToDatabase()
     app.use("/", indexRouter);
 
     await insertDummyUsers();
+    await insertDummyPosts();
 
     app.listen(port, () => {
       console.log("PORT:", env.PORT);
