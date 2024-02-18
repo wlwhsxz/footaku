@@ -1,13 +1,19 @@
+import React from "react";
 import styled from "styled-components";
 
-const Header = () => {
+interface HeaderProps {
+  name: string;
+  profileImg: string;
+}
+
+const Header: React.FC<HeaderProps> = ({ name, profileImg }) => {
   return (
     <HeaderContainer>
       <ProfileImg>
-        <img src={spursSrc} />
+        <img src={profileImg} />
       </ProfileImg>
       <ProfileText>
-        <div>name</div>
+        <div>{name}</div>
         <div>location</div>
       </ProfileText>
       <MoreIcon>
