@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const { User } = require("./models/index");
+const { User, Post } = require("./models/index");
 
 const dummyUsers = [
   {
@@ -61,9 +61,10 @@ const dummyUsers = [
 
 const insertDummyUsers = async () => {
   try {
-    // await User.deleteMany({});
-    await User.create(dummyUsers);
-    console.log("Dummy users inserted successfully");
+    // await User.deleteMany({})
+    const exists = await User.findOne();
+    exists || (await User.create(dummyUsers));
+    console.log("Operation completed successfully.");
   } catch (error) {
     console.error(error);
   }
@@ -71,7 +72,7 @@ const insertDummyUsers = async () => {
 
 const dummyStories = {
   userId: "user1",
-  profilePic: "",
+  profileImg: "",
   pictures: [
     {
       DateTime: "2024.02.15T10:24:00",
@@ -80,4 +81,44 @@ const dummyStories = {
   ],
 };
 
-module.exports = { insertDummyUsers };
+const dummyPosts = {
+  postId: "post1",
+  profileType: "club",
+  profileImg: "https://a.espncdn.com/i/teamlogos/soccer/500/367.png",
+  name: "Tottenham Hotspur",
+  likes: 3654321,
+  content: {
+    postImg:
+      "https://cdn.gukjenews.com/news/photo/202311/2849432_2902282_4056.png",
+    summary: "This Wednesday night, Korean Derby is on the way!",
+    comments: [
+      {
+        userId: "123456789",
+        profileImg:
+          "https://i.eurosport.com/2023/08/19/3765640-76602729-640-480.jpg",
+        name: "Pape sarr",
+        comment: "I'm looking forward to this match so bad!!! OMG!",
+      },
+      {
+        userId: "123456789",
+        profileImg:
+          "https://assets.goal.com/v3/assets/bltcc7a7ffd2fbf71f5/blt0d9415080048079b/649d205c61af7011f2cd574b/James_Maddison_Tottenham_2023-24.jpg?auto=webp&format=pjpg&width=3840&quality=60",
+        name: "James Maddison",
+        comment: "I will give them some bangers!!",
+      },
+    ],
+  },
+};
+
+const insertDummyPosts = async () => {
+  try {
+    // await Post.deleteMany({})
+    const exists = await Post.findOne();
+    exists || (await Post.create(dummyPosts));
+    console.log("Operation completed successfully.");
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+module.exports = { insertDummyUsers, insertDummyPosts };
