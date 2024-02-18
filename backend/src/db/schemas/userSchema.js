@@ -1,6 +1,4 @@
 const { Schema } = require("mongoose");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
 
 const UserSchema = new Schema(
