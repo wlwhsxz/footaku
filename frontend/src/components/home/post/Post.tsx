@@ -4,6 +4,15 @@ import Footer from "./footer/Footer";
 import Header from "./Header";
 
 const Post = () => {
+  const fetchPosts = async () => {
+    const data = await fetch("http://localhost:8080/api/posts");
+    const post = await data.json();
+
+    console.log(post);
+  };
+
+  fetchPosts();
+
   return (
     <PostContainer>
       <Header />

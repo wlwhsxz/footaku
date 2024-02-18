@@ -9,6 +9,7 @@ const { insertDummyUsers, insertDummyPosts } = require("./db/dummyData.js");
 
 const indexRouter = require("./routes/index");
 const authRouter = require("./routes/authRouter");
+const postRouter = require("./routes/postRouter");
 const port = Number(env.PORT || 3000);
 const allowedOrigins = ["http://127.0.0.1:3000", "http://localhost:8080"];
 
@@ -50,5 +51,6 @@ connectToDatabase()
   });
 
 app.use("/static", express.static("public")); // 정적파일 관리 경로
-app.use("/api/auth", authRouter);
+app.use("/api/auths", authRouter);
+app.use("api/posts", postRouter);
 // app.use(errorHandlerMiddleware);
