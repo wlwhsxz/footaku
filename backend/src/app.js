@@ -52,5 +52,5 @@ connectToDatabase()
 
 app.use("/static", express.static("public")); // 정적파일 관리 경로
 app.use("/api/auths", authRouter);
-app.use("api/posts", postRouter);
+app.use("/api/posts", postRouter);
 // app.use(errorHandlerMiddleware);
