@@ -6,8 +6,14 @@ import CommentButton from "../../../common/buttons/CommentButton";
 import LikeButton from "../../../common/buttons/LikeButton";
 import ShareButton from "../../../common/buttons/ShareButton";
 import SaveButton from "../../../common/buttons/SaveButton";
+import { Comments } from "../../../../types/index";
 
-const Footer = () => {
+interface FooterProps {
+  comments: Comments[];
+  summary: string;
+}
+
+const Footer: React.FC<FooterProps> = ({ summary, comments }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const focusInput = () => {
@@ -30,12 +36,7 @@ const Footer = () => {
       </ButtonSection>
       <TextSection>
         <LikeText>3,654,321 likes</LikeText>
-        <TitleText>
-          content text content text content text content text content text
-          content text content text content text content text content text
-          content text content text content text content text content text
-          content text
-        </TitleText>
+        <TitleText>{summary}</TitleText>
         <CommentText>
           view all 4,219 comments
           <Comment inputRef={inputRef} />
@@ -50,6 +51,8 @@ export default Footer;
 const FooterContainer = styled.div`
   display: flex;
   flex-direction: column;
+
+  width: 100%;
 
   border-bottom: 1px solid gray;
 

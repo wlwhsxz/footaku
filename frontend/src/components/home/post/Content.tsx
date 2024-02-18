@@ -1,21 +1,24 @@
 import styled from "styled-components";
+import React from "react";
 
-const Content = () => {
+interface ContentProps {
+  postImg: string;
+}
+
+const Content: React.FC<ContentProps> = ({ postImg }) => {
   return (
     <div>
-      <PostMedia><img src='https://cdn.k-trendynews.com/news/photo/202109/121431_157373_323.jpg' /></PostMedia>
+      <PostMedia>
+        <img src={postImg} alt="postImg" />
+      </PostMedia>
     </div>
-  )
-}
+  );
+};
 
 export default Content;
 
 const PostMedia = styled.div`
-
   img {
     width: 100%;
   }
-`
-
-
-
+`;
