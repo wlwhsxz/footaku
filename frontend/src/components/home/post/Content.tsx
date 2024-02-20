@@ -8,16 +8,16 @@ interface ContentProps {
 const Content: React.FC<ContentProps> = ({ postImg }) => {
   return (
     <div>
-      <PostContent>
+      <PostMedia>
         <img src={postImg} alt="postImg" />
-      </PostContent>
+      </PostMedia>
     </div>
   );
 };
 
 export default Content;
 
-const PostContent = styled.div`
+const PostMedia = styled.div`
   img {
     width: 100%;
   }
