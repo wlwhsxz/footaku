@@ -1,12 +1,13 @@
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Comment from "./Comment";
 import CommentButton from "../../../common/buttons/CommentButton";
 import LikeButton from "../../../common/buttons/LikeButton";
 import ShareButton from "../../../common/buttons/ShareButton";
 import SaveButton from "../../../common/buttons/SaveButton";
 import { Comments } from "../../../../types/index";
+import PostDetail from "../PostDetail";
 
 interface FooterProps {
   comments: Comments[];
@@ -15,12 +16,30 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = ({ summary, comments }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isPostDetailOpen, SetIsPostDetailOpen] = useState(false);
 
   const focusInput = () => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
   };
+
+  const closePostDetail = () => {
+    SetIsPostDetailOpen(false);
+  };  
+
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    if (isPostDetailOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = originalOverflow;
+    }
+  
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isPostDetailOpen]);
 
   return (
     <FooterContainer>
@@ -38,8 +57,11 @@ const Footer: React.FC<FooterProps> = ({ summary, comments }) => {
         <LikeText>3,654,321 likes</LikeText>
         <TitleText>{summary}</TitleText>
         <CommentText>
-          view all 4,219 comments
+          <ViewComments onClick={() => SetIsPostDetailOpen(!isPostDetailOpen)}>
+            view all 4,219 comments
+          </ViewComments>
           <Comment inputRef={inputRef} />
+          {isPostDetailOpen && <PostDetail onClose={closePostDetail} />}
         </CommentText>
       </TextSection>
     </FooterContainer>
@@ -122,3 +144,8 @@ const CommentText = styled.div`
     }
   }
 `;
+
+const ViewComments = styled.div`
+  width: fit-content;
+  background-color: yellow;
+`
