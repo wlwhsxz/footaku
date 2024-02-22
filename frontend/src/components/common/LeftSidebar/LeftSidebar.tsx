@@ -7,11 +7,10 @@ const LeftSidebar: React.FC = () => {
 
   const NavHandler = (label: string) => (e: React.MouseEvent) => {
     console.log(`Clicked on: ${label}`);
-    // 여기에 필요한 로직을 추가할 수 있습니다. 예를 들어, 페이지 이동 또는 상태 업데이트 등
   }
 
   return (
-    <Wrapper>
+    <LeftSidebarContainer>
       <LogoBox>
         <h2>Footaku</h2>
       </LogoBox>
@@ -27,21 +26,26 @@ const LeftSidebar: React.FC = () => {
             </NavBox>
           </Link>
         ))}
-    </Wrapper>
+    </LeftSidebarContainer>
   );
 };
 
 
 export default LeftSidebar;
 
-const Wrapper = styled.div`
+const LeftSidebarContainer = styled.div`
+  position: fixed
+  top: 0;
+  left: 0;
+
   display: flex;
   flex-direction: column;
 
   width: 220px;
-  height: 100vh;
-
+  height: 100vh; 
+  
   padding: 8px 12px 20px 12px;
+  
   background-color: black;
   color: white;
 `;
