@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 import LeftSidebar from "../../components/common/LeftSidebar/LeftSidebar";
-import HotNews from "../../components/home/HotNews";
 import Post from '../../components/home/post/Post';
 import Story from "../../components/home/Story";
+import Chat from '../../components/chat/Chat';
 
 const Home = () => {
   return(
@@ -18,13 +18,14 @@ const Home = () => {
             <Post />
           </PostSection>
         </ContentWrapper>
-        <HotNewsSection>
-          <HotNews />
-        </HotNewsSection>
       </MainContent>
+      <RightSidebar>
+        <Chat />
+      </RightSidebar>
     </HomePageLayout>
   )
 }
+
 
 export default Home;
 
@@ -60,6 +61,6 @@ const PostSection = styled.div`
   background-color: #f0f0f0;
 `
 
-const HotNewsSection = styled.div`
-  width: 319px
+const RightSidebar = styled.div`
+  align-self: center;
 `
