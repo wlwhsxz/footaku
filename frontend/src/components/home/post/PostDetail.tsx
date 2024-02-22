@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
+import PostButtons from '../../common/buttons/PostButtons';
 
 
 interface PostDetailProps {
@@ -21,8 +22,14 @@ interface Post {
 }
 
 const PostDetail: React.FC<PostDetailProps> = ({ onClose }) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [postData, setPostData] = useState<Post | null>(null);
 
+  const focusInput = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch('http://localhost:8080/api/posts');
@@ -50,13 +57,16 @@ const PostDetail: React.FC<PostDetailProps> = ({ onClose }) => {
           <PostCommentSection>
             {postData?.content.comments.map((comment) => {
               return (
-                <div>
+                <Comment>
                   <img src={comment.profileImg}/>
                   {comment.comment}
-                </div>
+                </Comment>
               );
             })}
           </PostCommentSection>
+          <PostFooter>
+            <PostButtons focusInput={focusInput}/>
+          </PostFooter>
           <div>
 
           </div>
@@ -112,6 +122,7 @@ const PostMedia = styled.div`
   flex: 1;
 
   img {
+    flex: 1;
     width: 100%;
     height: 100%;
     object-fit: fill;
@@ -132,5 +143,11 @@ const PostHeader = styled.div`
 `
 
 const PostCommentSection = styled.div`
-  
+`
+
+const Comment = styled.div`
+  display: flex;
+`
+
+const PostFooter = styled.div`
 `
