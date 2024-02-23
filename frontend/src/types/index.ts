@@ -1,6 +1,7 @@
 export interface PostData {
   name: string;
   profileImg: string;
+  likes: number;
   content: {
     postImg: string;
     summary: string;

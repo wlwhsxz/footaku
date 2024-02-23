@@ -31,6 +31,7 @@ const Post = () => {
       <Header name={postData?.name} profileImg={postData?.profileImg} />
       <Content postImg={postData?.content?.postImg} />
       <Footer
+        likes={postData?.likes}
         comments={postData?.content?.comments}
         summary={postData?.content?.summary}
       />
