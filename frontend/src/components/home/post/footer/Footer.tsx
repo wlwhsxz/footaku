@@ -1,20 +1,20 @@
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Comment from "./Comment";
-import CommentButton from "../../../common/buttons/CommentButton";
-import LikeButton from "../../../common/buttons/LikeButton";
-import ShareButton from "../../../common/buttons/ShareButton";
-import SaveButton from "../../../common/buttons/SaveButton";
 import { Comments } from "../../../../types/index";
+import PostDetail from "../PostDetail";
+import PostButtons from "../../../common/buttons/PostButtons";
 
 interface FooterProps {
+  likes: number;
   comments: Comments[];
   summary: string;
 }
 
-const Footer: React.FC<FooterProps> = ({ summary, comments }) => {
+const Footer: React.FC<FooterProps> = ({likes, summary, comments }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isPostDetailOpen, SetIsPostDetailOpen] = useState(false);
 
   const focusInput = () => {
     if (inputRef.current) {
@@ -22,24 +22,35 @@ const Footer: React.FC<FooterProps> = ({ summary, comments }) => {
     }
   };
 
+  const closePostDetail = () => {
+    SetIsPostDetailOpen(false);
+  };  
+
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    if (isPostDetailOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = originalOverflow;
+    }
+  
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isPostDetailOpen]);
+
   return (
     <FooterContainer>
-      <ButtonSection>
-        <LeftButtonBox>
-          <LikeButton />
-          <CommentButton onCommentClick={focusInput} />
-          <ShareButton />
-        </LeftButtonBox>
-        <RightButtonBox>
-          <SaveButton />
-        </RightButtonBox>
-      </ButtonSection>
+      <PostButtons focusInput={focusInput}/>
       <TextSection>
-        <LikeText>3,654,321 likes</LikeText>
+        <LikeText>{likes.toLocaleString()} Likes</LikeText>
         <TitleText>{summary}</TitleText>
         <CommentText>
-          view all 4,219 comments
+          <ViewComments onClick={() => SetIsPostDetailOpen(!isPostDetailOpen)}>
+            view all {comments.length.toLocaleString()} comments
+          </ViewComments>
           <Comment inputRef={inputRef} />
+          {isPostDetailOpen && <PostDetail onClose={closePostDetail} />}
         </CommentText>
       </TextSection>
     </FooterContainer>
@@ -61,33 +72,6 @@ const FooterContainer = styled.div`
     height: 24px;
     display: block;
     object-fit: cover;
-  }
-`;
-
-const ButtonSection = styled.div`
-  display: flex;
-  justify-content: space-between;
-
-  width: 100%;
-
-  img {
-    &:hover {
-      cursor: pointer;
-    }
-  }
-`;
-
-const LeftButtonBox = styled.div`
-  display: flex;
-
-  div {
-    padding: 8px;
-  }
-`;
-
-const RightButtonBox = styled.div`
-  div {
-    padding: 8px;
   }
 `;
 
@@ -122,3 +106,8 @@ const CommentText = styled.div`
     }
   }
 `;
+
+const ViewComments = styled.div`
+  width: fit-content;
+  background-color: yellow;
+`
