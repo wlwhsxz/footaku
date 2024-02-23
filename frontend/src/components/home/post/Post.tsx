@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import styled from "styled-components";
 import Content from "./Content";
 import Footer from "./footer/Footer";
@@ -6,7 +6,7 @@ import Header from "./Header";
 import { PostData } from "../../../types/index";
 
 const Post = () => {
-  const [postData, setPostData] = useState<PostData | null>(null);
+  const [postData, setPostData] = useState<PostData[]>([]);
 
   const fetchPosts = async () => {
     try {
@@ -14,7 +14,7 @@ const Post = () => {
       const data = (await response.json()) as { data: PostData[] };
       console.log("data", data.data);
 
-      setPostData(data.data[0]);
+      setPostData(data.data);
     } catch (error) {
       console.error("Failed to fetch posts:", error);
     }
@@ -24,18 +24,22 @@ const Post = () => {
     fetchPosts();
   }, []);
 
-  if (!postData) return <div>Loading...</div>;
+  if (postData.length === 0) return <div>Loading...</div>;
 
   return (
-    <PostContainer>
-      <Header name={postData?.name} profileImg={postData?.profileImg} />
-      <Content postImg={postData?.content?.postImg} />
-      <Footer
-        likes={postData?.likes}
-        comments={postData?.content?.comments}
-        summary={postData?.content?.summary}
-      />
-    </PostContainer>
+    <Fragment>
+      {postData.map((post) => (
+        <PostContainer key={post.postId}>
+          <Header name={post.name} profileImg={post.profileImg} />
+          <Content postImg={post.content?.postImg} />
+          <Footer
+            likes={post.likes}
+            comments={post.content?.comments}
+            summary={post.content?.summary}
+          />
+        </PostContainer>
+      ))}
+    </Fragment>
   );
 };
 
