@@ -46,9 +46,11 @@ const PostDetail: React.FC<PostDetailProps> = ({ onClose }) => {
         <img src="https://cdn-icons-png.flaticon.com/128/458/458595.png" alt="Close" />
       </CloseButton>
       <ContentContainer>
-        <PostMedia>
-          {postData && <img src={postData.content.postImg} alt="Post" /> }
-        </PostMedia>
+        {postData && 
+          <PostMedia>
+            <img src={postData?.content.postImg} alt="Post" style={{width: '100%', height: '100%', objectFit: 'fill' }} />
+          </PostMedia>
+        }
         <PostSummary>
           <PostHeader>
             <img src={postData?.profileImg} />
@@ -120,13 +122,6 @@ const ContentContainer = styled.div`
 
 const PostMedia = styled.div`
   flex: 1;
-
-  img {
-    flex: 1;
-    width: 100%;
-    height: 100%;
-    object-fit: fill;
-  }
 `
 
 const PostSummary = styled.div`
