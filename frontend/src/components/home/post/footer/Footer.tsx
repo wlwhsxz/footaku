@@ -7,11 +7,12 @@ import PostDetail from "../PostDetail";
 import PostButtons from "../../../common/buttons/PostButtons";
 
 interface FooterProps {
+  likes: number;
   comments: Comments[];
   summary: string;
 }
 
-const Footer: React.FC<FooterProps> = ({ summary, comments }) => {
+const Footer: React.FC<FooterProps> = ({likes, summary, comments }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPostDetailOpen, SetIsPostDetailOpen] = useState(false);
 
@@ -42,11 +43,11 @@ const Footer: React.FC<FooterProps> = ({ summary, comments }) => {
     <FooterContainer>
       <PostButtons focusInput={focusInput}/>
       <TextSection>
-        <LikeText>3,654,321 likes</LikeText>
+        <LikeText>{likes.toLocaleString()} Likes</LikeText>
         <TitleText>{summary}</TitleText>
         <CommentText>
           <ViewComments onClick={() => SetIsPostDetailOpen(!isPostDetailOpen)}>
-            view all 4,219 comments
+            view all {comments.length.toLocaleString()} comments
           </ViewComments>
           <Comment inputRef={inputRef} />
           {isPostDetailOpen && <PostDetail onClose={closePostDetail} />}
