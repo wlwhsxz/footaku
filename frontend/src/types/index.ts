@@ -1,4 +1,5 @@
 export interface PostData {
+  postId: string;
   name: string;
   profileImg: string;
   likes: number;
