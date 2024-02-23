@@ -93,14 +93,14 @@ const dummyPosts = {
     summary: "This Wednesday night, Korean Derby is on the way!",
     comments: [
       {
-        userId: "123456789",
+        userId: "1",
         profileImg:
           "https://i.eurosport.com/2023/08/19/3765640-76602729-640-480.jpg",
         name: "Pape sarr",
         comment: "I'm looking forward to this match so bad!!! OMG!",
       },
       {
-        userId: "123456789",
+        userId: "2",
         profileImg:
           "https://assets.goal.com/v3/assets/bltcc7a7ffd2fbf71f5/blt0d9415080048079b/649d205c61af7011f2cd574b/James_Maddison_Tottenham_2023-24.jpg?auto=webp&format=pjpg&width=3840&quality=60",
         name: "James Maddison",
@@ -112,7 +112,7 @@ const dummyPosts = {
 
 const insertDummyPosts = async () => {
   try {
-    // await Post.deleteMany({})
+    // await Post.deleteMany({});
     const exists = await Post.findOne();
     exists || (await Post.create(dummyPosts));
     console.log("Operation completed successfully.");
