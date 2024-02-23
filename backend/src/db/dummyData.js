@@ -81,38 +81,69 @@ const dummyStories = {
   ],
 };
 
-const dummyPosts = {
-  postId: "post1",
-  profileType: "club",
-  profileImg: "https://a.espncdn.com/i/teamlogos/soccer/500/367.png",
-  name: "Tottenham Hotspur",
-  likes: 3654321,
-  content: {
-    postImg:
-      "https://cdn.gukjenews.com/news/photo/202311/2849432_2902282_4056.png",
-    summary: "This Wednesday night, Korean Derby is on the way!",
-    comments: [
-      {
-        userId: "123456789",
-        profileImg:
-          "https://i.eurosport.com/2023/08/19/3765640-76602729-640-480.jpg",
-        name: "Pape sarr",
-        comment: "I'm looking forward to this match so bad!!! OMG!",
-      },
-      {
-        userId: "123456789",
-        profileImg:
-          "https://assets.goal.com/v3/assets/bltcc7a7ffd2fbf71f5/blt0d9415080048079b/649d205c61af7011f2cd574b/James_Maddison_Tottenham_2023-24.jpg?auto=webp&format=pjpg&width=3840&quality=60",
-        name: "James Maddison",
-        comment: "I will give them some bangers!!",
-      },
-    ],
+const dummyPosts = [
+  {
+    postId: "post1",
+    profileType: "club",
+    profileImg: "https://a.espncdn.com/i/teamlogos/soccer/500/367.png",
+    name: "Tottenham Hotspur",
+    likes: 3654321,
+    content: {
+      postImg:
+        "https://cdn.gukjenews.com/news/photo/202311/2849432_2902282_4056.png",
+      summary: "This Wednesday night, Korean Derby is on the way!",
+      comments: [
+        {
+          userId: "1",
+          profileImg:
+            "https://i.eurosport.com/2023/08/19/3765640-76602729-640-480.jpg",
+          name: "Pape sarr",
+          comment: "I'm looking forward to this match so bad!!! OMG!",
+        },
+        {
+          userId: "2",
+          profileImg:
+            "https://assets.goal.com/v3/assets/bltcc7a7ffd2fbf71f5/blt0d9415080048079b/649d205c61af7011f2cd574b/James_Maddison_Tottenham_2023-24.jpg?auto=webp&format=pjpg&width=3840&quality=60",
+          name: "James Maddison",
+          comment: "I will give them some bangers!!",
+        },
+      ],
+    },
   },
-};
+  {
+    postId: "post2",
+    profileType: "club",
+    profileImg:
+      "https://media.licdn.com/dms/image/D4D0BAQHpEoGtV7g9cQ/company-logo_200_200/0/1680629968838/fc_barcelona_logo?e=1717027200&v=beta&t=RThBlWUwa4XecRYmt1Y-v_vFDBDWXLP_i2QoqS0LHJ0",
+    name: "FC Barcelona",
+    likes: 53654321,
+    content: {
+      postImg:
+        "https://www.fcbarcelona.com/fcbarcelona/photo/2023/11/12/fd3efc75-3449-4a0b-b1a6-c76861d3a069/_GP26441.jpg",
+      summary: "FC Barcelona 2-1 Alavés: Second half turnaround!",
+      comments: [
+        {
+          userId: "1",
+          profileImg:
+            "https://i.eurosport.com/2023/08/19/3765640-76602729-640-480.jpg",
+          name: "Pape sarr",
+          comment: "I'm looking forward to this match so bad!!! OMG!",
+        },
+        {
+          userId: "2",
+          profileImg:
+            "https://assets.goal.com/v3/assets/bltcc7a7ffd2fbf71f5/blt0d9415080048079b/649d205c61af7011f2cd574b/James_Maddison_Tottenham_2023-24.jpg?auto=webp&format=pjpg&width=3840&quality=60",
+          name: "James Maddison",
+          comment: "I will give them some bangers!!",
+        },
+      ],
+    },
+  },
+];
 
 const insertDummyPosts = async () => {
   try {
-    // await Post.deleteMany({})
+    // await Post.deleteMany({});
     const exists = await Post.findOne();
     exists || (await Post.create(dummyPosts));
     console.log("Operation completed successfully.");
