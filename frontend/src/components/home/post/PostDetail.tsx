@@ -59,7 +59,7 @@ const PostDetail: React.FC<PostDetailProps> = ({ onClose }) => {
           <PostCommentSection>
             {postData?.content.comments.map((comment) => {
               return (
-                <Comment>
+                <Comment key={comment.userId}>
                   <img src={comment.profileImg}/>
                   {comment.comment}
                 </Comment>
