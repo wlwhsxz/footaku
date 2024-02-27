@@ -12,7 +12,7 @@ const {
 
 //[ 유저 회원가입 ]
 const signUp = async (req, res, next) => {
-  const { userId, email, password } = req.body;
+  const { userId, email, userName, password } = req.body;
 
   // const { error } = signUpSchema.validate({
   //   userId,
@@ -23,16 +23,16 @@ const signUp = async (req, res, next) => {
   //   phone_number,
   //   gender,
   // });
-
-  if (error) {
-    const message = errorMessageHandler(error);
-    return next(new AppError(400, message));
-  }
+  // if (error) {
+  //   const message = errorMessageHandler(error);
+  //   return next(new AppError(400, message));
+  // }
 
   try {
     const { statusCode, message } = await authService.signUp({
       userId,
       email,
+      userName,
       password,
     });
 

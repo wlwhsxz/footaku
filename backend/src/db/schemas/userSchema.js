@@ -7,7 +7,7 @@ const UserSchema = new Schema(
       type: String,
       required: false,
       unique: true,
-      default: uuidv4,
+      // default: uuidv4,
     },
     uuid: {
       type: String,
@@ -26,7 +26,6 @@ const UserSchema = new Schema(
     },
     userName: {
       type: String,
-      required: true,
       unique: true,
       match: [/^[a-zA-Z0-9가-힣]+$/],
     },
@@ -34,6 +33,10 @@ const UserSchema = new Schema(
       type: String,
       enum: ["user", "admin"],
       default: "user",
+    },
+    online: {
+      type: Boolean,
+      default: false,
     },
     tokens: {
       accessToken: {
