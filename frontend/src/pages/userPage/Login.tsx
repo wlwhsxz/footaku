@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { ChangeEvent, FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 interface LoginFormData {
@@ -13,6 +14,7 @@ const Login: React.FC = () => {
     password: "",
   });
   const [error, setError] = useState<string>("");
+  const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -25,7 +27,9 @@ const Login: React.FC = () => {
         "http://localhost:8080/api/auths/login",
         credentials
       );
-      console.log(response.data);
+      if (response.data.statusCode === 200) {
+        navigate("/");
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setError(error.response?.data.error); // Handle error

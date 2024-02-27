@@ -73,6 +73,7 @@ const logIn = async (req, res, next) => {
     res.status(200).json({
       message,
       data,
+      statusCode,
     });
   } catch (error) {
     console.error(error);
