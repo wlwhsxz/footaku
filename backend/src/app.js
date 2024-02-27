@@ -2,16 +2,14 @@ const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const env = require("./envconfig");
 const { connectToDatabase } = require("./db/db");
 const { insertDummyUsers, insertDummyPosts } = require("./db/dummyData.js");
-// const { errorHandlerMiddleware } = require("./middlewares/errorHandler");
+const { errorHandler } = require("./middlewares/errorHandler");
 
 const indexRouter = require("./routes/index");
 const authRouter = require("./routes/authRouter");
 const postRouter = require("./routes/postRouter");
-const port = Number(env.PORT || 3000);
-const allowedOrigins = ["http://127.0.0.1:3000", "http://localhost:8080"];
+const allowedOrigins = ["http://localhost:3000", "http://localhost:8080"];
 
 const corsOptions = {
   origin: allowedOrigins,
@@ -26,7 +24,7 @@ const corsOptions = {
 //   fs.mkdirSync("uploads");
 // }
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -37,13 +35,6 @@ connectToDatabase()
 
     await insertDummyUsers();
     await insertDummyPosts();
-
-    app.listen(port, () => {
-      console.log("PORT:", env.PORT);
-      console.log("DB_HOST:", env.DB_HOST);
-      console.log("DB_NAME:", env.DB_NAME);
-      console.log(`Server is running on port ${port}`);
-    });
   })
   .catch((err) => {
     console.error(err);
@@ -53,4 +44,6 @@ connectToDatabase()
 app.use("/static", express.static("public")); // 정적파일 관리 경로
 app.use("/api/auths", authRouter);
 app.use("/api/posts", postRouter);
-// app.use(errorHandlerMiddleware);
+app.use(errorHandler);
+
+module.exports = app;

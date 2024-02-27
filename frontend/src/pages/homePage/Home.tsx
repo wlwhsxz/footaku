@@ -1,12 +1,12 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 import LeftSidebar from "../../components/common/LeftSidebar/LeftSidebar";
-import Post from '../../components/home/post/Post';
+import Post from "../../components/home/post/Post";
 import Story from "../../components/home/Story";
-import Chat from '../../components/chat/Chat';
+import Chat from "../../components/chat/Chat";
 
 const Home = () => {
-  return(
+  return (
     <HomePageLayout>
       <LeftSidebar />
       <MainContent>
@@ -23,15 +23,14 @@ const Home = () => {
         <Chat />
       </RightSidebar>
     </HomePageLayout>
-  )
-}
-
+  );
+};
 
 export default Home;
 
 const HomePageLayout = styled.div`
   display: flex;
-`
+`;
 
 const MainContent = styled.div`
   display: flex;
@@ -40,19 +39,18 @@ const MainContent = styled.div`
   width: 100vw;
 
   background-color: pink;
-`
+`;
 
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
 
   width: 630px;
-
-`
+`;
 
 const StorySection = styled.div`
   background-color: orange;
-`
+`;
 
 const PostSection = styled.div`
   display: flex;
@@ -61,7 +59,6 @@ const PostSection = styled.div`
   align-items: center;
 
   background-color: #f0f0f0;
-`
+`;
 
-const RightSidebar = styled.div`
-`
+const RightSidebar = styled.div``;

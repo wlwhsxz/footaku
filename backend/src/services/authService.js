@@ -13,29 +13,31 @@ const {
 //[ 유저 회원가입 ]
 /** (유저 입력 formdata) */
 const signUp = async (formData) => {
-  const { userId, password, email } = formData;
+  const { userId, password, userName, email } = formData;
+  console.log(formData);
 
   try {
     const foundUserId = await User.findOne({ userId });
 
-    if (foundUserId) return new AppError(400, "이미 존재하는 아이디입니다.");
+    if (foundUserId)
+      return { statusCode: 400, message: "이미 존재하는 아이디입니다." };
 
     const foundUserEmail = await User.findOne({ email });
 
-    if (foundUserEmail) {
-      return new AppError(400, "이미 존재하는 이메일입니다.");
-    }
+    if (foundUserEmail)
+      return { statusCode: 400, message: "이미 존재하는 이메일입니다." };
 
-    const foundUserNickName = await User.findOne({ nick_name });
-    if (foundUserNickName) {
-      return new AppError(400, "이미 존재하는 닉네임입니다.");
-    }
+    const foundUserName = await User.findOne({ userName });
+
+    if (foundUserName)
+      return { statusCode: 400, message: "이미 존재하는 닉네임입니다." };
 
     const hashedPassword = await hashPassword(password);
 
     const addUser = await User.create({
       userId,
       email,
+      userName,
       password: hashedPassword,
     });
 

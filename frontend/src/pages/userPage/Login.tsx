@@ -1,14 +1,20 @@
-import axios from 'axios';
-import React, { ChangeEvent, FormEvent, useState } from 'react';
+import axios from "axios";
+import React, { ChangeEvent, FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 interface LoginFormData {
-  email: string;
+  userId: string;
   password: string;
 }
 
 const Login: React.FC = () => {
-  const [credentials, setCredentials] = useState<LoginFormData>({ email: '', password: '' });
-  const [error, setError] = useState<string>('');
+  const [credentials, setCredentials] = useState<LoginFormData>({
+    userId: "",
+    password: "",
+  });
+  const [error, setError] = useState<string>("");
+  const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -17,8 +23,13 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/login', credentials);
-      console.log(response.data);
+      const response = await axios.post(
+        "http://localhost:8080/api/auths/login",
+        credentials
+      );
+      if (response.data.statusCode === 200) {
+        navigate("/");
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setError(error.response?.data.error); // Handle error
@@ -27,16 +38,16 @@ const Login: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        value={credentials.email}
+    <StyledForm onSubmit={handleSubmit}>
+      <StyledInput
+        type="string"
+        name="userId"
+        placeholder="User ID"
+        value={credentials.userId}
         onChange={handleChange}
         required
       />
-      <input
+      <StyledInput
         type="password"
         name="password"
         placeholder="Password"
@@ -45,9 +56,44 @@ const Login: React.FC = () => {
         required
       />
       {error && <div>{error}</div>}
-      <button type="submit">Login</button>
-    </form>
+      <StyledButton type="submit">Login</StyledButton>
+    </StyledForm>
   );
 };
 
 export default Login;
+
+const StyledForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 320px;
+  margin: 100px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+`;
+
+const StyledInput = styled.input`
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  }
+`;
+
+const StyledButton = styled.button`
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
