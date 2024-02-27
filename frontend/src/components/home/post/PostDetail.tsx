@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import PostButtons from '../../common/buttons/PostButtons';
+import { ObjectId } from 'mongodb';
 
 
 interface PostDetailProps {
+  _id: ObjectId; 
   onClose: () => void;
 }
 
@@ -21,7 +23,7 @@ interface Post {
   profileImg: string;
 }
 
-const PostDetail: React.FC<PostDetailProps> = ({ onClose }) => {
+const PostDetail: React.FC<PostDetailProps> = ({_id, onClose }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [postData, setPostData] = useState<Post | null>(null);
 
@@ -32,9 +34,9 @@ const PostDetail: React.FC<PostDetailProps> = ({ onClose }) => {
   };
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch('http://localhost:8080/api/posts');
+      const response = await fetch(`http://localhost:8080/api/posts/${_id}`);
       const data = await response.json();
-      setPostData(data.data[0]);
+      setPostData(data.data);
     };
 
     fetchData();

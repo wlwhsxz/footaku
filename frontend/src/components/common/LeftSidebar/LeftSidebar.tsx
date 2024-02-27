@@ -34,7 +34,7 @@ const LeftSidebar: React.FC = () => {
 export default LeftSidebar;
 
 const LeftSidebarContainer = styled.div`
-  position: fixed
+  position: sticky;
   top: 0;
   left: 0;
 

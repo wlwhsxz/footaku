@@ -5,14 +5,16 @@ import Comment from "./Comment";
 import { Comments } from "../../../../types/index";
 import PostDetail from "../PostDetail";
 import PostButtons from "../../../common/buttons/PostButtons";
+import { ObjectId } from "mongodb";
 
 interface FooterProps {
+  _id: ObjectId;
   likes: number;
   comments: Comments[];
   summary: string;
 }
 
-const Footer: React.FC<FooterProps> = ({likes, summary, comments }) => {
+const Footer: React.FC<FooterProps> = ({_id, likes, summary, comments }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPostDetailOpen, SetIsPostDetailOpen] = useState(false);
 
@@ -50,7 +52,7 @@ const Footer: React.FC<FooterProps> = ({likes, summary, comments }) => {
             view all {comments.length.toLocaleString()} comments
           </ViewComments>
           <Comment inputRef={inputRef} />
-          {isPostDetailOpen && <PostDetail onClose={closePostDetail} />}
+          {isPostDetailOpen && <PostDetail _id={_id} onClose={closePostDetail} />}
         </CommentText>
       </TextSection>
     </FooterContainer>

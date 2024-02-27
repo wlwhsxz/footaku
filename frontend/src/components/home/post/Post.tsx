@@ -33,6 +33,7 @@ const Post = () => {
           <Header name={post.name} profileImg={post.profileImg} />
           <Content postImg={post.content?.postImg} />
           <Footer
+            _id={post._id}
             likes={post.likes}
             comments={post.content?.comments}
             summary={post.content?.summary}
@@ -50,6 +51,10 @@ const PostContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
   width: 468px;
+
+  margin-bottom: 20px;
+
   background-color: lime;
 `;
