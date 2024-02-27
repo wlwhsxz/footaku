@@ -56,11 +56,12 @@ const StorySection = styled.div`
 
 const PostSection = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
 
   background-color: #f0f0f0;
 `
 
 const RightSidebar = styled.div`
-  align-self: center;
 `

@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb';
+
 export interface PostData {
   postId: string;
   name: string;
@@ -7,7 +9,8 @@ export interface PostData {
     postImg: string;
     summary: string;
     comments: Comments[];
-  };
+  }; 
+  _id: ObjectId;
 }
 
 export interface Comments {
