@@ -68,6 +68,8 @@ const logIn = async (userId, password) => {
 
     const payload = {
       userId: foundUser.userId,
+      userName: foundUser.userName,
+      email: foundUser.email,
       password: foundUser.password,
     };
 
@@ -80,17 +82,19 @@ const logIn = async (userId, password) => {
     const refreshToken = jwt.sign(payload, REFRESH_TOKEN_SECRET, {
       expiresIn: REFRESH_TOKEN_EXPIRES_IN,
     });
-    console.log(foundUser);
     return {
       statusCode: 200,
       message: "로그인 성공",
       accessToken,
       refreshToken,
       data: {
+        _id: foundUser._id,
         userId: foundUser.userId,
         email: foundUser.email,
+        userName: foundUser.userName,
         role: foundUser.role,
         profile: foundUser.profile,
+        online: true,
       },
     };
   } catch (error) {

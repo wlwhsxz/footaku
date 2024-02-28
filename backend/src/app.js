@@ -9,7 +9,12 @@ const { errorHandler } = require("./middlewares/errorHandler");
 const indexRouter = require("./routes/index");
 const authRouter = require("./routes/authRouter");
 const postRouter = require("./routes/postRouter");
-const allowedOrigins = ["http://localhost:3000", "http://localhost:8080"];
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:8080",
+  "http://127.0.0.1:3000",
+  "http://127.0.0.1:8080",
+];
 
 const corsOptions = {
   origin: allowedOrigins,

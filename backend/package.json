@@ -4,7 +4,7 @@
   "description": "Footaku",
   "main": "app.js",
   "scripts": {
-    "start": "cd src && nodemon app.js"
+    "start": "cd src && nodemon index.js"
   },
   "author": "Footaku",
   "license": "ISC",

@@ -1,17 +1,30 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import InputField from "./InputField";
 import socket from "../../server";
+import ChatContent from "./ChatContent";
 
 const Chat = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("user") || "{}")
+  );
   const [message, setMessage] = useState("");
-  const [messageList, setMessageList] = useState<any>([]);
+  const [messageList, setMessageList] = useState([]);
+  console.log("MessageList :", messageList);
 
   useEffect(() => {
-    socket.on("message", (data: any) => {
-      setMessageList([...messageList, data]);
+    socket.on("message", (message: any) => {
+      setMessageList((prev) => prev.concat(message));
     });
-  }, [messageList]);
+  }, []);
+
+  const sendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    socket.emit("sendMessage", message, (res: any) => {
+      console.log("Res :", res);
+    });
+    setMessage("");
+  };
 
   return (
     <ChatContainer>
@@ -23,12 +36,16 @@ const Chat = () => {
         </div>
       </Header>
       <ChatBox>
-        <ChatContent></ChatContent>
+        <ChatContent messageList={messageList} user={user} />
         <UserInfoBox>
           img
           <span>nickname</span>
         </UserInfoBox>
-        <input />
+        <InputField
+          message={message}
+          setMessage={setMessage}
+          sendMessage={sendMessage}
+        />
       </ChatBox>
     </ChatContainer>
   );
@@ -66,17 +83,6 @@ const ChatBox = styled.div`
   flex-direction: column;
 
   flex: 1;
-
-  input {
-    width: 100%;
-    background-color: transparent;
-    color: white;
-  }
-`;
-
-const ChatContent = styled.div`
-  flex: 1;
-  border: 1px solid white;
 `;
 
 const UserInfoBox = styled.div`

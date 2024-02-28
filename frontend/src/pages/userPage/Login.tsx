@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import socket from "../../server";
 
 interface LoginFormData {
   userId: string;
@@ -28,6 +29,12 @@ const Login: React.FC = () => {
         credentials
       );
       if (response.data.statusCode === 200) {
+        const user = response.data.data;
+        localStorage.setItem("user", JSON.stringify(user));
+        socket.emit("login", user, (res: any) => {
+          console.log("Res :", res);
+          localStorage.setItem("userObjectId", res.data.userId);
+        });
         navigate("/");
       }
     } catch (error) {

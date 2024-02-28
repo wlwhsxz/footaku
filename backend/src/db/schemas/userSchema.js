@@ -38,6 +38,9 @@ const UserSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    socketId: {
+      type: String,
+    },
     tokens: {
       accessToken: {
         type: String,
