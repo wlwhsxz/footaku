@@ -12,7 +12,7 @@ const Post = () => {
     try {
       const response = await fetch("http://localhost:8080/api/posts");
       const data = (await response.json()) as { data: PostData[] };
-      console.log("data", data.data);
+      // console.log("data", data.data);
 
       setPostData(data.data);
     } catch (error) {
