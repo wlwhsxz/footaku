@@ -1,29 +1,30 @@
-import React, { useState, useEffect, useRef } from 'react'
-import styled from 'styled-components'
-import PostButtons from '../../common/buttons/PostButtons';
-import { ObjectId } from 'mongodb';
-
+import React, { useState, useEffect, useRef } from "react";
+import styled from "styled-components";
+import PostButtons from "../../common/buttons/PostButtons";
+import { ObjectId } from "mongodb";
 
 interface PostDetailProps {
-  _id: ObjectId; 
+  _id: ObjectId;
   onClose: () => void;
 }
 
 interface Post {
   content: {
     postImg: string;
-    comments: [{
-      comment: string,
-      name: string,
-      profileImg: string,
-      userId: string,
-    }];
+    comments: [
+      {
+        comment: string;
+        name: string;
+        profileImg: string;
+        userId: string;
+      }
+    ];
   };
   name: String;
   profileImg: string;
 }
 
-const PostDetail: React.FC<PostDetailProps> = ({_id, onClose }) => {
+const PostDetail: React.FC<PostDetailProps> = ({ _id, onClose }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [postData, setPostData] = useState<Post | null>(null);
 
@@ -45,14 +46,21 @@ const PostDetail: React.FC<PostDetailProps> = ({_id, onClose }) => {
   return (
     <PostDetailContainer>
       <CloseButton onClick={onClose}>
-        <img src="https://cdn-icons-png.flaticon.com/128/458/458595.png" alt="Close" />
+        <img
+          src="https://cdn-icons-png.flaticon.com/128/458/458595.png"
+          alt="Close"
+        />
       </CloseButton>
       <ContentContainer>
-        {postData && 
+        {postData && (
           <PostMedia>
-            <img src={postData?.content.postImg} alt="Post" style={{width: '100%', height: '100%', objectFit: 'fill' }} />
+            <img
+              src={postData?.content.postImg}
+              alt="Post"
+              style={{ width: "100%", height: "100%", objectFit: "fill" }}
+            />
           </PostMedia>
-        }
+        )}
         <PostSummary>
           <PostHeader>
             <img src={postData?.profileImg} />
@@ -62,23 +70,20 @@ const PostDetail: React.FC<PostDetailProps> = ({_id, onClose }) => {
             {postData?.content.comments.map((comment) => {
               return (
                 <Comment key={comment.userId}>
-                  <img src={comment.profileImg}/>
+                  <img src={comment.profileImg} />
                   {comment.comment}
                 </Comment>
               );
             })}
           </PostCommentSection>
           <PostFooter>
-            <PostButtons focusInput={focusInput}/>
+            <PostButtons focusInput={focusInput} />
           </PostFooter>
-          <div>
-
-          </div>
-       </PostSummary>
+          <div></div>
+        </PostSummary>
       </ContentContainer>
     </PostDetailContainer>
   );
-  ;
 };
 
 export default PostDetail;
@@ -95,10 +100,9 @@ const PostDetailContainer = styled.div`
   align-items: center;
   justify-content: center;
 
-
   width: 100vw;
   height: 100vh;
-`
+`;
 
 const CloseButton = styled.button`
   position: absolute;
@@ -118,18 +122,17 @@ const CloseButton = styled.button`
 const ContentContainer = styled.div`
   display: flex;
   width: 70vw;
-  height: 90vh;
-  
-`
+  height: 70vh;
+`;
 
 const PostMedia = styled.div`
   flex: 1;
-`
+`;
 
 const PostSummary = styled.div`
   flex: 1;
   background-color: yellow;
-`
+`;
 
 const PostHeader = styled.div`
   display: flex;
@@ -137,14 +140,12 @@ const PostHeader = styled.div`
   img {
     width: 24px;
   }
-`
+`;
 
-const PostCommentSection = styled.div`
-`
+const PostCommentSection = styled.div``;
 
 const Comment = styled.div`
   display: flex;
-`
+`;
 
-const PostFooter = styled.div`
-`
+const PostFooter = styled.div``;
