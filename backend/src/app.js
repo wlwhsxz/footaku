@@ -17,7 +17,7 @@ const allowedOrigins = [
 ];
 
 const corsOptions = {
-  origin: allowedOrigins,
+  // origin: allowedOrigins,
   credentials: true, // 쿠키를 허용하기 위한 설정
 };
 
