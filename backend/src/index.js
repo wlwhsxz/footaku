@@ -6,12 +6,12 @@ const env = require("./envconfig");
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://43.203.44.253:3000",
   },
 });
 
 require("./utils/io")(io);
-httpServer.listen(env.PORT || 8000, () => {
+httpServer.listen(env.PORT || 8080, () => {
   console.log("PORT:", env.PORT);
   console.log("DB_HOST:", env.DB_HOST);
   console.log("DB_NAME:", env.DB_NAME);
