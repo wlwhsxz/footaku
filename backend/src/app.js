@@ -12,8 +12,8 @@ const postRouter = require("./routes/postRouter");
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:8080",
-  "http://127.0.0.1:3000",
-  "http://127.0.0.1:8080",
+  "http://43.203.44.253:3000",
+  "http://43.203.44.253:8080",
 ];
 
 const corsOptions = {
