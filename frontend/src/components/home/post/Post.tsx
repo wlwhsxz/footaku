@@ -10,7 +10,7 @@ const Post = () => {
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/posts");
+      const response = await fetch(`${process.env.REACT_APP_URL}/api/posts`);
       const data = (await response.json()) as { data: PostData[] };
       // console.log("data", data.data);
 

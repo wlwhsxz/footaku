@@ -25,7 +25,7 @@ const Login: React.FC = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/auths/login",
+        `${process.env.REACT_APP_API_URL}/api/auths/login`,
         credentials
       );
       if (response.data.statusCode === 200) {
