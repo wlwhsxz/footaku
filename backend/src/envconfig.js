@@ -1,4 +1,6 @@
-require("dotenv").config();
+const envFile =
+  process.env.NODE_ENV === "production" ? ".env.production" : ".env";
+require("dotenv").config({ path: envFile });
 
 module.exports = {
   BCRYPT_SALT_ROUNDS: process.env.BCRYPT_SALT_ROUNDS,
