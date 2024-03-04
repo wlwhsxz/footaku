@@ -43,7 +43,7 @@ const SignUp: React.FC = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/auths/signup`,
+        `${process.env.REACT_APP_API_URL}/api/auths/signup`,
         formData
       );
       const message = response.data.message;
