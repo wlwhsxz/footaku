@@ -161,7 +161,7 @@ const dummyPosts = [
   {
     profileType: "player",
     profileImg:
-      "https://i.namu.wiki/i/znqvfxJF2FVvm5d390TdXYe_YaVLzAAUPHCZQzv2mO_si2Jr_jy7oQVrDwIkEtzR4HxeG9eIOioAkRJI7JxsIWI_2pWWUC1OZ9CA7sr7HZ7opF4qOY657cqFBdc-tyrgAp_cb9BLFbfPUSD_aI2C5Q.webp",
+      "https://image-cdn.hypb.st/https%3A%2F%2Fkr.hypebeast.com%2Ffiles%2F2023%2F04%2Ffc-barcelona-president-laporta-confirms-lionel-messi-return-01.jpeg?cbr=1&q=90",
     name: "Lionel Messi",
     likes: 1231785,
     content: {
@@ -173,7 +173,7 @@ const dummyPosts = [
   {
     profileType: "player",
     profileImg:
-      "https://i.namu.wiki/i/aJuU1nsyRtZCionVEeKrqKo2bnAFGirohe7B2wOTtUeQdFNQF3aulvWQlOrqjmcQC8ln28zFjOuWeBKy3AsKuJasRtMgwMLLvNAUIzKpGLmwdfcUidPmgVXxHVGoqtTp3XxL281OLGlQVW01UWtqFw.webp",
+      "https://file2.nocutnews.co.kr/newsroom/image/2023/06/21/202306210855316394_0.jpg",
     name: "Cristiano Ronaldo",
     likes: 1231234,
     content: {
@@ -187,7 +187,7 @@ const dummyPosts = [
   {
     profileType: "player",
     profileImg:
-      "https://i.namu.wiki/i/aJuU1nsyRtZCionVEeKrqKo2bnAFGirohe7B2wOTtUeQdFNQF3aulvWQlOrqjmcQC8ln28zFjOuWeBKy3AsKuJasRtMgwMLLvNAUIzKpGLmwdfcUidPmgVXxHVGoqtTp3XxL281OLGlQVW01UWtqFw.webp",
+      "https://file2.nocutnews.co.kr/newsroom/image/2023/06/21/202306210855316394_0.jpg",
     name: "Cristiano Ronaldo",
     likes: 1231234,
     content: {
@@ -201,7 +201,7 @@ const dummyPosts = [
   {
     profileType: "player",
     profileImg:
-      "https://i.namu.wiki/i/aJuU1nsyRtZCionVEeKrqKo2bnAFGirohe7B2wOTtUeQdFNQF3aulvWQlOrqjmcQC8ln28zFjOuWeBKy3AsKuJasRtMgwMLLvNAUIzKpGLmwdfcUidPmgVXxHVGoqtTp3XxL281OLGlQVW01UWtqFw.webp",
+      "https://file2.nocutnews.co.kr/newsroom/image/2023/06/21/202306210855316394_0.jpg",
     name: "Cristiano Ronaldo",
     likes: 1231234,
     content: {
@@ -215,7 +215,7 @@ const dummyPosts = [
   {
     profileType: "player",
     profileImg:
-      "https://i.namu.wiki/i/aJuU1nsyRtZCionVEeKrqKo2bnAFGirohe7B2wOTtUeQdFNQF3aulvWQlOrqjmcQC8ln28zFjOuWeBKy3AsKuJasRtMgwMLLvNAUIzKpGLmwdfcUidPmgVXxHVGoqtTp3XxL281OLGlQVW01UWtqFw.webp",
+      "https://file2.nocutnews.co.kr/newsroom/image/2023/06/21/202306210855316394_0.jpg",
     name: "Cristiano Ronaldo",
     likes: 1231234,
     content: {
@@ -229,7 +229,7 @@ const dummyPosts = [
   {
     profileType: "player",
     profileImg:
-      "https://i.namu.wiki/i/aJuU1nsyRtZCionVEeKrqKo2bnAFGirohe7B2wOTtUeQdFNQF3aulvWQlOrqjmcQC8ln28zFjOuWeBKy3AsKuJasRtMgwMLLvNAUIzKpGLmwdfcUidPmgVXxHVGoqtTp3XxL281OLGlQVW01UWtqFw.webp",
+      "https://file2.nocutnews.co.kr/newsroom/image/2023/06/21/202306210855316394_0.jpg",
     name: "Cristiano Ronaldo",
     likes: 1231234,
     content: {
@@ -243,7 +243,7 @@ const dummyPosts = [
   {
     profileType: "player",
     profileImg:
-      "https://i.namu.wiki/i/aJuU1nsyRtZCionVEeKrqKo2bnAFGirohe7B2wOTtUeQdFNQF3aulvWQlOrqjmcQC8ln28zFjOuWeBKy3AsKuJasRtMgwMLLvNAUIzKpGLmwdfcUidPmgVXxHVGoqtTp3XxL281OLGlQVW01UWtqFw.webp",
+      "https://file2.nocutnews.co.kr/newsroom/image/2023/06/21/202306210855316394_0.jpg",
     name: "Cristiano Ronaldo",
     likes: 1231234,
     content: {
