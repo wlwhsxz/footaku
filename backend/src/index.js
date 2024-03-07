@@ -6,7 +6,7 @@ const env = require("./envconfig");
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://43.203.44.253",
+    origin: "https://footaku.com",
   },
 });
 
