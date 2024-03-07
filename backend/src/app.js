@@ -10,10 +10,10 @@ const indexRouter = require("./routes/index");
 const authRouter = require("./routes/authRouter");
 const postRouter = require("./routes/postRouter");
 const allowedOrigins = [
-  "http://localhost:3000",
-  "http://localhost:8080",
-  "http://43.203.44.253:3000",
-  "http://43.203.44.253:8080",
+  "https://localhost:3000",
+  "https://localhost:8080",
+  "https://footaku.com:3000",
+  "https://footaku.com:8080",
 ];
 
 const corsOptions = {
