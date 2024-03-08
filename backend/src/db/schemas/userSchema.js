@@ -29,6 +29,10 @@ const UserSchema = new Schema(
       unique: true,
       match: [/^[a-zA-Z0-9가-힣]+$/],
     },
+    profileImg: {
+      type: String,
+      default: "",
+    },
     role: {
       type: String,
       enum: ["user", "admin"],
