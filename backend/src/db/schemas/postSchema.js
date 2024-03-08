@@ -8,24 +8,30 @@ const PostSchema = new Schema({
     unique: true,
     default: uuidv4,
   },
-  profileType: {
+  postTag: {
     type: String,
     required: true,
-    enum: ["club", "player"],
+    enum: ["youtube", "social media", "news", "etc"],
   },
-  profileImg: {
+  postType: {
     type: String,
     required: true,
-    default: "",
+    enum: ["Club", "Player"],
   },
-  name: {
+  postOwnerId: {
     type: String,
     required: true,
   },
-  likes: {
-    type: Number,
-    required: true,
-  },
+  likes: [
+    {
+      userId: {
+        type: String,
+        ref: "User",
+        unique: true,
+        required: true,
+      },
+    },
+  ],
   content: {
     postImg: {
       type: String,
@@ -37,27 +43,8 @@ const PostSchema = new Schema({
     },
     comments: [
       {
-        userId: {
-          type: String,
-          required: true,
-          ref: "",
-        },
-        profileImg: {
-          type: String,
-          required: true,
-          default: "",
-          ref: "",
-        },
-        name: {
-          type: String,
-          required: true,
-          default: "",
-          ref: "",
-        },
-        comment: {
-          type: String,
-          required: true,
-        },
+        type: Schema.Types.ObjectId,
+        ref: "Comment",
       },
     ],
   },

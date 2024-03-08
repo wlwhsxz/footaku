@@ -2,8 +2,10 @@ const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const cron = require("node-cron");
 const { connectToDatabase } = require("./db/db");
 const { insertDummyUsers, insertDummyPosts } = require("./db/dummyData.js");
+const { fetchData } = require("./db/fetchData");
 const { errorHandler } = require("./middlewares/errorHandler");
 
 const indexRouter = require("./routes/index");
@@ -40,6 +42,13 @@ connectToDatabase()
 
     await insertDummyUsers();
     await insertDummyPosts();
+    cron.schedule(
+      "59 07 * * *",
+      async () => {
+        await fetchData();
+      },
+      { scheduled: true, timezone: "Asia/Seoul" }
+    );
   })
   .catch((err) => {
     console.error(err);

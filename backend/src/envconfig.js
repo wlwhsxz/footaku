@@ -12,4 +12,6 @@ module.exports = {
   REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
   ACCESS_TOKEN_EXPIRES_IN: process.env.ACCESS_TOKEN_EXPIRES_IN,
   REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN,
+  TM_URL: process.env.TM_URL,
+  CLUB_IDS: process.env.CLUB_IDS,
 };
