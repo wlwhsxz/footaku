@@ -10,17 +10,17 @@ const PostSchema = new Schema({
   },
   postTag: {
     type: String,
-    required: true,
+    // required: true,
     enum: ["youtube", "social media", "news", "etc"],
   },
   postType: {
     type: String,
-    required: true,
+    // required: true,
     enum: ["Club", "Player"],
   },
   postOwnerId: {
     type: String,
-    required: true,
+    // required: true,
   },
   likes: [
     {

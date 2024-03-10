@@ -37,7 +37,7 @@ const clubSchema = new mongoose.Schema({
   historicalCrests: [String],
   players: [
     {
-      id: String,
+      type: String,
       ref: "Player",
       required: true,
     },

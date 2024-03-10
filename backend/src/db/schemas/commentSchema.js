@@ -22,10 +22,10 @@ const CommentSchema = new Schema({
   likes: [
     {
       userId: {
-        type: String, 
+        type: String,
         ref: "User",
         required: true,
-        unique: true, 
+        unique: true,
       },
     },
   ],

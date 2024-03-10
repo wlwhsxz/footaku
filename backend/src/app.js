@@ -43,7 +43,7 @@ connectToDatabase()
     await insertDummyUsers();
     await insertDummyPosts();
     cron.schedule(
-      "59 07 * * *",
+      "38 18 * * *",
       async () => {
         await fetchData();
       },
