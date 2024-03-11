@@ -6,6 +6,7 @@ const {
 
 //[ 포스트 전체 요청 ]
 const getAllPosts = async (req, res, next) => {
+  console.log("getAllPosts Controller");
   try {
     const { statusCode, message, data } = await postService.getAllPosts();
 
