@@ -9,6 +9,7 @@ const Post = () => {
   const [postData, setPostData] = useState<PostData[]>([]);
 
   const fetchPosts = async () => {
+    console.log("fetching posts");
     try {
       const response = await fetch(
         `${process.env.REACT_APP_API_URL}/api/posts`

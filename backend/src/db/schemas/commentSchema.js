@@ -7,14 +7,7 @@ const CommentSchema = new Schema({
     type: String, // UUID 형태의 사용자 ID
     required: true,
   },
-  profileImg: {
-    type: String,
-    required: true,
-  },
-  name: {
-    type: String,
-    required: true,
-  },
+
   content: {
     type: String,
     required: true,
@@ -31,4 +24,4 @@ const CommentSchema = new Schema({
   ],
 });
 
-module.exports = mongoose.model("Comment", CommentSchema);
+module.exports = CommentSchema;

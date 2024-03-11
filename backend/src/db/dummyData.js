@@ -83,200 +83,35 @@ const dummyStories = {
 
 const dummyPosts = [
   {
-    profileType: "club",
-    profileImg: "https://a.espncdn.com/i/teamlogos/soccer/500/367.png",
-    name: "Tottenham Hotspur",
-    likes: 36321,
+    postId: "post1",
+    postTag: "news",
+    postType: "Club",
+    postOwnerId: "148",
+    postURL: "https://www.bbc.com/sport/football/68460857",
+    likes: [
+      {
+        userId: "user1",
+      },
+      {
+        userId: "user2",
+      },
+    ],
     content: {
       postImg:
-        "https://cdn.gukjenews.com/news/photo/202311/2849432_2902282_4056.png",
-      summary: "This Wednesday night, Korean Derby is on the way!",
+        "https://ichef.bbci.co.uk/ace/standard/800/cpsprodp…uction/_132881911_gettyimages-2065831438.jpg.webp",
+      summary:
+        "Tottenham boosted their hopes of a top-four Premier League finish with an emphatic victory over 10-man Aston Villa at Villa Park.",
       comments: [
         {
-          userId: "1",
-          profileImg:
-            "https://i.eurosport.com/2023/08/19/3765640-76602729-640-480.jpg",
-          name: "Pape sarr",
-          comment: "I'm looking forward to this match so bad!!! OMG!",
+          userId: "user1",
+          content:
+            "I think he's right. We need to find our identity and stick to it.",
+          likes: ["user2"],
         },
         {
-          userId: "2",
-          profileImg:
-            "https://assets.goal.com/v3/assets/bltcc7a7ffd2fbf71f5/blt0d9415080048079b/649d205c61af7011f2cd574b/James_Maddison_Tottenham_2023-24.jpg?auto=webp&format=pjpg&width=3840&quality=60",
-          name: "James Maddison",
-          comment: "I will give them some bangers!!",
-        },
-      ],
-    },
-  },
-  {
-    profileType: "club",
-    profileImg:
-      "https://media.licdn.com/dms/image/D4D0BAQHpEoGtV7g9cQ/company-logo_200_200/0/1680629968838/fc_barcelona_logo?e=1717027200&v=beta&t=RThBlWUwa4XecRYmt1Y-v_vFDBDWXLP_i2QoqS0LHJ0",
-    name: "FC Barcelona",
-    likes: 536521,
-    content: {
-      postImg:
-        "https://www.fcbarcelona.com/fcbarcelona/photo/2023/11/12/fd3efc75-3449-4a0b-b1a6-c76861d3a069/_GP26441.jpg",
-      summary: "FC Barcelona 2-1 Alavés: Second half turnaround!",
-      comments: [
-        {
-          userId: "1",
-          profileImg:
-            "https://i.eurosport.com/2023/08/19/3765640-76602729-640-480.jpg",
-          name: "Pape sarr",
-          comment: "I'm looking forward to this match so bad!!! OMG!",
-        },
-        {
-          userId: "2",
-          profileImg:
-            "https://assets.goal.com/v3/assets/bltcc7a7ffd2fbf71f5/blt0d9415080048079b/649d205c61af7011f2cd574b/James_Maddison_Tottenham_2023-24.jpg?auto=webp&format=pjpg&width=3840&quality=60",
-          name: "James Maddison",
-          comment: "I will give them some bangers!!",
-        },
-        {
-          userId: "3",
-          profileImg:
-            "https://assets.goal.com/v3/assets/bltcc7a7ffd2fbf71f5/blt0d9415080048079b/649d205c61af7011f2cd574b/James_Maddison_Tottenham_2023-24.jpg?auto=webp&format=pjpg&width=3840&quality=60",
-          name: "James Maddison",
-          comment: "I will give them some bangers!!",
-        },
-        {
-          userId: "4",
-          profileImg:
-            "https://assets.goal.com/v3/assets/bltcc7a7ffd2fbf71f5/blt0d9415080048079b/649d205c61af7011f2cd574b/James_Maddison_Tottenham_2023-24.jpg?auto=webp&format=pjpg&width=3840&quality=60",
-          name: "James Maddison",
-          comment: "I will give them some bangers!!",
-        },
-        {
-          userId: "5",
-          profileImg:
-            "https://assets.goal.com/v3/assets/bltcc7a7ffd2fbf71f5/blt0d9415080048079b/649d205c61af7011f2cd574b/James_Maddison_Tottenham_2023-24.jpg?auto=webp&format=pjpg&width=3840&quality=60",
-          name: "James Maddison",
-          comment: "I will give them some bangers!!",
-        },
-      ],
-    },
-  },
-  {
-    profileType: "player",
-    profileImg:
-      "https://image-cdn.hypb.st/https%3A%2F%2Fkr.hypebeast.com%2Ffiles%2F2023%2F04%2Ffc-barcelona-president-laporta-confirms-lionel-messi-return-01.jpeg?cbr=1&q=90",
-    name: "Lionel Messi",
-    likes: 1231785,
-    content: {
-      postImg: "https://img.sbs.co.kr/newimg/news/20221219/201732259_1280.jpg",
-      summary: "아르헨, 프랑스 잡고 36년 만의 우승…메시 '골든볼' 수상",
-      comments: [],
-    },
-  },
-  {
-    profileType: "player",
-    profileImg:
-      "https://file2.nocutnews.co.kr/newsroom/image/2023/06/21/202306210855316394_0.jpg",
-    name: "Cristiano Ronaldo",
-    likes: 1231234,
-    content: {
-      postImg:
-        "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1iSQrJ.img?w=293&h=451&m=6",
-      summary:
-        "정신 나간 호날두, 사우디 팬들 앞에서 연거푸 노골적 '음란 제스처'",
-      comments: [],
-    },
-  },
-  {
-    profileType: "player",
-    profileImg:
-      "https://file2.nocutnews.co.kr/newsroom/image/2023/06/21/202306210855316394_0.jpg",
-    name: "Cristiano Ronaldo",
-    likes: 1231234,
-    content: {
-      postImg:
-        "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1iSQrJ.img?w=293&h=451&m=6",
-      summary:
-        "정신 나간 호날두, 사우디 팬들 앞에서 연거푸 노골적 '음란 제스처'",
-      comments: [],
-    },
-  },
-  {
-    profileType: "player",
-    profileImg:
-      "https://file2.nocutnews.co.kr/newsroom/image/2023/06/21/202306210855316394_0.jpg",
-    name: "Cristiano Ronaldo",
-    likes: 1231234,
-    content: {
-      postImg:
-        "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1iSQrJ.img?w=293&h=451&m=6",
-      summary:
-        "정신 나간 호날두, 사우디 팬들 앞에서 연거푸 노골적 '음란 제스처'",
-      comments: [],
-    },
-  },
-  {
-    profileType: "player",
-    profileImg:
-      "https://file2.nocutnews.co.kr/newsroom/image/2023/06/21/202306210855316394_0.jpg",
-    name: "Cristiano Ronaldo",
-    likes: 1231234,
-    content: {
-      postImg:
-        "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1iSQrJ.img?w=293&h=451&m=6",
-      summary:
-        "정신 나간 호날두, 사우디 팬들 앞에서 연거푸 노골적 '음란 제스처'",
-      comments: [],
-    },
-  },
-  {
-    profileType: "player",
-    profileImg:
-      "https://file2.nocutnews.co.kr/newsroom/image/2023/06/21/202306210855316394_0.jpg",
-    name: "Cristiano Ronaldo",
-    likes: 1231234,
-    content: {
-      postImg:
-        "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1iSQrJ.img?w=293&h=451&m=6",
-      summary:
-        "정신 나간 호날두, 사우디 팬들 앞에서 연거푸 노골적 '음란 제스처'",
-      comments: [],
-    },
-  },
-  {
-    profileType: "player",
-    profileImg:
-      "https://file2.nocutnews.co.kr/newsroom/image/2023/06/21/202306210855316394_0.jpg",
-    name: "Cristiano Ronaldo",
-    likes: 1231234,
-    content: {
-      postImg:
-        "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1iSQrJ.img?w=293&h=451&m=6",
-      summary:
-        "정신 나간 호날두, 사우디 팬들 앞에서 연거푸 노골적 '음란 제스처'",
-      comments: [],
-    },
-  },
-  {
-    profileType: "club",
-    profileImg: "https://a.espncdn.com/i/teamlogos/soccer/500/367.png",
-    name: "Tottenham Hotspur",
-    likes: 3654321,
-    content: {
-      postImg:
-        "https://cdn.gukjenews.com/news/photo/202311/2849432_2902282_4056.png",
-      summary: "This Wednesday night, Korean Derby is on the way!",
-      comments: [
-        {
-          userId: "1",
-          profileImg:
-            "https://i.eurosport.com/2023/08/19/3765640-76602729-640-480.jpg",
-          name: "Pape sarr",
-          comment: "I'm looking forward to this match so bad!!! OMG!",
-        },
-        {
-          userId: "2",
-          profileImg:
-            "https://assets.goal.com/v3/assets/bltcc7a7ffd2fbf71f5/blt0d9415080048079b/649d205c61af7011f2cd574b/James_Maddison_Tottenham_2023-24.jpg?auto=webp&format=pjpg&width=3840&quality=60",
-          name: "James Maddison",
-          comment: "I will give them some bangers!!",
+          userId: "user2",
+          content: "I agree. We need to find our identity and stick to it.",
+          likes: ["user1"],
         },
       ],
     },

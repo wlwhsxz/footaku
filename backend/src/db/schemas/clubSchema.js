@@ -42,6 +42,12 @@ const clubSchema = new mongoose.Schema({
       required: true,
     },
   ],
+  posts: [
+    {
+      type: String,
+      ref: "Post",
+    },
+  ],
   updatedAt: String,
 });
 

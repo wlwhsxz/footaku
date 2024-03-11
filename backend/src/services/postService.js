@@ -3,8 +3,10 @@ const { AppError } = require("../middlewares/errorHandler");
 
 //[ 포스트 전체 요청 ]
 const getAllPosts = async () => {
+  console.log("getAllPosts Service");
   try {
     const foundPosts = await Post.find();
+    console.log(foundPosts);
     return {
       statusCode: 200,
       message: "포스트 전체 요청 성공",

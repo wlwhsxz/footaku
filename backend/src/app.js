@@ -12,14 +12,14 @@ const indexRouter = require("./routes/index");
 const authRouter = require("./routes/authRouter");
 const postRouter = require("./routes/postRouter");
 const allowedOrigins = [
-  "https://localhost:3000",
-  "https://localhost:8080",
+  "http://localhost:3000",
+  "http://localhost:8080",
   "https://footaku.com",
   "https://footaku.com:443",
 ];
 
 const corsOptions = {
-  // origin: allowedOrigins,
+  origin: allowedOrigins,
   credentials: true, // 쿠키를 허용하기 위한 설정
 };
 
@@ -31,7 +31,7 @@ const corsOptions = {
 //   fs.mkdirSync("uploads");
 // }
 
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -40,7 +40,7 @@ connectToDatabase()
   .then(async (db) => {
     app.use("/", indexRouter);
 
-    await insertDummyUsers();
+    // await insertDummyUsers();
     await insertDummyPosts();
     cron.schedule(
       "38 18 * * *",

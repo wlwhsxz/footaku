@@ -1,12 +1,12 @@
 const { Schema } = require("mongoose");
 const { v4: uuidv4 } = require("uuid");
+const commentSchema = require("./commentSchema");
 
 const PostSchema = new Schema({
   postId: {
     type: String,
     required: true,
     unique: true,
-    default: uuidv4,
   },
   postTag: {
     type: String,
@@ -16,9 +16,13 @@ const PostSchema = new Schema({
   postType: {
     type: String,
     // required: true,
-    enum: ["Club", "Player"],
+    enum: ["Club", "Player", "League"],
   },
   postOwnerId: {
+    type: String,
+    // required: true,
+  },
+  postURL: {
     type: String,
     // required: true,
   },
@@ -41,12 +45,7 @@ const PostSchema = new Schema({
       type: String,
       required: true,
     },
-    comments: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Comment",
-      },
-    ],
+    comments: [commentSchema],
   },
 });
 
