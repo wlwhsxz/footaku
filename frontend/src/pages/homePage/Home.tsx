@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import LeftSidebar from "../../components/common/LeftSidebar/LeftSidebar";
+import LeftSidebar from "../../components/common/leftSidebar/LeftSidebar";
 import Post from "../../components/home/post/Post";
 import Story from "../../components/home/Story";
 import Chat from "../../components/chat/Chat";

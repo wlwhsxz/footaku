@@ -64,7 +64,7 @@ const insertDummyUsers = async () => {
     // await User.deleteMany({})
     const exists = await User.findOne();
     exists || (await User.create(dummyUsers));
-    console.log("Operation completed successfully.");
+    console.log("Dummy Users Operation completed successfully.");
   } catch (error) {
     console.error(error);
   }
@@ -106,12 +106,26 @@ const dummyPosts = [
           userId: "user1",
           content:
             "I think he's right. We need to find our identity and stick to it.",
-          likes: ["user2"],
+          likes: [
+            {
+              userId: "user1",
+            },
+            {
+              userId: "user2",
+            },
+          ],
         },
         {
           userId: "user2",
           content: "I agree. We need to find our identity and stick to it.",
-          likes: ["user1"],
+          likes: [
+            {
+              userId: "user1",
+            },
+            {
+              userId: "user2",
+            },
+          ],
         },
       ],
     },
@@ -123,7 +137,7 @@ const insertDummyPosts = async () => {
     await Post.deleteMany({});
     const exists = await Post.findOne();
     exists || (await Post.create(dummyPosts));
-    console.log("Operation completed successfully.");
+    console.log("Dummy Posts Operation completed successfully.");
   } catch (error) {
     console.error(error);
   }

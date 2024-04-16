@@ -4,12 +4,13 @@ const clubIds = CLUB_IDS.split(", ");
 
 // fetch한 데이터와 DB에 저장된 데이터를 비교하여 업데이트 하는게 좋을까?
 // 아니면 지금처럼 fetch한 데이터를 그대로 DB에 저장하는게 좋을까?
-const fetchData = async () => {
+const fetchClubData = async () => {
   const fetchClubPromises = [];
   const fetchPlayerPromises = [];
 
   // forEach를 사용하여 각 clubId에 대해 비동기 fetch 작업을 설정
   clubIds.forEach((clubId) => {
+    console.log(clubId);
     // fetch 작업에 대한 프로미스를 fetchPromises 배열에 추가
     const fetchClubPromise = fetch(`${TM_URL}/clubs/${clubId}/profile`)
       .then((response) => response.json())
@@ -50,4 +51,4 @@ const fetchData = async () => {
   }
 };
 
-module.exports = { fetchData };
+module.exports = { fetchClubData };
