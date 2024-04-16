@@ -5,12 +5,13 @@ const cors = require("cors");
 const cron = require("node-cron");
 const { connectToDatabase } = require("./db/db");
 const { insertDummyUsers, insertDummyPosts } = require("./db/dummyData.js");
-const { fetchData } = require("./db/fetchData");
+const { fetchClubData } = require("./db/fetchData");
 const { errorHandler } = require("./middlewares/errorHandler");
 
 const indexRouter = require("./routes/index");
 const authRouter = require("./routes/authRouter");
 const postRouter = require("./routes/postRouter");
+const clubRouter = require("./routes/clubRouter.js");
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:8080",
@@ -43,9 +44,10 @@ connectToDatabase()
     // await insertDummyUsers();
     await insertDummyPosts();
     cron.schedule(
-      "38 18 * * *",
+      "00 00 * * *",
       async () => {
-        await fetchData();
+        await fetchClubData();
+        await fetchClubNewsData();
       },
       { scheduled: true, timezone: "Asia/Seoul" }
     );
@@ -58,6 +60,7 @@ connectToDatabase()
 app.use("/static", express.static("public")); // 정적파일 관리 경로
 app.use("/api/auths", authRouter);
 app.use("/api/posts", postRouter);
+app.use("/api/clubs", clubRouter);
 app.use(errorHandler);
 
 module.exports = app;
