@@ -31,10 +31,12 @@ const LeftSidebar: React.FC = () => {
           <h2>Footaku</h2>
         </LogoBox>
         <NavBox>
-          <HomeBox>
-            <HomeIcon />
-            <NavLabel>Home</NavLabel>
-          </HomeBox>
+          <StyledLink to="/">
+            <HomeBox>
+              <HomeIcon />
+              <NavLabel>Home</NavLabel>
+            </HomeBox>
+          </StyledLink>
         </NavBox>
         <NavBox onClick={handleSearchBar}>
           <SearchBox>
@@ -81,7 +83,7 @@ const NavContainer = styled.div<NavContainerProps>`
   display: flex;
   flex-direction: column;
 
-  width: ${(props) => (props.isExpanded ? "220px" : "100px")};
+  width: ${(props) => (props.isExpanded ? "120px" : "200px")};
   height: 100vh;
 
   padding: 8px 12px 20px 12px;
@@ -105,7 +107,7 @@ const NavBox = styled.div`
   height: 48px;
 
   margin: 4px 0px;
-  padding: 12px;
+  padding: 12px 6px;
 
   &:hover {
     cursor: pointer;
@@ -128,3 +130,8 @@ const NavLabel = styled.span`
 `;
 
 const SearchContainer = styled.div``;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: white;
+`;
