@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import SearchResult from "./SearchResult";
 import axios from "axios";
@@ -9,15 +9,30 @@ interface SearchProps {
 
 const SearchBar: React.FC<SearchProps> = ({ visible }) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
   const [searching, setSearching] = useState(false);
 
-  const searchHandler = async (query: string) => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/clubs/${query}`
-    );
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (searchQuery) {
+        setSearching(true);
+        searchHandler(searchQuery);
+      }
+    }, 500); // Delay the search function 1000 ms
 
-    console.log(response.data.data);
-    setSearching(true);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  const searchHandler = async (query: string) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/clubs/${query}`
+      );
+      setSearchResult(response.data.data);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+      setSearchResult([]);
+    }
   };
 
   if (!visible) return null;
@@ -30,15 +45,11 @@ const SearchBar: React.FC<SearchProps> = ({ visible }) => {
           <input
             placeholder="Search"
             value={searchQuery}
-            onChange={async (e) => {
-              setSearchQuery(e.target.value);
-              searchHandler(e.target.value);
-              console.log(e.target.value);
-            }}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </SearchBox>
         <SearchResultBox>
-          <SearchResult />
+          {searchQuery !== "" && <SearchResult searchResult={searchResult} />}
         </SearchResultBox>
       </SearchContentBox>
     </SearchBarContainer>
@@ -46,6 +57,8 @@ const SearchBar: React.FC<SearchProps> = ({ visible }) => {
 };
 
 export default SearchBar;
+
+// Styled components remain unchanged
 
 const SearchBarContainer = styled.div`
   width: 397px;
@@ -82,6 +95,9 @@ const SearchBox = styled.div`
     padding: 3px 16px;
     margin: 4px 0;
     box-sizing: border-box;
+    background-color: rgb(0, 0, 0, 0.1);
+    border-radius: 10px;
+    border-width: 0px;
   }
 `;
 
