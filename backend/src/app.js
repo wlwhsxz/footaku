@@ -5,7 +5,7 @@ const cors = require("cors");
 const cron = require("node-cron");
 const { connectToDatabase } = require("./db/db");
 const { insertDummyUsers, insertDummyPosts } = require("./db/dummyData.js");
-const { fetchClubData } = require("./db/fetchData");
+const { fetchClubData, fetchYoutubeData } = require("./db/fetchData");
 const { errorHandler } = require("./middlewares/errorHandler");
 
 const indexRouter = require("./routes/index");
@@ -43,14 +43,15 @@ connectToDatabase()
 
     // await insertDummyUsers();
     await insertDummyPosts();
-    cron.schedule(
-      "00 00 * * *",
-      async () => {
-        await fetchClubData();
-        await fetchClubNewsData();
-      },
-      { scheduled: true, timezone: "Asia/Seoul" }
-    );
+    // cron.schedule(
+    //   "00 00 * * *",
+    //   async () => {
+    //     await fetchClubData();
+    //     await fetchClubNewsData();
+    //   },
+    //   { scheduled: true, timezone: "Asia/Seoul" }
+    // );
+    fetchYoutubeData();
   })
   .catch((err) => {
     console.error(err);
