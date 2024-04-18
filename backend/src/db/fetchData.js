@@ -1,5 +1,10 @@
 const { Player, Club } = require("./models/index");
-const { CLUB_IDS, TM_URL } = require("../envconfig");
+const {
+  CLUB_IDS,
+  TM_URL,
+  YOUTUBE_API_URL,
+  YOUTUBE_API_KEY,
+} = require("../envconfig");
 const clubIds = CLUB_IDS.split(", ");
 
 // fetch한 데이터와 DB에 저장된 데이터를 비교하여 업데이트 하는게 좋을까?
@@ -51,4 +56,32 @@ const fetchClubData = async () => {
   }
 };
 
-module.exports = { fetchClubData };
+const fetchYoutubeData = async () => {
+  const clubs = await Club.find();
+
+  clubs.forEach(async (club) => {
+    await fetch(
+      `${YOUTUBE_API_URL}/playlistItems?part=snippet&playlistId=${club.youtube.playlistId}&maxResults=48&key=${YOUTUBE_API_KEY}`
+    )
+      .then((response) => response.json())
+      .then(async (data) => {
+        try {
+          const updatedClub = await Club.findByIdAndUpdate(
+            club._id,
+            { $set: { "youtube.videos": data.items } },
+            { new: true, runValidators: true }
+          );
+
+          if (updatedClub) {
+            console.log("Updated document:", updatedClub);
+          } else {
+            console.log("No document found with that ID.");
+          }
+        } catch (error) {
+          console.error("Error updating YouTube videos:", error);
+        }
+      });
+  });
+};
+
+module.exports = { fetchClubData, fetchYoutubeData };
