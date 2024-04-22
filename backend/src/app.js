@@ -42,16 +42,16 @@ connectToDatabase()
     app.use("/", indexRouter);
 
     // await insertDummyUsers();
-    await insertDummyPosts();
+    // await insertDummyPosts();
     // cron.schedule(
     //   "00 00 * * *",
     //   async () => {
     //     await fetchClubData();
     //     await fetchClubNewsData();
+    //     await fetchYoutubeData();
     //   },
     //   { scheduled: true, timezone: "Asia/Seoul" }
     // );
-    fetchYoutubeData();
   })
   .catch((err) => {
     console.error(err);

@@ -14,4 +14,6 @@ module.exports = {
   REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN,
   TM_URL: process.env.TM_URL,
   CLUB_IDS: process.env.CLUB_IDS,
+  YOUTUBE_API_URL: process.env.YOUTUBE_API_URL,
+  YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY,
 };
