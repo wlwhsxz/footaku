@@ -1,11 +1,20 @@
-const { Post } = require("../db/models/index");
+const { Club, Post } = require("../db/models/index");
 const { AppError } = require("../middlewares/errorHandler");
 
 //[ 포스트 전체 요청 ]
 const getAllPosts = async () => {
   console.log("getAllPosts Service");
+  const foundPosts = [];
+
   try {
-    const foundPosts = await Post.find();
+    const foundClubs = await Club.find();
+    for (let club of foundClubs) {
+      const posts = await club.populate({
+        path: "posts",
+        options: { limit: 3 },
+      });
+      foundPosts.push(posts);
+    }
     console.log(foundPosts);
     return {
       statusCode: 200,
