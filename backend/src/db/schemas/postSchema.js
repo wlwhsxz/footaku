@@ -3,36 +3,40 @@ const { v4: uuidv4 } = require("uuid");
 const commentSchema = require("./commentSchema");
 
 const PostSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  profileImg: {
+    type: String,
+    // required: true,
+  },
   postId: {
     type: String,
     required: true,
-    unique: true,
   },
   postTag: {
     type: String,
-    // required: true,
     enum: ["youtube", "social media", "news", "etc"],
   },
   postType: {
     type: String,
-    // required: true,
-    enum: ["Club", "Player", "League"],
+    enum: ["club", "player", "league"],
   },
   postOwnerId: {
     type: String,
-    // required: true,
   },
   postURL: {
     type: String,
-    // required: true,
   },
   likes: [
     {
       userId: {
         type: String,
         ref: "User",
-        unique: true,
-        required: true,
+        required: function () {
+          return this.userId != null;
+        }, // Requires userId only if it's not null
       },
     },
   ],

@@ -44,10 +44,16 @@ const clubSchema = new mongoose.Schema({
   ],
   posts: [
     {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Post",
     },
   ],
+  youtube: {
+    url: String,
+    channelId: String,
+    playlistId: String,
+    videos: Array,
+  },
   updatedAt: String,
 });
 

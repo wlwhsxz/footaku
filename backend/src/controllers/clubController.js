@@ -19,6 +19,21 @@ const getAllClubs = async (req, res, next) => {
   }
 };
 
+const getAllYoutubeVideos = async (req, res, next) => {
+  console.log("getAllYoutubeVideos Contorller");
+  try {
+    const { statusCode, message, data } =
+      await clubService.getAllYoutubeVideos();
+
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
+
+    res.status(200).json({ message, data });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, "Internal Server Error"));
+  }
+};
+
 const getClubByName = async (req, res, next) => {
   try {
     const { clubName } = req.params;
@@ -35,7 +50,25 @@ const getClubByName = async (req, res, next) => {
   }
 };
 
+const getYoutubeVideos = async (req, res, next) => {
+  try {
+    const { _id } = req.params;
+    const { statusCode, message, data } = await clubService.getYoutubeVideos(
+      _id
+    );
+
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
+
+    res.status(200).json({ message, data });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, "Internal Server Error"));
+  }
+};
+
 module.exports = {
   getAllClubs,
+  getAllYoutubeVideos,
   getClubByName,
+  getYoutubeVideos,
 };
