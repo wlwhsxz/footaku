@@ -6,11 +6,25 @@ const getAllClubs = async () => {
   console.log("getAllClubs Service");
   try {
     const foundClubs = await Club.find();
-    console.log(foundClubs);
     return {
       statusCode: 200,
-      message: "포스트 전체 요청 성공",
+      message: "클럽 전체 요청 성공",
       data: foundClubs,
+    };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, "Internal Server Error");
+  }
+};
+
+const getAllYoutubeVideos = async () => {
+  try {
+    const foundClubs = await Club.find();
+
+    return {
+      statusCode: 200,
+      message: "유튜브 비디오 전체 요청 성공",
+      data: youtubeVideos,
     };
   } catch (error) {
     console.error(error);
@@ -42,7 +56,10 @@ const getClubByName = async (clubName) => {
   }
 };
 
+const getYoutubeVideos = async (clubName, _id) => {};
+
 module.exports = {
   getAllClubs,
+  getAllYoutubeVideos,
   getClubByName,
 };
