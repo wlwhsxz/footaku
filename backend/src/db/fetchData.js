@@ -1,4 +1,4 @@
-const { Player, Club } = require("./models/index");
+const { Player, Club, Post } = require("./models/index");
 const {
   CLUB_IDS,
   TM_URL,
@@ -59,29 +59,75 @@ const fetchClubData = async () => {
 const fetchYoutubeData = async () => {
   const clubs = await Club.find();
 
-  clubs.forEach(async (club) => {
-    await fetch(
-      `${YOUTUBE_API_URL}/playlistItems?part=snippet&playlistId=${club.youtube.playlistId}&maxResults=48&key=${YOUTUBE_API_KEY}`
-    )
-      .then((response) => response.json())
-      .then(async (data) => {
-        try {
-          const updatedClub = await Club.findByIdAndUpdate(
-            club._id,
-            { $set: { "youtube.videos": data.items } },
-            { new: true, runValidators: true }
-          );
+  for (const club of clubs) {
+    try {
+      const response = await fetch(
+        `${YOUTUBE_API_URL}/playlistItems?part=snippet&playlistId=${club.youtube.playlistId}&maxResults=48&key=${YOUTUBE_API_KEY}`
+      );
+      const data = await response.json();
 
-          if (updatedClub) {
-            console.log("Updated document:", updatedClub);
-          } else {
-            console.log("No document found with that ID.");
-          }
-        } catch (error) {
-          console.error("Error updating YouTube videos:", error);
-        }
-      });
-  });
+      const postIds = await Promise.all(
+        data.items.map((video) => {
+          return Post.findOneAndUpdate(
+            { postId: video.id }, // 조건
+            {
+              $setOnInsert: {
+                name: `${club.name}`,
+                profileImg: `${club.image}`,
+                postId: `${video.id}`,
+                postTag: "youtube",
+                postType: "club",
+                postOwnerId: club.id,
+                postURL: `https://www.youtube.com/watch?v=${video.snippet.resourceId.videoId}`,
+              },
+              $set: {
+                content: {
+                  postImg: `${video.snippet.thumbnails.high.url}`,
+                  summary: `${video.snippet.title}`,
+                  comments: [],
+                },
+              },
+            },
+            { upsert: true, new: true } // 옵션
+          ).then((post) => post._id); // 생성된 또는 업데이트된 Post의 _id를 반환
+        })
+      );
+
+      // const clearPostsField = async () => {
+      //   try {
+      //     // 모든 Club 문서에서 `posts` 배열을 빈 배열로 설정
+      //     const result = await Club.updateMany(
+      //       {}, // 모든 문서 선택
+      //       { $set: { posts: [] } } // `posts` 필드를 빈 배열로 설정
+      //     );
+
+      //     console.log("Posts fields cleared in all documents:", result);
+      //   } catch (error) {
+      //     console.error("Error clearing posts fields:", error);
+      //   }
+      // };
+
+      // clearPostsField();
+
+      // Club 문서 업데이트
+      const updatedClub = await Club.findByIdAndUpdate(
+        club._id,
+        {
+          $set: { "youtube.videos": data.items },
+          $push: { posts: { $each: postIds } },
+        },
+        { new: true, runValidators: true }
+      );
+
+      if (updatedClub) {
+        console.log("update Posts completed", club.name);
+      } else {
+        console.log("No document found with that ID.");
+      }
+    } catch (error) {
+      console.error("Error in processing YouTube data:", error);
+    }
+  }
 };
 
 module.exports = { fetchClubData, fetchYoutubeData };
