@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require("uuid");
 
 const CommentSchema = new Schema({
   userId: {
-    type: String, // UUID 형태의 사용자 ID
+    type: String,
     required: true,
   },
 
@@ -18,7 +18,6 @@ const CommentSchema = new Schema({
         type: String,
         ref: "User",
         required: true,
-        unique: true,
       },
     },
   ],
