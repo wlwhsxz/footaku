@@ -79,6 +79,7 @@ const fetchYoutubeData = async () => {
                 postType: "club",
                 postOwnerId: club.id,
                 postURL: `https://www.youtube.com/watch?v=${video.snippet.resourceId.videoId}`,
+                publishedAt: new Date(video.snippet.publishedAt),
               },
               $set: {
                 content: {

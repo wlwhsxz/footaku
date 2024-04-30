@@ -11,11 +11,10 @@ const getAllPosts = async () => {
     for (let club of foundClubs) {
       const posts = await club.populate({
         path: "posts",
-        options: { limit: 3 },
+        options: { limit: 3, sort: { publishedAt: -1 } },
       });
       foundPosts.push(posts);
     }
-    console.log(foundPosts);
     return {
       statusCode: 200,
       message: "포스트 전체 요청 성공",
@@ -29,7 +28,7 @@ const getAllPosts = async () => {
 
 const getPostById = async (postId) => {
   try {
-    const foundPost = await Post.findById(postId);
+    const foundPost = await Post.findOne({ postId });
     if (!foundPost) {
       return {
         statusCode: 404,
