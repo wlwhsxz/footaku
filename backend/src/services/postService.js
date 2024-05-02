@@ -1,4 +1,4 @@
-const { Club, Post } = require("../db/models/index");
+const { Club, Post, Comment } = require("../db/models/index");
 const { AppError } = require("../middlewares/errorHandler");
 
 //[ 포스트 전체 요청 ]
@@ -46,7 +46,39 @@ const getPostById = async (postId) => {
   }
 };
 
+const createPostComment = async (comment) => {
+  try {
+    const foundPost = await Post.findById(comment._id);
+    if (!foundPost) {
+      return {
+        statusCode: 404,
+        message: "포스트를 찾을 수 없습니다.",
+      };
+    }
+    const newComment = new Comment({
+      postId: foundPost._id,
+      createdBy: comment.userId,
+      text: comment.content,
+      likes: comment.likes,
+    });
+    await newComment.save();
+
+    foundPost.content.comments.push(newComment._id);
+    await foundPost.save();
+
+    return {
+      statusCode: 200,
+      message: "댓글 생성 성공",
+      data: comment.content,
+    };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, "Internal Server Error");
+  }
+};
+
 module.exports = {
   getAllPosts,
   getPostById,
+  createPostComment,
 };

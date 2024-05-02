@@ -33,7 +33,30 @@ const getPostById = async (req, res, next) => {
   }
 };
 
+const createPostComment = async (req, res, next) => {
+  try {
+    const comment = req.body;
+    if (!comment.userId || !comment.content) {
+      return res
+        .status(400)
+        .json({ message: "Missing required comment fields" });
+    }
+
+    const { statusCode, message, data } = await postService.createPostComment(
+      comment
+    );
+
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
+
+    res.status(200).json({ message, data });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, "Internal Server Error"));
+  }
+};
+
 module.exports = {
   getAllPosts,
   getPostById,
+  createPostComment,
 };

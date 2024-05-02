@@ -8,4 +8,6 @@ router.get("/", postController.getAllPosts);
 
 router.get("/:postId", postController.getPostById);
 
+router.post("/:postId/comment", postController.createPostComment);
+
 module.exports = router;
