@@ -1,8 +1,9 @@
-import axios from "axios";
 import React, { ChangeEvent, FormEvent, useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import socket from "../../server";
+import useAuthStore from "../../store/useAuthStore";
 
 interface LoginFormData {
   userId: string;
@@ -16,6 +17,7 @@ const Login: React.FC = () => {
   });
   const [error, setError] = useState<string>("");
   const navigate = useNavigate();
+  const setUser = useAuthStore((state) => state.login);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -35,6 +37,7 @@ const Login: React.FC = () => {
           console.log("Res :", res);
           localStorage.setItem("userObjectId", res.data.userId);
         });
+        setUser(user._id);
         navigate("/");
       }
     } catch (error) {
