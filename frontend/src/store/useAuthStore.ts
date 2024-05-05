@@ -1,7 +1,9 @@
+import { ObjectId } from "mongodb";
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface User {
-  userId: string;
+  _id: ObjectId;
 }
 
 interface AuthState {
@@ -10,10 +12,18 @@ interface AuthState {
   logout: () => void;
 }
 
-const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  login: (user) => set({ user }),
-  logout: () => set({ user: null }),
-}));
+const useAuthStore = create(
+  persist<AuthState>(
+    (set) => ({
+      user: null,
+      login: (user) => set({ user }),
+      logout: () => set({ user: null }),
+    }),
+    {
+      name: "auth-storage",
+      getStorage: () => localStorage,
+    }
+  )
+);
 
 export default useAuthStore;
