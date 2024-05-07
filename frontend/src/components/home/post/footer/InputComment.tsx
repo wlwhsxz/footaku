@@ -3,17 +3,20 @@ import { ObjectId } from "mongodb";
 import React, { useState } from "react";
 import styled from "styled-components";
 import useAuthStore from "../../../../store/useAuthStore";
+import { NewComment } from "../../../../types";
 
 type InputCommentProps = {
   inputRef: React.RefObject<HTMLInputElement>;
   postId?: String;
-  _id?: ObjectId;
+  _id: ObjectId;
+  addComment: (newComment: NewComment) => void;
 };
 
 const InputComment: React.FC<InputCommentProps> = ({
   _id,
   postId,
   inputRef,
+  addComment,
 }) => {
   const [comment, setComment] = useState<string>("");
   const userId = useAuthStore((state) => state.user);
@@ -23,6 +26,11 @@ const InputComment: React.FC<InputCommentProps> = ({
   };
 
   const submitHandler = async () => {
+    if (!userId) {
+      console.error("User is not logged in!");
+      return;
+    }
+
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/posts/${postId}/comment`,
       {
@@ -33,6 +41,18 @@ const InputComment: React.FC<InputCommentProps> = ({
       }
     );
     console.log(response);
+
+    const user = localStorage.getItem("user");
+    const userObject = user ? JSON.parse(user) : null;
+
+    const newComment: NewComment = {
+      userId: userObject ? userObject.userId : null,
+      text: comment,
+    };
+
+    console.log("newComment - ", newComment);
+
+    addComment(newComment);
     setComment("");
   };
 

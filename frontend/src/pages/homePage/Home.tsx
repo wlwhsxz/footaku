@@ -38,7 +38,7 @@ const MainContent = styled.div`
 
   width: 100vw;
 
-  background-color: pink;
+  /* background-color: pink; */
 `;
 
 const ContentWrapper = styled.div`
@@ -49,7 +49,7 @@ const ContentWrapper = styled.div`
 `;
 
 const StorySection = styled.div`
-  background-color: orange;
+  /* background-color: orange; */
 `;
 
 const PostSection = styled.div`
