@@ -1,9 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, NavLink } from "react-router-dom";
+import { Link, NavLink, useParams } from "react-router-dom";
 import styled from "styled-components";
 import LeftSidebar from "../../components/common/leftSidebar/LeftSidebar";
-
 interface VideoItem {
   snippet: {
     resourceId: {
@@ -21,30 +20,68 @@ interface YouTubeVideoResponse {
   items: VideoItem[];
 }
 
+interface ClubDetailsType {
+  name: string;
+  image: string;
+  league: {
+    countryName: string;
+    name: string;
+  };
+  stadiumName: string;
+  addressLine1: string;
+  addressLine2: string;
+  addressLine3: string;
+  description: string;
+  website: string;
+  youtube: {
+    playlistId: string;
+    url: string;
+  };
+  url: string;
+  _id: string;
+}
+
 const Club = () => {
-  const location = useLocation();
-  const clubDetails = location.state?.clubDetails;
+  const { clubName } = useParams<{ clubName: string }>();
+  const formattedClubName = clubName && clubName.replace("_", " ");
 
-  console.log(clubDetails);
-
-  // Initialize state with a defined type
+  const [clubDetails, setClubDetails] = useState<ClubDetailsType | null>(null);
   const [youtubeVideos, setYoutubeVideos] = useState<YouTubeVideoResponse>({
     items: [],
   });
 
+  // 클럽 정보를 가져오는 useEffect
   useEffect(() => {
-    async function getUploadedVideos() {
-      if (!clubDetails?.youtube.playlistId) return;
+    const fetchClubDetails = async () => {
       try {
-        const { data } = await axios.get<YouTubeVideoResponse>(
-          `${process.env.REACT_APP_YOUTUBE_API_URL}/playlistItems?part=snippet&playlistId=${clubDetails.youtube.playlistId}&maxResults=48&key=${process.env.REACT_APP_YOUTUBE_API_KEY}`
+        const { data } = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/clubs/${formattedClubName}`
         );
-        setYoutubeVideos(data);
+        setClubDetails(data.data[0]);
       } catch (error) {
-        console.error("Error fetching playlist videos:", error);
+        console.error("Error fetching club details:", error);
       }
-    }
-    getUploadedVideos();
+    };
+
+    fetchClubDetails();
+  }, [formattedClubName]);
+
+  // YouTube 비디오를 가져오는 useEffect
+  useEffect(() => {
+    const fetchYouTubeVideos = async () => {
+      if (clubDetails?.youtube.playlistId) {
+        try {
+          const { data } = await axios.get<YouTubeVideoResponse>(
+            `${process.env.REACT_APP_YOUTUBE_API_URL}/playlistItems?part=snippet&playlistId=${clubDetails.youtube.playlistId}&maxResults=48&key=${process.env.REACT_APP_YOUTUBE_API_KEY}`
+          );
+          setYoutubeVideos(data);
+        } catch (error) {
+          console.error("Error fetching playlist videos:", error);
+        }
+      }
+    };
+
+    fetchYouTubeVideos();
   }, [clubDetails?.youtube.playlistId]);
 
   return (
@@ -62,12 +99,12 @@ const Club = () => {
               <h2>{clubDetails?.name}</h2>
             </div>
             <div>
-              {`${clubDetails.league.countryName} - ${clubDetails.league.name}`}
+              {`${clubDetails?.league.countryName} - ${clubDetails?.league.name}`}
             </div>
-            <div>{clubDetails.stadiumName}</div>
+            <div>{clubDetails?.stadiumName}</div>
             <div>
-              {`${clubDetails.addressLine1}, ${clubDetails.addressLine2}, 
-              ${clubDetails.addressLine3}`}
+              {`${clubDetails?.addressLine1}, ${clubDetails?.addressLine2}, 
+              ${clubDetails?.addressLine3}`}
             </div>
 
             <div>{clubDetails?.description}</div>
@@ -78,13 +115,15 @@ const Club = () => {
                 alt={clubDetails?.website}
               />
               <StyledImg
-                onClick={() => window.open(`${clubDetails.youtube.url}`)}
+                onClick={() => window.open(`${clubDetails?.youtube.url}`)}
                 src="/youtube.png"
                 alt="YouTube"
               />
               <StyledImg
                 onClick={() =>
-                  window.open(`https://www.transfermarkt.com${clubDetails.url}`)
+                  window.open(
+                    `https://www.transfermarkt.com${clubDetails?.url}`
+                  )
                 }
                 src="/tm.jpg"
                 alt="Transfermarkt"
@@ -95,7 +134,10 @@ const Club = () => {
         <TabBox>
           {clubDetails && clubDetails.name && (
             <StyledNavLink
-              to={`/${clubDetails.name.toLowerCase().split(" ").join("_")}`}
+              to={`/club/${clubDetails.name
+                .toLowerCase()
+                .split(" ")
+                .join("_")}`}
               state={{ clubDetails }}
               key={clubDetails._id}
               className={({ isActive }) => (isActive ? "active" : "")}
@@ -105,13 +147,16 @@ const Club = () => {
           )}
 
           <StyledNavLink
-            to={`/${clubDetails.name.toLowerCase().split(" ").join("_")}/news`}
+            to={`/club/${clubDetails?.name
+              .toLowerCase()
+              .split(" ")
+              .join("_")}/news`}
             className={({ isActive }) => (isActive ? "active" : "")}
           >
             News
           </StyledNavLink>
           <StyledNavLink
-            to={`/${clubDetails.name
+            to={`/${clubDetails?.name
               .toLowerCase()
               .split(" ")
               .join("_")}/social_media`}
