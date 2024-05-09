@@ -3,15 +3,20 @@ import Home from "./pages/homePage/Home";
 import Login from "./pages/userPage/Login";
 import SignUp from "./pages/userPage/SignUp";
 import Club from "./pages/clubPage/Club";
+import useAuthStore from "./store/useAuthStore";
 
 const App = () => {
+  const isLoggedIn = useAuthStore((state) => !!state.user);
+
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/:clubName" element={<Club />} />
+        <Route path="/" element={isLoggedIn ? <Home /> : <Login />} />
+        <Route path="/signup" element={isLoggedIn ? <Home /> : <SignUp />} />
+        <Route
+          path="/club/:clubName"
+          element={isLoggedIn ? <Club /> : <Login />}
+        />
       </Routes>
     </Router>
   );
