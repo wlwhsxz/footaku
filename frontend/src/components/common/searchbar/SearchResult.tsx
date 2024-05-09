@@ -13,7 +13,7 @@ const SearchResult: React.FC<SearchResultProps> = ({ searchResult }) => {
       {searchResult.length > 0 ? (
         searchResult.map((item) => (
           <StyledLink
-            to={`/${item.name.toLowerCase().split(" ").join("_")}`}
+            to={`/club/${item.name.toLowerCase().split(" ").join("_")}`}
             state={{ clubDetails: item }}
             key={item._id}
           >
