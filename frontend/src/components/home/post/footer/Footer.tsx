@@ -1,22 +1,35 @@
 import styled, { createGlobalStyle } from "styled-components";
-
-import { useEffect, useRef, useState } from "react";
-import Comment from "./Comment";
-import { Comments } from "../../../../types/index";
+import React, { useEffect, useRef, useState } from "react";
 import PostDetail from "../PostDetail";
 import PostButtons from "../../../common/buttons/PostButtons";
+import InputComment from "./InputComment";
 import { ObjectId } from "mongodb";
+import { NewComment } from "../../../../types";
 
 interface FooterProps {
   _id: ObjectId;
+  postId: String;
   likes: number;
-  comments: Comments[];
+  comments: NewComment[];
   summary: string;
 }
 
-const Footer: React.FC<FooterProps> = ({_id, likes, summary, comments }) => {
+const Footer: React.FC<FooterProps> = ({
+  _id,
+  postId,
+  likes,
+  summary,
+  comments,
+}) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPostDetailOpen, SetIsPostDetailOpen] = useState(false);
+  const [commentsData, setCommentsData] = useState<NewComment[]>(
+    comments || []
+  );
+
+  const addComment = (newComment: NewComment) => {
+    setCommentsData((prevComments) => [...prevComments, newComment]);
+  };
 
   const focusInput = () => {
     if (inputRef.current) {
@@ -26,16 +39,16 @@ const Footer: React.FC<FooterProps> = ({_id, likes, summary, comments }) => {
 
   const closePostDetail = () => {
     SetIsPostDetailOpen(false);
-  };  
+  };
 
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
     if (isPostDetailOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = originalOverflow;
     }
-  
+
     return () => {
       document.body.style.overflow = originalOverflow;
     };
@@ -43,16 +56,34 @@ const Footer: React.FC<FooterProps> = ({_id, likes, summary, comments }) => {
 
   return (
     <FooterContainer>
-      <PostButtons focusInput={focusInput}/>
+      <PostButtons focusInput={focusInput} />
       <TextSection>
-        <LikeText>{likes.toLocaleString()} Likes</LikeText>
+        <LikeText>{likes} Likes</LikeText>
         <TitleText>{summary}</TitleText>
         <CommentText>
           <ViewComments onClick={() => SetIsPostDetailOpen(!isPostDetailOpen)}>
-            view all {comments.length.toLocaleString()} comments
+            view all {comments?.length.toLocaleString()} comments
           </ViewComments>
-          <Comment inputRef={inputRef} />
-          {isPostDetailOpen && <PostDetail _id={_id} onClose={closePostDetail} />}
+          {commentsData.map((comment) => (
+            <StyledNewComment key={comment.userId}>
+              <span>{comment.userId}</span>
+              <span>{comment.text}</span>
+            </StyledNewComment>
+          ))}
+          <InputComment
+            inputRef={inputRef}
+            postId={postId}
+            _id={_id}
+            addComment={addComment}
+          />
+          {isPostDetailOpen && (
+            <PostDetail
+              postId={postId}
+              _id={_id}
+              addComment={addComment}
+              onClose={closePostDetail}
+            />
+          )}
         </CommentText>
       </TextSection>
     </FooterContainer>
@@ -79,6 +110,7 @@ const FooterContainer = styled.div`
 
 const TextSection = styled.div`
   text-align: left;
+  padding: 0 10px 10px;
 `;
 
 const LikeText = styled.div``;
@@ -111,5 +143,18 @@ const CommentText = styled.div`
 
 const ViewComments = styled.div`
   width: fit-content;
-  background-color: yellow;
-`
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const StyledNewComment = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
+
+  span {
+    margin: 0px 8px 0px 0px;
+  }
+`;
