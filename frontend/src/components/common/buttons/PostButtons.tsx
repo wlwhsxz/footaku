@@ -13,19 +13,19 @@ interface PostButtonsProps {
   focusInput: () => void;
   postId?: string;
   likes?: Like[];
+  updateLikes?: (newLikes: Like[]) => void;
 }
 
 const PostButtons: React.FC<PostButtonsProps> = ({
   focusInput,
   postId,
   likes,
+  updateLikes,
 }) => {
-  console.log("post buttons likes", likes);
-
   return (
     <ButtonSection>
       <LeftButtonBox>
-        <LikeButton postId={postId} likes={likes} />
+        <LikeButton postId={postId} likes={likes} updateLikes={updateLikes} />
         <CommentButton onCommentClick={focusInput} />
         <ShareButton />
       </LeftButtonBox>

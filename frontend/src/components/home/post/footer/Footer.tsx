@@ -4,11 +4,7 @@ import PostDetail from "../PostDetail";
 import PostButtons from "../../../common/buttons/PostButtons";
 import InputComment from "./InputComment";
 import { ObjectId } from "mongodb";
-import { NewComment } from "../../../../types";
-
-interface Like {
-  _id: string;
-}
+import { NewComment, Like } from "../../../../types";
 
 interface FooterProps {
   _id: ObjectId;
@@ -16,6 +12,7 @@ interface FooterProps {
   likes: Like[];
   comments: NewComment[];
   summary: string;
+  updateLikes: (newLikes: Like[]) => void;
 }
 
 const Footer: React.FC<FooterProps> = ({
@@ -24,11 +21,10 @@ const Footer: React.FC<FooterProps> = ({
   likes,
   summary,
   comments,
+  updateLikes,
 }) => {
-  console.log("footer likes", likes);
-
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isPostDetailOpen, SetIsPostDetailOpen] = useState(false);
+  const [isPostDetailOpen, setIsPostDetailOpen] = useState(false);
   const [commentsData, setCommentsData] = useState<NewComment[]>(
     comments || []
   );
@@ -44,7 +40,7 @@ const Footer: React.FC<FooterProps> = ({
   };
 
   const closePostDetail = () => {
-    SetIsPostDetailOpen(false);
+    setIsPostDetailOpen(false);
   };
 
   useEffect(() => {
@@ -62,12 +58,17 @@ const Footer: React.FC<FooterProps> = ({
 
   return (
     <FooterContainer>
-      <PostButtons focusInput={focusInput} postId={postId} likes={likes} />
+      <PostButtons
+        focusInput={focusInput}
+        postId={postId}
+        likes={likes}
+        updateLikes={updateLikes}
+      />
       <TextSection>
-        <LikeText>{likes.length} Likes</LikeText>
+        <LikeText>{likes ? likes.length : "0"} Likes</LikeText>
         <TitleText>{summary}</TitleText>
         <CommentText>
-          <ViewComments onClick={() => SetIsPostDetailOpen(!isPostDetailOpen)}>
+          <ViewComments onClick={() => setIsPostDetailOpen(!isPostDetailOpen)}>
             view all {comments?.length.toLocaleString()} comments
           </ViewComments>
           {commentsData.map((comment) => (
@@ -88,6 +89,8 @@ const Footer: React.FC<FooterProps> = ({
               _id={_id}
               addComment={addComment}
               onClose={closePostDetail}
+              likes={likes}
+              updateLikes={updateLikes}
             />
           )}
         </CommentText>
@@ -101,9 +104,7 @@ export default Footer;
 const FooterContainer = styled.div`
   display: flex;
   flex-direction: column;
-
   width: 100%;
-
   border-bottom: 1px solid gray;
 
   img {
@@ -132,7 +133,6 @@ const TitleText = styled.div`
 const CommentText = styled.div`
   display: flex;
   flex-direction: column;
-
   color: grey;
 
   input {
