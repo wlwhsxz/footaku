@@ -10,4 +10,7 @@ router.get("/:postId", postController.getPostById);
 
 router.post("/:postId/comment", postController.createPostComment);
 
+router.post("/:postId/likes", postController.likePost);
+router.delete("/:postId/likes", postController.unlikePost);
+
 module.exports = router;
