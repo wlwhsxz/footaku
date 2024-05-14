@@ -8,35 +8,40 @@ import TimeAgo from "../../common/time/TimeAgo";
 import LikeButton from "../../common/buttons/LikeButton";
 import MoreButton from "../../common/buttons/MoreButton";
 import { ObjectId } from "mongodb";
-import { NewComment } from "../../../types";
+import { Like, NewComment } from "../../../types";
 import CloseButton from "../../common/buttons/CloseButton";
 
 interface PostDetailProps {
-  postId?: String;
+  postId?: string;
   _id: ObjectId;
   addComment: (newComment: NewComment) => void;
   onClose: () => void;
+  likes: Like[];
+  updateLikes: (newLikes: Like[]) => void;
+}
+
+interface Comment {
+  text: string;
+  name: string;
+  profileImg: string;
+  userId: string;
+  updatedAt: Date;
+  createdBy: {
+    userId: string;
+    profileImg: string;
+  };
 }
 
 interface Post {
   content: {
     postImg: string;
     summary: string;
-    comments: {
-      text: string;
-      name: string;
-      profileImg: string;
-      userId: string;
-      updatedAt: Date;
-      createdBy: {
-        userId: string;
-        profileImg: string;
-      };
-    }[];
+    comments: Comment[];
   };
   name: string;
   profileImg: string;
   updatedAt: Date;
+  likes: Like[];
 }
 
 const PostDetail: React.FC<PostDetailProps> = ({
@@ -44,6 +49,8 @@ const PostDetail: React.FC<PostDetailProps> = ({
   _id,
   addComment,
   onClose,
+  updateLikes,
+  likes,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [postData, setPostData] = useState<Post | null>(null);
@@ -187,13 +194,22 @@ const PostDetail: React.FC<PostDetailProps> = ({
                       />
                     </CommentLower>
                   </CommentMain>
-                  <StyledLikeButton />
+                  <StyledLikeButton
+                    postId={postId!}
+                    likes={likes}
+                    updateLikes={updateLikes}
+                  />
                 </Comment>
               );
             })}
           </PostCommentViewSection>
           <PostFooter>
-            <StyledPostButtons focusInput={focusInput} />
+            <StyledPostButtons
+              focusInput={focusInput}
+              postId={postId!}
+              likes={likes}
+              updateLikes={updateLikes}
+            />
             <section>{postData?.content.comments.length} likes</section>
             <PostTime pastDate={pastDate} />
             <PostCommentInputSection>
