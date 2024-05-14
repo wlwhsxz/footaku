@@ -1,4 +1,4 @@
-import styled, { createGlobalStyle } from "styled-components";
+import styled from "styled-components";
 import React, { useEffect, useRef, useState } from "react";
 import PostDetail from "../PostDetail";
 import PostButtons from "../../../common/buttons/PostButtons";
@@ -6,10 +6,14 @@ import InputComment from "./InputComment";
 import { ObjectId } from "mongodb";
 import { NewComment } from "../../../../types";
 
+interface Like {
+  _id: string;
+}
+
 interface FooterProps {
   _id: ObjectId;
-  postId: String;
-  likes: number;
+  postId: string;
+  likes: Like[];
   comments: NewComment[];
   summary: string;
 }
@@ -21,6 +25,8 @@ const Footer: React.FC<FooterProps> = ({
   summary,
   comments,
 }) => {
+  console.log("footer likes", likes);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPostDetailOpen, SetIsPostDetailOpen] = useState(false);
   const [commentsData, setCommentsData] = useState<NewComment[]>(
@@ -56,9 +62,9 @@ const Footer: React.FC<FooterProps> = ({
 
   return (
     <FooterContainer>
-      <PostButtons focusInput={focusInput} />
+      <PostButtons focusInput={focusInput} postId={postId} likes={likes} />
       <TextSection>
-        <LikeText>{likes} Likes</LikeText>
+        <LikeText>{likes.length} Likes</LikeText>
         <TitleText>{summary}</TitleText>
         <CommentText>
           <ViewComments onClick={() => SetIsPostDetailOpen(!isPostDetailOpen)}>
