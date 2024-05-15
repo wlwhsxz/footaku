@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 
 interface User {
   _id: ObjectId;
+  userId: string;
 }
 
 interface AuthState {
@@ -16,7 +17,10 @@ const useAuthStore = create(
   persist<AuthState>(
     (set) => ({
       user: null,
-      login: (user) => set({ user }),
+      login: (user) => {
+        console.log("user", user);
+        set({ user });
+      },
       logout: () => set({ user: null }),
     }),
     {
