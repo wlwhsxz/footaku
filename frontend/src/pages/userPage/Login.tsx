@@ -32,12 +32,14 @@ const Login: React.FC = () => {
       );
       if (response.data.statusCode === 200) {
         const user = response.data.data;
+        const userData = { _id: user._id, userId: user.userId };
         localStorage.setItem("user", JSON.stringify(user));
+        setUser(userData);
+
         socket.emit("login", user, (res: any) => {
           console.log("Res :", res);
           localStorage.setItem("userObjectId", res.data.userId);
         });
-        setUser(user._id);
         navigate("/");
       }
     } catch (error) {
