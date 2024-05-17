@@ -8,16 +8,15 @@ import TimeAgo from "../../common/time/TimeAgo";
 import LikeButton from "../../common/buttons/LikeButton";
 import MoreButton from "../../common/buttons/MoreButton";
 import { ObjectId } from "mongodb";
-import { Like, NewComment } from "../../../types";
+import { NewComment } from "../../../types";
 import CloseButton from "../../common/buttons/CloseButton";
+import { useLikeStore } from "../../../store/useLikeStore";
 
 interface PostDetailProps {
   postId?: string;
   _id: ObjectId;
   addComment: (newComment: NewComment) => void;
   onClose: () => void;
-  likes: Like[];
-  updateLikes: (newLikes: Like[]) => void;
 }
 
 interface Comment {
@@ -41,7 +40,6 @@ interface Post {
   name: string;
   profileImg: string;
   updatedAt: Date;
-  likes: Like[];
 }
 
 const PostDetail: React.FC<PostDetailProps> = ({
@@ -49,14 +47,13 @@ const PostDetail: React.FC<PostDetailProps> = ({
   _id,
   addComment,
   onClose,
-  updateLikes,
-  likes,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [postData, setPostData] = useState<Post | null>(null);
   const [pastDate, setPastDate] = useState<Date>(new Date());
   const [activeButton, setActiveButton] = useState("");
   const [isMoreOptionsOpen, setIsMoreOptionsOpen] = useState(false);
+  const likes = useLikeStore((state) => state.postLikes[postId || ""] || []);
 
   const focusInput = () => {
     if (inputRef.current) {
@@ -194,23 +191,14 @@ const PostDetail: React.FC<PostDetailProps> = ({
                       />
                     </CommentLower>
                   </CommentMain>
-                  <StyledLikeButton
-                    postId={postId!}
-                    likes={likes}
-                    updateLikes={updateLikes}
-                  />
+                  <StyledLikeButton commentId={comment.userId} type="comment" />
                 </Comment>
               );
             })}
           </PostCommentViewSection>
           <PostFooter>
-            <StyledPostButtons
-              focusInput={focusInput}
-              postId={postId!}
-              likes={likes}
-              updateLikes={updateLikes}
-            />
-            <section>{postData?.content.comments.length} likes</section>
+            <StyledPostButtons focusInput={focusInput} postId={postId!} />
+            <section>{likes.length} likes</section>
             <PostTime pastDate={pastDate} />
             <PostCommentInputSection>
               <InputComment
