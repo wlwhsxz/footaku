@@ -4,30 +4,23 @@ import PostDetail from "../PostDetail";
 import PostButtons from "../../../common/buttons/PostButtons";
 import InputComment from "./InputComment";
 import { ObjectId } from "mongodb";
-import { NewComment, Like } from "../../../../types";
+import { NewComment } from "../../../../types";
+import { useLikeStore } from "../../../../store/useLikeStore";
 
 interface FooterProps {
   _id: ObjectId;
   postId: string;
-  likes: Like[];
   comments: NewComment[];
   summary: string;
-  updateLikes: (newLikes: Like[]) => void;
 }
 
-const Footer: React.FC<FooterProps> = ({
-  _id,
-  postId,
-  likes,
-  summary,
-  comments,
-  updateLikes,
-}) => {
+const Footer: React.FC<FooterProps> = ({ _id, postId, summary, comments }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPostDetailOpen, setIsPostDetailOpen] = useState(false);
   const [commentsData, setCommentsData] = useState<NewComment[]>(
     comments || []
   );
+  const likes = useLikeStore((state) => state.postLikes[postId] || []);
 
   const addComment = (newComment: NewComment) => {
     setCommentsData((prevComments) => [...prevComments, newComment]);
@@ -58,14 +51,9 @@ const Footer: React.FC<FooterProps> = ({
 
   return (
     <FooterContainer>
-      <PostButtons
-        focusInput={focusInput}
-        postId={postId}
-        likes={likes}
-        updateLikes={updateLikes}
-      />
+      <PostButtons focusInput={focusInput} postId={postId} />
       <TextSection>
-        <LikeText>{likes ? likes.length : "0"} Likes</LikeText>
+        <LikeText>{likes.length} Likes</LikeText>
         <TitleText>{summary}</TitleText>
         <CommentText>
           <ViewComments onClick={() => setIsPostDetailOpen(!isPostDetailOpen)}>
@@ -89,8 +77,6 @@ const Footer: React.FC<FooterProps> = ({
               _id={_id}
               addComment={addComment}
               onClose={closePostDetail}
-              likes={likes}
-              updateLikes={updateLikes}
             />
           )}
         </CommentText>

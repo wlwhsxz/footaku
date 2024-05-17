@@ -3,10 +3,12 @@ import styled from "styled-components";
 import Content from "./Content";
 import Footer from "./footer/Footer";
 import Header from "./Header";
-import { PostData, Like } from "../../../types";
+import { PostData } from "../../../types";
+import { useLikeStore } from "../../../store/useLikeStore";
 
 const Post: React.FC = () => {
   const [postData, setPostData] = useState<PostData[]>([]);
+  const updatePostLikes = useLikeStore((state) => state.updatePostLikes);
 
   const fetchPosts = async () => {
     try {
@@ -15,6 +17,17 @@ const Post: React.FC = () => {
       );
       const data = (await response.json()) as { data: PostData[] };
       setPostData(data.data);
+
+      // Initialize likes in Zustand store
+      data.data.forEach((club) => {
+        club.posts.forEach((post) => {
+          updatePostLikes(
+            post.postId,
+            post.likes.map((like) => like._id)
+          );
+        });
+      });
+
       console.log("initial post data - ", data);
     } catch (error) {
       console.error("Failed to fetch posts:", error);
@@ -24,22 +37,6 @@ const Post: React.FC = () => {
   useEffect(() => {
     fetchPosts();
   }, []);
-
-  const updateLikes = (postId: string, newLikes: Like[]) => {
-    setPostData((prevData) =>
-      prevData.map((club) => ({
-        ...club,
-        posts: club.posts.map((post) =>
-          post.postId === postId
-            ? {
-                ...post,
-                likes: newLikes,
-              }
-            : post
-        ),
-      }))
-    );
-  };
 
   if (postData.length === 0) return <div>Loading...</div>;
 
@@ -56,11 +53,9 @@ const Post: React.FC = () => {
             <Content postImg={post.content?.postImg} postURL={post.postURL} />
             <Footer
               postId={post.postId}
-              likes={post.likes}
               comments={post.content?.comments}
               summary={post.content?.summary}
               _id={post._id}
-              updateLikes={(newLikes) => updateLikes(post.postId, newLikes)}
             />
           </PostContainer>
         ))

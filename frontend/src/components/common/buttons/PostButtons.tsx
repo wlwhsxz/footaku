@@ -5,27 +5,16 @@ import CommentButton from "./CommentButton";
 import ShareButton from "./ShareButton";
 import SaveButton from "./SaveButton";
 
-interface Like {
-  _id: string;
-}
-
 interface PostButtonsProps {
   focusInput: () => void;
   postId?: string;
-  likes?: Like[];
-  updateLikes?: (newLikes: Like[]) => void;
 }
 
-const PostButtons: React.FC<PostButtonsProps> = ({
-  focusInput,
-  postId,
-  likes,
-  updateLikes,
-}) => {
+const PostButtons: React.FC<PostButtonsProps> = ({ focusInput, postId }) => {
   return (
     <ButtonSection>
       <LeftButtonBox>
-        <LikeButton postId={postId} likes={likes} updateLikes={updateLikes} />
+        <LikeButton postId={postId} type="post" />
         <CommentButton onCommentClick={focusInput} />
         <ShareButton />
       </LeftButtonBox>
