@@ -96,10 +96,50 @@ const unlikePost = async (req, res, next) => {
   }
 };
 
+const likePostComment = async (req, res, next) => {
+  try {
+    const { postId, commentId } = req.params;
+    const { userId } = req.body;
+
+    const { statusCode, message, data } = await postService.likePostComment(
+      commentId,
+      userId
+    );
+
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
+
+    res.status(200).json({ message, data });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, "Internal Server Error"));
+  }
+};
+
+const unlikePostComment = async (req, res, next) => {
+  try {
+    const { postId, commentId } = req.params;
+    const userId = req.headers["user-id"];
+
+    const { statusCode, message, data } = await postService.unlikePostComment(
+      commentId,
+      userId
+    );
+
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
+
+    res.status(200).json({ message, data });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, "Internal Server Error"));
+  }
+};
+
 module.exports = {
   getAllPosts,
   getPostById,
   createPostComment,
+  likePostComment,
   likePost,
   unlikePost,
+  unlikePostComment,
 };
