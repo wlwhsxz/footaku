@@ -88,21 +88,21 @@ const likePost = async (postId, userId) => {
   console.log("likePost Service");
   console.log(postId, userId);
 
-  userId = new ObjectId(userId);
-
-  const foundPost = await Post.findOne({ postId });
-  if (!foundPost.likes.some((id) => id.equals(userId))) {
-    foundPost.likes.push(userId);
-  }
-  await foundPost.save();
-
   try {
+    userId = new ObjectId(userId);
+
+    const foundPost = await Post.findOne({ postId });
+    if (!foundPost.likes.some((id) => id.equals(userId))) {
+      foundPost.likes.push(userId);
+    }
+    await foundPost.save();
+    const likeData = foundPost.likes;
+
     return {
       statusCode: 200,
       message: "포스트 좋아요 성공",
       data: {
-        postId,
-        userId,
+        likeData,
       },
     };
   } catch (error) {
@@ -114,25 +114,70 @@ const likePost = async (postId, userId) => {
 const unlikePost = async (postId, userId) => {
   userId = new ObjectId(userId);
 
-  const foundPost = await Post.findOne({ postId });
-  if (foundPost.likes.some((id) => id.equals(userId))) {
-    foundPost.likes.pull(userId);
-  }
-
-  await foundPost.save();
-
   try {
+    const foundPost = await Post.findOne({ postId });
+    if (foundPost.likes.some((id) => id.equals(userId))) {
+      foundPost.likes.pull(userId);
+    }
+    await foundPost.save();
+    const likeData = foundPost.likes;
+
     return {
       statusCode: 200,
       message: "포스트 좋아요 취소 성공",
       data: {
-        postId,
-        userId,
+        likeData,
       },
     };
   } catch (error) {
     console.error(error);
     return new AppError(500, "Internal Server Error");
+  }
+};
+
+const likePostComment = async (commentId, userId) => {
+  try {
+    userId = new ObjectId(userId);
+    console.log("userId", userId);
+
+    const foundComment = await Comment.findById(commentId);
+    console.log(foundComment);
+    if (!foundComment.likes.some((id) => id.equals(userId))) {
+      foundComment.likes.push(userId);
+    }
+    await foundComment.save();
+    const likeData = foundComment.likes;
+
+    console.log("likeData", likeData);
+
+    return {
+      statusCode: 200,
+      messsage: "댓글 좋아요 성공",
+      data: { likeData },
+    };
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const unlikePostComment = async (commentId, userId) => {
+  try {
+    userId = new ObjectId(userId);
+
+    const foundComment = await Comment.findById(commentId);
+    if (foundComment.likes.some((id) => id.equals(userId))) {
+      foundComment.likes.pull(userId);
+    }
+    await foundComment.save();
+    const likeData = foundComment.likes;
+
+    return {
+      statusCode: 200,
+      message: "댓글 좋아요 취소 성공",
+      data: { likeData },
+    };
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -142,4 +187,6 @@ module.exports = {
   createPostComment,
   likePost,
   unlikePost,
+  likePostComment,
+  unlikePostComment,
 };
