@@ -7,8 +7,8 @@ import { NewComment } from "../../../../types";
 
 type InputCommentProps = {
   inputRef: React.RefObject<HTMLInputElement>;
-  postId?: String;
   _id: ObjectId;
+  postId: string;
   addComment: (newComment: NewComment) => void;
 };
 
@@ -34,20 +34,36 @@ const InputComment: React.FC<InputCommentProps> = ({
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/posts/${postId}/comment`,
       {
+        _id,
         userId,
         content: comment,
         likes: [],
-        _id,
       }
     );
-    console.log(response);
+    console.log("inputComment response", response);
 
     const user = localStorage.getItem("user");
     const userObject = user ? JSON.parse(user) : null;
 
+    if (!userObject) {
+      console.error("User information is not available in local storage!");
+      return;
+    }
+
     const newComment: NewComment = {
-      userId: userObject ? userObject.userId : null,
+      _id: response.data.data._id,
+      postId,
+      userId: userObject.userId,
       text: comment,
+      userName: userObject.name,
+      profileImg: userObject.profileImg,
+      updatedAt: new Date(),
+      createdAt: new Date(),
+      createdBy: {
+        userId: userObject.userId,
+        profileImg: userObject.profileImg,
+      },
+      likes: [],
     };
 
     console.log("newComment - ", newComment);
