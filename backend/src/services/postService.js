@@ -13,7 +13,12 @@ const getAllPosts = async () => {
       const posts = await club.populate({
         path: "posts",
         options: { limit: 3, sort: { publishedAt: -1 } },
+        populate: {
+          path: "content.comments", // content.comments를 populate
+          model: "Comment",
+        },
       });
+
       foundPosts.push(posts);
     }
     return {

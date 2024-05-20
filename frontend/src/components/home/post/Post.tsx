@@ -9,6 +9,7 @@ import { useLikeStore } from "../../../store/useLikeStore";
 const Post: React.FC = () => {
   const [postData, setPostData] = useState<PostData[]>([]);
   const updatePostLikes = useLikeStore((state) => state.updatePostLikes);
+  const updateCommentLikes = useLikeStore((state) => state.updateCommentLikes);
 
   const fetchPosts = async () => {
     try {
@@ -18,13 +19,18 @@ const Post: React.FC = () => {
       const data = (await response.json()) as { data: PostData[] };
       setPostData(data.data);
 
-      // Initialize likes in Zustand store
       data.data.forEach((club) => {
         club.posts.forEach((post) => {
           updatePostLikes(
             post.postId,
-            post.likes.map((like) => like._id)
+            post.likes.map((like) => like)
           );
+          post.content?.comments?.forEach((comment) => {
+            updateCommentLikes(
+              comment._id.toString(),
+              comment.likes.map((like) => like)
+            );
+          });
         });
       });
 
@@ -52,10 +58,10 @@ const Post: React.FC = () => {
             />
             <Content postImg={post.content?.postImg} postURL={post.postURL} />
             <Footer
+              _id={post._id}
               postId={post.postId}
               comments={post.content?.comments}
               summary={post.content?.summary}
-              _id={post._id}
             />
           </PostContainer>
         ))
