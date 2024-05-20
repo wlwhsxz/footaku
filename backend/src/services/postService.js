@@ -75,13 +75,17 @@ const createPostComment = async (comment) => {
     });
     await newComment.save();
 
-    foundPost.content.comments.push(newComment._id);
+    const commentList = foundPost.content.comments;
+    commentList.push(newComment._id);
     await foundPost.save();
+    const newCommentId = commentList[commentList.length - 1];
+    console.log(newCommentId);
+    const savedNewComment = await Comment.findById(newCommentId);
 
     return {
       statusCode: 200,
       message: "댓글 생성 성공",
-      data: comment.content,
+      data: savedNewComment,
     };
   } catch (error) {
     console.error(error);
@@ -144,12 +148,15 @@ const likePostComment = async (commentId, userId) => {
   try {
     userId = new ObjectId(userId);
     console.log("userId", userId);
+    console.log("commentId", commentId);
 
     const foundComment = await Comment.findById(commentId);
     console.log(foundComment);
-    if (!foundComment.likes.some((id) => id.equals(userId))) {
+
+    if (foundComment && !foundComment.likes.some((id) => id.equals(userId))) {
       foundComment.likes.push(userId);
     }
+
     await foundComment.save();
     const likeData = foundComment.likes;
 
@@ -157,17 +164,22 @@ const likePostComment = async (commentId, userId) => {
 
     return {
       statusCode: 200,
-      messsage: "댓글 좋아요 성공",
+      message: "댓글 좋아요 성공",
       data: { likeData },
     };
   } catch (error) {
     console.error(error);
+    return {
+      statusCode: 500,
+      message: "댓글 좋아요 실패",
+    };
   }
 };
 
 const unlikePostComment = async (commentId, userId) => {
   try {
     userId = new ObjectId(userId);
+    console.log("commentId", commentId);
 
     const foundComment = await Comment.findById(commentId);
     if (foundComment.likes.some((id) => id.equals(userId))) {
