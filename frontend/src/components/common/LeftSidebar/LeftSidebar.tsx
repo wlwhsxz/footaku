@@ -6,10 +6,7 @@ import Searchbar from "../searchbar/Searchbar";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-
-interface NavContainerProps {
-  isExpanded: boolean;
-}
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 
 const LeftSidebar: React.FC = () => {
   const NavHandler = (label: string) => (e: React.MouseEvent) => {
@@ -26,7 +23,7 @@ const LeftSidebar: React.FC = () => {
 
   return (
     <LeftSidebarContainer>
-      <NavContainer isExpanded={isExpanded}>
+      <NavContainer $isExpanded={isExpanded}>
         <LogoBox>
           <h2>Footaku</h2>
         </LogoBox>
@@ -49,6 +46,14 @@ const LeftSidebar: React.FC = () => {
             <FavoriteBorderIcon />
             <NavLabel>Likes</NavLabel>
           </LikesBox>
+        </NavBox>
+        <NavBox>
+          <StyledLink to={`/96minu`}>
+            <LikesBox>
+              <AccountCircleOutlinedIcon />
+              <NavLabel>Profile</NavLabel>
+            </LikesBox>
+          </StyledLink>
         </NavBox>
         {/* {leftSidebarLinks.map((nav: Nav) => (
         <Link to={nav.route} key={nav.label}>
@@ -75,22 +80,17 @@ const LeftSidebarContainer = styled.div`
   flex-direction: row;
 `;
 
-const NavContainer = styled.div<NavContainerProps>`
+const NavContainer = styled.div<{ $isExpanded: boolean }>`
   position: sticky;
   top: 0;
   left: 0;
-
   display: flex;
   flex-direction: column;
-
-  width: ${(props) => (props.isExpanded ? "120px" : "200px")};
+  width: ${(props) => (props.$isExpanded ? "120px" : "200px")};
   height: 100vh;
-
   padding: 8px 12px 20px 12px;
-
   background-color: black;
   color: white;
-
   transition: width 0.3s;
 `;
 

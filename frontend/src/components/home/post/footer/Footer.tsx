@@ -1,11 +1,12 @@
-import styled from "styled-components";
 import React, { useEffect, useRef, useState } from "react";
+import styled from "styled-components";
 import PostDetail from "../PostDetail";
 import PostButtons from "../../../common/buttons/PostButtons";
 import InputComment from "./InputComment";
 import { ObjectId } from "mongodb";
 import { NewComment } from "../../../../types";
 import { useLikeStore } from "../../../../store/useLikeStore";
+import useAuthStore from "../../../../store/useAuthStore";
 
 interface FooterProps {
   _id: ObjectId;
@@ -21,9 +22,14 @@ const Footer: React.FC<FooterProps> = ({ _id, postId, summary, comments }) => {
     comments || []
   );
   const likes = useLikeStore((state) => state.postLikes[postId] || []);
+  const user = useAuthStore((state) => state.user);
+  const userId = user?.userId;
 
   const addComment = (newComment: NewComment) => {
-    setCommentsData((prevComments) => [...prevComments, newComment]);
+    setCommentsData((prevComments) => [
+      ...prevComments,
+      { ...newComment, newlyAdded: true },
+    ]);
   };
 
   const focusInput = () => {
@@ -59,12 +65,18 @@ const Footer: React.FC<FooterProps> = ({ _id, postId, summary, comments }) => {
           <ViewComments onClick={() => setIsPostDetailOpen(!isPostDetailOpen)}>
             view all {comments?.length.toLocaleString()} comments
           </ViewComments>
-          {commentsData.map((comment) => (
-            <StyledNewComment key={comment.userId}>
-              <span>{comment.userId}</span>
-              <span>{comment.text}</span>
-            </StyledNewComment>
-          ))}
+          {commentsData.map(
+            (comment) =>
+              comment._id && (
+                <StyledNewComment
+                  key={comment._id.toString()}
+                  $isVisible={comment.newlyAdded ?? false}
+                >
+                  <span>{comment.createdBy.userId}</span>
+                  <span>{comment.text}</span>
+                </StyledNewComment>
+              )
+          )}
           <InputComment
             inputRef={inputRef}
             postId={postId}
@@ -72,12 +84,7 @@ const Footer: React.FC<FooterProps> = ({ _id, postId, summary, comments }) => {
             addComment={addComment}
           />
           {isPostDetailOpen && (
-            <PostDetail
-              postId={postId}
-              _id={_id}
-              addComment={addComment}
-              onClose={closePostDetail}
-            />
+            <PostDetail postId={postId} _id={_id} onClose={closePostDetail} />
           )}
         </CommentText>
       </TextSection>
@@ -109,6 +116,7 @@ const TextSection = styled.div`
 const LikeText = styled.div``;
 
 const TitleText = styled.div`
+  font-weight: 700;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -141,8 +149,8 @@ const ViewComments = styled.div`
   }
 `;
 
-const StyledNewComment = styled.div`
-  display: flex;
+const StyledNewComment = styled.div<{ $isVisible: boolean }>`
+  display: ${({ $isVisible }) => ($isVisible ? "flex" : "none")};
   align-items: center;
   margin-top: 2px;
 

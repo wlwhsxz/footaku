@@ -11,24 +11,28 @@ import { ObjectId } from "mongodb";
 import { NewComment } from "../../../types";
 import CloseButton from "../../common/buttons/CloseButton";
 import { useLikeStore } from "../../../store/useLikeStore";
+import useAuthStore from "../../../store/useAuthStore";
 
 interface PostDetailProps {
-  postId?: string;
   _id: ObjectId;
-  addComment: (newComment: NewComment) => void;
+  postId: string;
   onClose: () => void;
 }
 
 interface Comment {
-  text: string;
-  name: string;
-  profileImg: string;
+  _id: ObjectId;
+  postId: string;
   userId: string;
+  userName: string;
+  text: string;
+  profileImg: string;
   updatedAt: Date;
+  createdAt: Date;
   createdBy: {
     userId: string;
     profileImg: string;
   };
+  likes: string[];
 }
 
 interface Post {
@@ -42,18 +46,15 @@ interface Post {
   updatedAt: Date;
 }
 
-const PostDetail: React.FC<PostDetailProps> = ({
-  postId,
-  _id,
-  addComment,
-  onClose,
-}) => {
+const PostDetail: React.FC<PostDetailProps> = ({ postId, _id, onClose }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [postData, setPostData] = useState<Post | null>(null);
   const [pastDate, setPastDate] = useState<Date>(new Date());
   const [activeButton, setActiveButton] = useState("");
   const [isMoreOptionsOpen, setIsMoreOptionsOpen] = useState(false);
   const likes = useLikeStore((state) => state.postLikes[postId || ""] || []);
+  const user = useAuthStore((state) => state.user);
+  const userId = user?.userId;
 
   const focusInput = () => {
     if (inputRef.current) {
@@ -64,7 +65,6 @@ const PostDetail: React.FC<PostDetailProps> = ({
   const handleMoreButtonClick = (buttonId: string) => {
     setActiveButton(buttonId);
     setIsMoreOptionsOpen(true);
-    console.log(buttonId);
   };
 
   const closeMoreOptions = () => {
@@ -90,7 +90,6 @@ const PostDetail: React.FC<PostDetailProps> = ({
         `${process.env.REACT_APP_API_URL}/api/posts/${postId}`
       );
       const data = await response.json();
-      console.log(data);
       setPostData(data.data);
       setPastDate(new Date(data.data.publishedAt));
     };
@@ -164,9 +163,8 @@ const PostDetail: React.FC<PostDetailProps> = ({
               {postData?.content.summary}
             </span>
             {postData?.content.comments.map((comment) => {
-              console.log("comment", comment);
               return (
-                <Comment key={comment.userId}>
+                <CommentContainer key={comment._id.toString()}>
                   <ProfileImg
                     src={
                       comment.createdBy.profileImg
@@ -182,7 +180,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
                       <UserComment>{comment.text}</UserComment>
                     </CommentUpper>
                     <CommentLower>
-                      <TimeAgo date={comment.updatedAt} />
+                      <TimeAgo date={comment.createdAt} />
                       <StyledMoreButton
                         onClick={() => handleMoreButtonClick("delete")}
                         isActive={activeButton === "delete"}
@@ -191,19 +189,24 @@ const PostDetail: React.FC<PostDetailProps> = ({
                       />
                     </CommentLower>
                   </CommentMain>
-                  <StyledLikeButton commentId={comment.userId} type="comment" />
-                </Comment>
+                  <StyledLikeButton
+                    postId={postId}
+                    commentId={comment._id.toString()}
+                    type="comment"
+                  />
+                </CommentContainer>
               );
             })}
           </PostCommentViewSection>
           <PostFooter>
-            <StyledPostButtons focusInput={focusInput} postId={postId!} />
+            <StyledPostButtons focusInput={focusInput} postId={postId} />
             <section>{likes.length} likes</section>
             <PostTime pastDate={pastDate} />
             <PostCommentInputSection>
               <InputComment
                 inputRef={inputRef}
                 _id={_id}
+                postId={postId}
                 addComment={handleAddComment}
               />
             </PostCommentInputSection>
@@ -320,7 +323,7 @@ const PostCommentViewSection = styled.div`
   }
 `;
 
-const Comment = styled.div`
+const CommentContainer = styled.div`
   display: flex;
   align-items: center;
   margin: 18px 0;
@@ -363,11 +366,21 @@ const CommentLower = styled.div`
 `;
 
 const StyledLikeButton = styled(LikeButton)`
-  img {
-    width: 12px;
-    height: 12px;
+  @media (max-width: 1200px) {
+    img {
+      width: 18px !important;
+      height: 18px !important;
+    }
+    margin-left: auto;
   }
-  margin-left: auto;
+
+  @media (max-width: 800px) {
+    img {
+      width: 14px !important;
+      height: 14px !important;
+    }
+    margin-left: auto;
+  }
 `;
 
 const PostFooter = styled.div`
