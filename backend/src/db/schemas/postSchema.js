@@ -36,9 +36,9 @@ const PostSchema = new Schema(
         userId: {
           type: String,
           ref: "User",
-          required: function () {
-            return this.userId != null;
-          }, // Requires userId only if it's not null
+          // required: function () {
+          //   return this.userId != null;
+          // }, // Requires userId only if it's not null
         },
       },
     ],
