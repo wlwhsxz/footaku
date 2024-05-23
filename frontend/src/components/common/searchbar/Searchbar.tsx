@@ -12,13 +12,14 @@ const SearchBar: React.FC<SearchProps> = ({ visible }) => {
   const [searchResult, setSearchResult] = useState([]);
   const [searching, setSearching] = useState(false);
 
+  // Delay the search function 500 ms
   useEffect(() => {
     const handler = setTimeout(() => {
       if (searchQuery) {
         setSearching(true);
         searchHandler(searchQuery);
       }
-    }, 500); // Delay the search function 1000 ms
+    }, 500);
 
     return () => clearTimeout(handler);
   }, [searchQuery]);
@@ -57,8 +58,6 @@ const SearchBar: React.FC<SearchProps> = ({ visible }) => {
 };
 
 export default SearchBar;
-
-// Styled components remain unchanged
 
 const SearchBarContainer = styled.div`
   width: 397px;
