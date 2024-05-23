@@ -13,6 +13,7 @@ const io = new Server(httpServer, {
 require("./utils/io")(io);
 httpServer.listen(env.PORT || 8080, () => {
   console.log("PORT:", env.PORT);
+  console.log("ENV:", env.NODE_ENV);
   console.log("DB_HOST:", env.DB_HOST);
   console.log("DB_NAME:", env.DB_NAME);
   // console.log(`Server is running on port ${port}`);
