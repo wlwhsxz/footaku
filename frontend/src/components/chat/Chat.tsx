@@ -63,7 +63,7 @@ const ChatContainer = styled.div`
   width: 300px;
   height: 70vh;
 
-  margin-top: 105px;
+  margin-top: 110px;
 
   background-color: black;
   color: white;
