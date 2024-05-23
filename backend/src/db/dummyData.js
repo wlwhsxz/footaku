@@ -83,7 +83,6 @@ const dummyStories = {
 
 const dummyPosts = [
   {
-    postId: "post1",
     postTag: "news",
     postType: "Club",
     postOwnerId: "148",
@@ -132,15 +131,15 @@ const dummyPosts = [
   },
 ];
 
-const insertDummyPosts = async () => {
-  try {
-    await Post.deleteMany({});
-    const exists = await Post.findOne();
-    exists || (await Post.create(dummyPosts));
-    console.log("Dummy Posts Operation completed successfully.");
-  } catch (error) {
-    console.error(error);
-  }
-};
+// const insertDummyPosts = async () => {
+//   try {
+//     await Post.deleteMany({});
+//     const exists = await Post.findOne();
+//     exists || (await Post.create(dummyPosts));
+//     console.log("Dummy Posts Operation completed successfully.");
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
 
-module.exports = { insertDummyUsers, insertDummyPosts };
+module.exports = { insertDummyUsers };
