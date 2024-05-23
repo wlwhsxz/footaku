@@ -37,8 +37,6 @@ const MainContent = styled.div`
   justify-content: center;
 
   width: 100vw;
-
-  /* background-color: pink; */
 `;
 
 const ContentWrapper = styled.div`
@@ -48,9 +46,7 @@ const ContentWrapper = styled.div`
   width: 630px;
 `;
 
-const StorySection = styled.div`
-  /* background-color: orange; */
-`;
+const StorySection = styled.div``;
 
 const PostSection = styled.div`
   display: flex;

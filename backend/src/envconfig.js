@@ -16,4 +16,5 @@ module.exports = {
   CLUB_IDS: process.env.CLUB_IDS,
   YOUTUBE_API_URL: process.env.YOUTUBE_API_URL,
   YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY,
+  PL_PLAYLIST_IDS: process.env.PL_PLAYLIST_IDS,
 };

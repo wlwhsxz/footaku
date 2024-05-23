@@ -18,7 +18,6 @@ const CommentSchema = new Schema(
         userId: {
           type: String,
           ref: "User",
-          default: null,
         },
       },
     ],

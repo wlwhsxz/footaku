@@ -2,7 +2,8 @@ import styled from "styled-components";
 import React, { useEffect } from "react";
 
 interface ContentProps {
-  postImg: string;
+  postImg?: string;
+  postURL?: string;
 }
 
 declare global {
@@ -85,13 +86,14 @@ const TwitterPostEmbed = () => {
   );
 };
 
-const Content: React.FC<ContentProps> = ({ postImg }) => {
+const Content: React.FC<ContentProps> = ({ postImg, postURL }) => {
+  console.log(postURL);
   return (
     <div>
       <PostMedia>
-        <InstagramPost />
-        <TwitterPostEmbed />
-        <img src={postImg} alt="postImg" />
+        {/* <InstagramPost /> */}
+        {/* <TwitterPostEmbed /> */}
+        <img src={postImg} alt="postImg" onClick={() => window.open(postURL)} />
       </PostMedia>
     </div>
   );
@@ -102,5 +104,9 @@ export default Content;
 const PostMedia = styled.div`
   img {
     width: 100%;
+    &:hover {
+      cursor: pointer;
+      width: 101%;
+    }
   }
 `;

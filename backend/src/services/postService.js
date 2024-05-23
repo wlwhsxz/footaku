@@ -79,8 +79,9 @@ const createPostComment = async (comment) => {
     commentList.push(newComment._id);
     await foundPost.save();
     const newCommentId = commentList[commentList.length - 1];
-    console.log(newCommentId);
-    const savedNewComment = await Comment.findById(newCommentId);
+    const savedNewComment = await Comment.findById(newCommentId).populate(
+      "createdBy"
+    );
 
     return {
       statusCode: 200,

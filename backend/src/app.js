@@ -46,12 +46,12 @@ connectToDatabase()
     // cron.schedule(
     //   "00 00 * * *",
     //   async () => {
-    //     await fetchClubData();
     //     await fetchClubNewsData();
-    //     await fetchYoutubeData();
     //   },
     //   { scheduled: true, timezone: "Asia/Seoul" }
     // );
+    // await fetchClubData();
+    // await fetchYoutubeData();
   })
   .catch((err) => {
     console.error(err);

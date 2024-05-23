@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import useAuthStore from "../../../store/useAuthStore";
 import { useLikeStore } from "../../../store/useLikeStore";
 
@@ -8,6 +8,7 @@ interface LikeButtonProps {
   postId?: string;
   commentId?: string;
   type: "post" | "comment";
+  isLiked?: boolean;
 }
 
 const LikeButton: React.FC<LikeButtonProps> = ({
@@ -20,20 +21,39 @@ const LikeButton: React.FC<LikeButtonProps> = ({
   const user = useAuthStore((state) => state.user);
   const userId = user?._id.toString();
 
-  const postLikes = useLikeStore((state) => state.postLikes);
-  const commentLikes = useLikeStore((state) => state.commentLikes);
-  const updatePostLikes = useLikeStore((state) => state.updatePostLikes);
-  const updateCommentLikes = useLikeStore((state) => state.updateCommentLikes);
+  const {
+    postLikes,
+    commentLikes,
+    clickedPost,
+    clickedComment,
+    updatePostLikes,
+    updateCommentLikes,
+    setClickedPost,
+    setClickedComment,
+  } = useLikeStore((state) => state);
 
-  const likes =
-    type === "post"
+  const likes = useMemo(() => {
+    return type === "post"
       ? postLikes[postId || ""] || []
       : commentLikes[commentId || ""] || [];
-  const updateLikes = type === "post" ? updatePostLikes : updateCommentLikes;
+  }, [postLikes, commentLikes, postId, commentId, type]);
 
-  const [clicked, setClicked] = useState<boolean>(
-    Boolean(userId) && likes.includes(userId!)
-  );
+  const updateLikes = type === "post" ? updatePostLikes : updateCommentLikes;
+  const setClicked = type === "post" ? setClickedPost : setClickedComment;
+  const clicked =
+    type === "post"
+      ? clickedPost[postId || ""]
+      : clickedComment[commentId || ""];
+
+  useEffect(() => {
+    if (userId && likes) {
+      const isLiked = likes.some((likeId: any) => likeId._id.includes(userId));
+      if (clicked !== isLiked) {
+        setClicked(type === "post" ? postId! : commentId!, isLiked);
+      }
+    }
+  }, [userId, likes, clicked, setClicked, postId, commentId, type]);
+
   const lastClickTime = useRef<number>(0);
 
   const handleClick = async () => {
@@ -42,22 +62,24 @@ const LikeButton: React.FC<LikeButtonProps> = ({
       if (userId) {
         try {
           if (!clicked) {
-            console.log("like");
+            console.log("like", type);
             const response = await axios.post(
-              `${process.env.REACT_APP_API_URL}/api/${
-                type === "post" ? `posts/${postId}` : `comments/${commentId}`
+              `${process.env.REACT_APP_API_URL}/api/posts/${postId}${
+                type === "post" ? `` : `/comments/${commentId}`
               }/likes`,
               { userId }
             );
             updateLikes(
               type === "post" ? postId! : commentId!,
-              response.data.data.postLikes
+              response.data.data.likeData
             );
+
+            console.log(response.data.data.likeData);
           } else {
-            console.log("unlike");
+            console.log("unlike", type);
             const response = await axios.delete(
-              `${process.env.REACT_APP_API_URL}/api/${
-                type === "post" ? `posts/${postId}` : `comments/${commentId}`
+              `${process.env.REACT_APP_API_URL}/api/posts/${postId}${
+                type === "post" ? `` : `/comments/${commentId}`
               }/likes`,
               {
                 headers: { "user-id": userId },
@@ -65,14 +87,16 @@ const LikeButton: React.FC<LikeButtonProps> = ({
             );
             updateLikes(
               type === "post" ? postId! : commentId!,
-              response.data.data.postLikes
+              response.data.data.likeData
             );
+
+            console.log(response.data.data.likeData);
           }
         } catch (error) {
           console.error("Error processing the like/unlike action", error);
         }
       }
-      setClicked(!clicked);
+      setClicked(type === "post" ? postId! : commentId!, !clicked);
       lastClickTime.current = now;
     }
   };
