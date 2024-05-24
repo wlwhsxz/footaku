@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "Footaku",
   "main": "app.js",
-  "scripts": {
-    "start": "cd src && nodemon index.js"
+   "scripts": {
+    "dev": "pm2 start ecosystem.config.js --only footaku-dev --env development",
+    "start": "pm2 start ecosystem.config.js --only footaku-production --env production",
+    "del": "pm2 del all"
   },
   "author": "Footaku",
   "license": "ISC",
