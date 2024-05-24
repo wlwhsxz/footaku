@@ -16,7 +16,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:8080",
   "https://footaku.com",
-  "https://footaku.com:443",
+  "https://footaku.com:8080",
 ];
 
 const corsOptions = {
@@ -32,7 +32,7 @@ const corsOptions = {
 //   fs.mkdirSync("uploads");
 // }
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
