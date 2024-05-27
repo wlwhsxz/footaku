@@ -15,7 +15,6 @@ const fetchClubData = async () => {
 
   // forEach를 사용하여 각 clubId에 대해 비동기 fetch 작업을 설정
   clubIds.forEach((clubId) => {
-    console.log(clubId);
     // fetch 작업에 대한 프로미스를 fetchPromises 배열에 추가
     const fetchClubPromise = fetch(`${TM_URL}/clubs/${clubId}/profile`)
       .then((response) => response.json())
@@ -93,22 +92,6 @@ const fetchYoutubeData = async () => {
           ).then((post) => post._id); // 생성된 또는 업데이트된 Post의 _id를 반환
         })
       );
-
-      // const clearPostsField = async () => {
-      //   try {
-      //     // 모든 Club 문서에서 `posts` 배열을 빈 배열로 설정
-      //     const result = await Club.updateMany(
-      //       {}, // 모든 문서 선택
-      //       { $set: { posts: [] } } // `posts` 필드를 빈 배열로 설정
-      //     );
-
-      //     console.log("Posts fields cleared in all documents:", result);
-      //   } catch (error) {
-      //     console.error("Error clearing posts fields:", error);
-      //   }
-      // };
-
-      // clearPostsField();
 
       // Club 문서 업데이트
       const updatedClub = await Club.findByIdAndUpdate(

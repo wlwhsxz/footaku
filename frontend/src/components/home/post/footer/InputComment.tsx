@@ -40,7 +40,6 @@ const InputComment: React.FC<InputCommentProps> = ({
         likes: [],
       }
     );
-    console.log("inputComment response", response);
 
     const user = localStorage.getItem("user");
     const userObject = user ? JSON.parse(user) : null;
@@ -65,8 +64,6 @@ const InputComment: React.FC<InputCommentProps> = ({
       },
       likes: [],
     };
-
-    console.log("newComment - ", newComment);
 
     addComment(newComment);
     setComment("");

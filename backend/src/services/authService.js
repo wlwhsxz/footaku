@@ -14,7 +14,6 @@ const {
 /** (유저 입력 formdata) */
 const signUp = async (formData) => {
   const { userId, password, userName, email } = formData;
-  console.log(formData);
 
   try {
     const foundUserId = await User.findOne({ userId });

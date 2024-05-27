@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { Nav, leftSidebarLinks } from "../../../constatns/leftSidebarLinks";
 import Searchbar from "../searchbar/Searchbar";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
@@ -9,10 +8,6 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 
 const LeftSidebar: React.FC = () => {
-  const NavHandler = (label: string) => (e: React.MouseEvent) => {
-    console.log(`Clicked on: ${label}`);
-  };
-
   const [isExpanded, setIsExpanded] = useState(false);
   const [showSearchBar, setShowSearchBar] = useState(false);
 
