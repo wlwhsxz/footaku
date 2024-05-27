@@ -1,4 +1,4 @@
-const { Player, Club, Post } = require("./models/index");
+const { Player, Club, Post, Comment } = require("./models/index");
 const {
   CLUB_IDS,
   TM_URL,
@@ -7,15 +7,11 @@ const {
 } = require("../envconfig");
 const clubIds = CLUB_IDS.split(", ");
 
-// fetch한 데이터와 DB에 저장된 데이터를 비교하여 업데이트 하는게 좋을까?
-// 아니면 지금처럼 fetch한 데이터를 그대로 DB에 저장하는게 좋을까?
 const fetchClubData = async () => {
   const fetchClubPromises = [];
   const fetchPlayerPromises = [];
 
-  // forEach를 사용하여 각 clubId에 대해 비동기 fetch 작업을 설정
   clubIds.forEach((clubId) => {
-    // fetch 작업에 대한 프로미스를 fetchPromises 배열에 추가
     const fetchClubPromise = fetch(`${TM_URL}/clubs/${clubId}/profile`)
       .then((response) => response.json())
       .then((clubsData) => {
@@ -32,7 +28,6 @@ const fetchClubData = async () => {
     fetchPlayerPromises.push(fetchPlayerPromise);
   });
 
-  // Promise.all을 사용하여 모든 fetch 작업이 완료되기를 기다림
   try {
     const allClubsData = await Promise.all(fetchClubPromises);
     const allPlayersData = await Promise.all(fetchPlayerPromises);
@@ -42,10 +37,8 @@ const fetchClubData = async () => {
         updatedAt: clubData.updatedAt,
       }))
     );
-    // 기존 데이터 삭제
     await Club.deleteMany({});
-    await Player.deleteMany({}); // 기존 데이터 삭제
-    // fetch한 모든 데이터를 한 번에 DB에 저장
+    await Player.deleteMany({});
     await Club.insertMany(allClubsData);
     console.log("All clubs data has been saved successfully.");
     await Player.insertMany(flattenedPlayersData);
@@ -59,54 +52,91 @@ const fetchYoutubeData = async () => {
   const clubs = await Club.find();
 
   for (const club of clubs) {
+    // 클럽의 기존 youtube.videos와 posts를 초기화
+    // await Club.findByIdAndUpdate(club._id, {
+    //   $set: { "youtube.videos": [], posts: [] },
+    // });
+
+    // await Post.deleteMany({});
+    // await Comment.deleteMany({});
+
     try {
       const response = await fetch(
         `${YOUTUBE_API_URL}/playlistItems?part=snippet&playlistId=${club.youtube.playlistId}&maxResults=48&key=${YOUTUBE_API_KEY}`
       );
       const data = await response.json();
 
-      const postIds = await Promise.all(
-        data.items.map((video) => {
-          return Post.findOneAndUpdate(
-            { postId: video.id }, // 조건
-            {
-              $setOnInsert: {
-                name: `${club.name}`,
-                profileImg: `${club.image}`,
-                postId: `${video.id}`,
-                postTag: "youtube",
-                postType: "club",
-                postOwnerId: club.id,
-                postURL: `https://www.youtube.com/watch?v=${video.snippet.resourceId.videoId}`,
-                publishedAt: new Date(video.snippet.publishedAt),
-              },
-              $set: {
-                content: {
-                  postImg: `${video.snippet.thumbnails.high.url}`,
-                  summary: `${video.snippet.title}`,
-                  comments: [],
+      // 클럽의 기존 비디오 ID 리스트
+      const existingVideoIds = club.youtube.videos
+        ? club.youtube.videos.map((video) => video.id)
+        : [];
+      const newVideos = data.items
+        .filter(
+          (video) =>
+            !existingVideoIds.includes(video.snippet.resourceId.videoId)
+        )
+        .map((video) => ({
+          id: video.snippet.resourceId.videoId,
+          title: video.snippet.title,
+          thumbnail: video.snippet.thumbnails.high.url,
+          publishedAt: new Date(video.snippet.publishedAt),
+        }));
+
+      if (newVideos.length > 0) {
+        const postIds = await Promise.all(
+          newVideos.map((video) => {
+            return Post.findOneAndUpdate(
+              { postId: video.id },
+              {
+                $setOnInsert: {
+                  name: `${club.name}`,
+                  profileImg: `${club.image}`,
+                  postId: `${video.id}`,
+                  postTag: "youtube",
+                  postType: "club",
+                  postOwnerId: club._id,
+                  postURL: `https://www.youtube.com/watch?v=${video.id}`,
+                  publishedAt: video.publishedAt,
+                },
+                $set: {
+                  content: {
+                    postImg: `${video.thumbnail}`,
+                    summary: `${video.title}`,
+                    comments: [],
+                  },
                 },
               },
+              { upsert: true, new: true }
+            ).then((post) => post._id);
+          })
+        );
+
+        // Club 문서 업데이트
+        if (existingVideoIds.length === 0) {
+          // youtube.videos 필드가 빈 배열인 경우 전체를 설정
+          await Club.findByIdAndUpdate(
+            club._id,
+            {
+              $set: { "youtube.videos": newVideos },
+              $addToSet: { posts: { $each: postIds } },
             },
-            { upsert: true, new: true } // 옵션
-          ).then((post) => post._id); // 생성된 또는 업데이트된 Post의 _id를 반환
-        })
-      );
+            { new: true, runValidators: true }
+          );
+        } else {
+          // 기존 데이터에 새 비디오 추가
+          await Club.findByIdAndUpdate(
+            club._id,
+            {
+              $addToSet: { "youtube.videos": { $each: newVideos } },
+              $addToSet: { posts: { $each: postIds } },
+            },
+            { new: true, runValidators: true }
+          );
+        }
 
-      // Club 문서 업데이트
-      const updatedClub = await Club.findByIdAndUpdate(
-        club._id,
-        {
-          $set: { "youtube.videos": data.items },
-          $push: { posts: { $each: postIds } },
-        },
-        { new: true, runValidators: true }
-      );
-
-      if (updatedClub) {
         console.log("update Posts completed", club.name);
       } else {
-        console.log("No document found with that ID.");
+        console.log(`No new videos found for club: ${club.name}`);
       }
     } catch (error) {
       console.error("Error in processing YouTube data:", error);
