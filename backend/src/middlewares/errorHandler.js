@@ -8,7 +8,6 @@ class AppError extends Error {
 
 const errorHandler = (err, req, res, next) => {
   const { statusCode, message } = err;
-  console.log(statusCode, message);
   res.status(statusCode || 500).json({
     status: "error",
     statusCode: statusCode || 500,
@@ -21,10 +20,6 @@ const errorHandler = (err, req, res, next) => {
 const errorMessageHandler = (error, value) => {
   const { type, context } = error.details[0];
   const errorLabel = context.label;
-  console.log(type);
-  console.log(context);
-  console.log(errorLabel);
-  console.log(value);
   switch (type) {
     case "any.required": {
       return `${errorLabel}는 필수 입력 사항입니다.`;

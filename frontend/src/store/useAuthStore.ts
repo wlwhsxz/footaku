@@ -18,7 +18,6 @@ const useAuthStore = create(
     (set) => ({
       user: null,
       login: (user) => {
-        console.log("user", user);
         set({ user });
       },
       logout: () => set({ user: null }),

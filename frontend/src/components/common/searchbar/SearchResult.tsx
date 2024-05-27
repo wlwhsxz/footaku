@@ -7,7 +7,6 @@ interface SearchResultProps {
 }
 
 const SearchResult: React.FC<SearchResultProps> = ({ searchResult }) => {
-  console.log("searchResult - ", searchResult);
   return (
     <SearchResultContainer>
       {searchResult.length > 0 ? (

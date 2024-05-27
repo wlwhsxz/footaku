@@ -4,7 +4,6 @@ const ObjectId = require("mongoose").Types.ObjectId;
 
 //[ 포스트 전체 요청 ]
 const getAllPosts = async () => {
-  console.log("getAllPosts Service");
   const foundPosts = [];
 
   try {
@@ -38,8 +37,6 @@ const getPostById = async (postId) => {
       "content.comments"
     );
     const foundUser = await foundPost.populate("content.comments.createdBy");
-
-    console.log(foundUser);
 
     if (!foundPost) {
       return {
@@ -95,9 +92,6 @@ const createPostComment = async (comment) => {
 };
 
 const likePost = async (postId, userId) => {
-  console.log("likePost Service");
-  console.log(postId, userId);
-
   try {
     userId = new ObjectId(userId);
 
@@ -148,11 +142,8 @@ const unlikePost = async (postId, userId) => {
 const likePostComment = async (commentId, userId) => {
   try {
     userId = new ObjectId(userId);
-    console.log("userId", userId);
-    console.log("commentId", commentId);
 
     const foundComment = await Comment.findById(commentId);
-    console.log(foundComment);
 
     if (foundComment && !foundComment.likes.some((id) => id.equals(userId))) {
       foundComment.likes.push(userId);
@@ -160,8 +151,6 @@ const likePostComment = async (commentId, userId) => {
 
     await foundComment.save();
     const likeData = foundComment.likes;
-
-    console.log("likeData", likeData);
 
     return {
       statusCode: 200,
@@ -180,7 +169,6 @@ const likePostComment = async (commentId, userId) => {
 const unlikePostComment = async (commentId, userId) => {
   try {
     userId = new ObjectId(userId);
-    console.log("commentId", commentId);
 
     const foundComment = await Comment.findById(commentId);
     if (foundComment.likes.some((id) => id.equals(userId))) {

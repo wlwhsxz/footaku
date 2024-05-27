@@ -33,8 +33,6 @@ const Post: React.FC = () => {
           });
         });
       });
-
-      console.log("initial post data - ", data);
     } catch (error) {
       console.error("Failed to fetch posts:", error);
     }

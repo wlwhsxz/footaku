@@ -6,7 +6,6 @@ const {
 
 //[ 포스트 전체 요청 ]
 const getAllClubs = async (req, res, next) => {
-  console.log("getAllClubs Controller");
   try {
     const { statusCode, message, data } = await clubService.getAllClubs();
 
@@ -20,7 +19,6 @@ const getAllClubs = async (req, res, next) => {
 };
 
 const getAllYoutubeVideos = async (req, res, next) => {
-  console.log("getAllYoutubeVideos Contorller");
   try {
     const { statusCode, message, data } =
       await clubService.getAllYoutubeVideos();

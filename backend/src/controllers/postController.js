@@ -6,7 +6,6 @@ const {
 
 //[ 포스트 전체 요청 ]
 const getAllPosts = async (req, res, next) => {
-  console.log("getAllPosts Controller");
   try {
     const { statusCode, message, data } = await postService.getAllPosts();
 
@@ -69,7 +68,6 @@ const likePost = async (req, res, next) => {
 
     res.status(200).json({ message, data });
   } catch (error) {
-    console.log("error");
     console.error(error);
     return next(new AppError(500, "Internal Server Error"));
   }
@@ -79,8 +77,6 @@ const unlikePost = async (req, res, next) => {
   try {
     const { postId } = req.params;
     const userId = req.headers["user-id"];
-    console.log("unlikePost Controller");
-    console.log(postId, userId);
 
     const { statusCode, message, data } = await postService.unlikePost(
       postId,

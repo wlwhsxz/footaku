@@ -73,10 +73,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
               type === "post" ? postId! : commentId!,
               response.data.data.likeData
             );
-
-            console.log(response.data.data.likeData);
           } else {
-            console.log("unlike", type);
             const response = await axios.delete(
               `${process.env.REACT_APP_API_URL}/api/posts/${postId}${
                 type === "post" ? `` : `/comments/${commentId}`
@@ -89,8 +86,6 @@ const LikeButton: React.FC<LikeButtonProps> = ({
               type === "post" ? postId! : commentId!,
               response.data.data.likeData
             );
-
-            console.log(response.data.data.likeData);
           }
         } catch (error) {
           console.error("Error processing the like/unlike action", error);
