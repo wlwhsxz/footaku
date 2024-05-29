@@ -12,11 +12,13 @@ import { NewComment } from "../../../types";
 import CloseButton from "../../common/buttons/CloseButton";
 import { useLikeStore } from "../../../store/useLikeStore";
 import useAuthStore from "../../../store/useAuthStore";
+import Popup from "../../common/popup/Popup";
 
 interface PostDetailProps {
   _id: ObjectId;
   postId: string;
   onClose: () => void;
+  onPopupClose: () => void;
 }
 
 interface Comment {
@@ -46,12 +48,17 @@ interface Post {
   updatedAt: Date;
 }
 
-const PostDetail: React.FC<PostDetailProps> = ({ postId, _id, onClose }) => {
+const PostDetail: React.FC<PostDetailProps> = ({
+  postId,
+  _id,
+  onClose,
+  onPopupClose,
+}) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [postData, setPostData] = useState<Post | null>(null);
   const [pastDate, setPastDate] = useState<Date>(new Date());
-  const [activeButton, setActiveButton] = useState("");
-  const [isMoreOptionsOpen, setIsMoreOptionsOpen] = useState(false);
+  const [popupContent, setPopupContent] = useState<string[]>([]);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const likes = useLikeStore((state) => state.postLikes[postId || ""] || []);
   const user = useAuthStore((state) => state.user);
   const userId = user?.userId;
@@ -63,12 +70,22 @@ const PostDetail: React.FC<PostDetailProps> = ({ postId, _id, onClose }) => {
   };
 
   const handleMoreButtonClick = (buttonId: string) => {
-    setActiveButton(buttonId);
-    setIsMoreOptionsOpen(true);
+    switch (buttonId) {
+      case "comment":
+        setPopupContent(["Delete", "Cancel"]);
+        break;
+      case "post":
+        setPopupContent(["Share", "Report", "Cancel"]);
+        break;
+      default:
+        setPopupContent([]);
+    }
+    setIsPopupOpen(true);
   };
 
-  const closeMoreOptions = () => {
-    setIsMoreOptionsOpen(false);
+  const closePopup = () => {
+    setIsPopupOpen(false);
+    onPopupClose();
   };
 
   const handleAddComment = (newComment: NewComment) => {
@@ -81,6 +98,16 @@ const PostDetail: React.FC<PostDetailProps> = ({ postId, _id, onClose }) => {
           comments: updatedComments,
         },
       });
+    }
+  };
+
+  const handleContainerClick = (
+    e: React.MouseEvent<HTMLDivElement>,
+    isPopupOpen: boolean,
+    onClose: () => void
+  ) => {
+    if (e.target === e.currentTarget && !isPopupOpen) {
+      onClose();
     }
   };
 
@@ -100,13 +127,21 @@ const PostDetail: React.FC<PostDetailProps> = ({ postId, _id, onClose }) => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        onClose();
+        if (isPopupOpen) {
+          closePopup();
+        } else {
+          onClose();
+        }
       }
     };
 
     const handleClickOutside = (event: MouseEvent) => {
       if (event.target === event.currentTarget) {
-        onClose();
+        if (isPopupOpen) {
+          closePopup();
+        } else {
+          onClose();
+        }
       }
     };
 
@@ -117,10 +152,12 @@ const PostDetail: React.FC<PostDetailProps> = ({ postId, _id, onClose }) => {
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [onClose]);
+  }, [onClose, isPopupOpen]);
 
   return (
-    <PostDetailContainer onClick={onClose}>
+    <PostDetailContainer
+      onClick={(e) => handleContainerClick(e, isPopupOpen, onClose)}
+    >
       <CloseButton onClose={onClose} />
       <ContentContainer onClick={(e) => e.stopPropagation()}>
         {postData && (
@@ -155,7 +192,7 @@ const PostDetail: React.FC<PostDetailProps> = ({ postId, _id, onClose }) => {
                 <span>{postData?.name}</span>
               </StyledLink>
             </ClubInfo>
-            <StyledMoreButton onClose={closeMoreOptions} />
+            <StyledMoreButton buttonId="post" onClick={handleMoreButtonClick} />
           </PostHeader>
           <PostCommentViewSection>
             <span>
@@ -182,10 +219,8 @@ const PostDetail: React.FC<PostDetailProps> = ({ postId, _id, onClose }) => {
                     <CommentLower>
                       <TimeAgo date={comment.createdAt} />
                       <StyledMoreButton
-                        onClick={() => handleMoreButtonClick("delete")}
-                        isActive={activeButton === "delete"}
-                        buttonId="delete"
-                        onClose={closeMoreOptions}
+                        buttonId="comment"
+                        onClick={handleMoreButtonClick}
                       />
                     </CommentLower>
                   </CommentMain>
@@ -213,6 +248,13 @@ const PostDetail: React.FC<PostDetailProps> = ({ postId, _id, onClose }) => {
           </PostFooter>
         </PostSummary>
       </ContentContainer>
+      <Popup isOpen={isPopupOpen} onClose={closePopup}>
+        {popupContent.map((option, index) => (
+          <PopupOption key={index} onClick={closePopup}>
+            {option}
+          </PopupOption>
+        ))}
+      </Popup>
     </PostDetailContainer>
   );
 };
@@ -405,4 +447,12 @@ const ProfileImg = styled.img`
   border: 2px double black;
   border-radius: 50%;
   margin-right: 14px;
+`;
+
+const PopupOption = styled.div`
+  padding: 10px;
+  cursor: pointer;
+  &:hover {
+    background-color: #f0f0f0;
+  }
 `;
