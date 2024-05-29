@@ -7,6 +7,7 @@ import { ObjectId } from "mongodb";
 import { NewComment } from "../../../../types";
 import { useLikeStore } from "../../../../store/useLikeStore";
 import useAuthStore from "../../../../store/useAuthStore";
+import Popup from "../../../common/popup/Popup"; // Popup 컴포넌트 import
 
 interface FooterProps {
   _id: ObjectId;
@@ -18,6 +19,7 @@ interface FooterProps {
 const Footer: React.FC<FooterProps> = ({ _id, postId, summary, comments }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPostDetailOpen, setIsPostDetailOpen] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [commentsData, setCommentsData] = useState<NewComment[]>(
     comments || []
   );
@@ -42,9 +44,13 @@ const Footer: React.FC<FooterProps> = ({ _id, postId, summary, comments }) => {
     setIsPostDetailOpen(false);
   };
 
+  const closePopup = () => {
+    setIsPopupOpen(false);
+  };
+
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
-    if (isPostDetailOpen) {
+    if (isPostDetailOpen || isPopupOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = originalOverflow;
@@ -53,7 +59,7 @@ const Footer: React.FC<FooterProps> = ({ _id, postId, summary, comments }) => {
     return () => {
       document.body.style.overflow = originalOverflow;
     };
-  }, [isPostDetailOpen]);
+  }, [isPostDetailOpen, isPopupOpen]);
 
   return (
     <FooterContainer>
@@ -84,7 +90,12 @@ const Footer: React.FC<FooterProps> = ({ _id, postId, summary, comments }) => {
             addComment={addComment}
           />
           {isPostDetailOpen && (
-            <PostDetail postId={postId} _id={_id} onClose={closePostDetail} />
+            <PostDetail
+              postId={postId}
+              _id={_id}
+              onClose={closePostDetail}
+              onPopupClose={closePopup}
+            />
           )}
         </CommentText>
       </TextSection>

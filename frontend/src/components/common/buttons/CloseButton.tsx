@@ -22,7 +22,7 @@ const StyledCloseButton = styled.button`
   border: none;
   background: transparent;
   cursor: pointer;
-  padding: 20px 20px 0 0;
+  margin: 20px 20px 0 0;
 
   img {
     width: 16px;
