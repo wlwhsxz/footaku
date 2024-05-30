@@ -91,6 +91,44 @@ const createPostComment = async (comment) => {
   }
 };
 
+const deletePostComment = async (postId, commentId) => {
+  commentId = new ObjectId(commentId);
+  console.log(postId, commentId);
+
+  try {
+    const foundPost = await Post.findOne({ postId });
+    if (!foundPost) {
+      return {
+        statusCode: 404,
+        message: "포스트를 찾을 수 없습니다.",
+      };
+    }
+
+    const commentList = foundPost.content.comments;
+    const index = commentList.indexOf(commentId);
+    if (index === -1) {
+      return {
+        statusCode: 404,
+        message: "댓글을 찾을 수 없습니다.",
+      };
+    }
+
+    commentList.splice(index, 1);
+    await foundPost.save();
+
+    await Comment.findByIdAndDelete(commentId);
+    console.log("댓글 삭제 성공");
+
+    return {
+      statusCode: 200,
+      message: "댓글 삭제 성공",
+    };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, "Internal Server Error");
+  }
+};
+
 const likePost = async (postId, userId) => {
   try {
     userId = new ObjectId(userId);
@@ -191,6 +229,7 @@ module.exports = {
   getAllPosts,
   getPostById,
   createPostComment,
+  deletePostComment,
   likePost,
   unlikePost,
   likePostComment,
