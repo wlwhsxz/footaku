@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import PostButtons from "../../common/buttons/PostButtons";
+import axios from "axios";
 import { Link } from "react-router-dom";
+import PostButtons from "../../common/buttons/PostButtons";
 import InputComment from "./footer/InputComment";
 import PostTime from "./PostTime";
 import TimeAgo from "../../common/time/TimeAgo";
@@ -11,8 +12,9 @@ import { ObjectId } from "mongodb";
 import { NewComment } from "../../../types";
 import CloseButton from "../../common/buttons/CloseButton";
 import { useLikeStore } from "../../../store/useLikeStore";
-import useAuthStore from "../../../store/useAuthStore";
-import Popup from "../../common/popup/Popup";
+import { handleMoreButtonClick } from "../../common/moreOptions/moreButtonHandler";
+import Popup from "../../common/popups/Popup";
+import ConfirmPopup from "../../common/popups/Confirm";
 
 interface PostDetailProps {
   _id: ObjectId;
@@ -59,9 +61,9 @@ const PostDetail: React.FC<PostDetailProps> = ({
   const [pastDate, setPastDate] = useState<Date>(new Date());
   const [popupContent, setPopupContent] = useState<string[]>([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [currentCommentId, setCurrentCommentId] = useState<string | null>(null);
   const likes = useLikeStore((state) => state.postLikes[postId || ""] || []);
-  const user = useAuthStore((state) => state.user);
-  const userId = user?.userId;
 
   const focusInput = () => {
     if (inputRef.current) {
@@ -69,18 +71,17 @@ const PostDetail: React.FC<PostDetailProps> = ({
     }
   };
 
-  const handleMoreButtonClick = (buttonId: string) => {
-    switch (buttonId) {
-      case "comment":
-        setPopupContent(["Delete", "Cancel"]);
-        break;
-      case "post":
-        setPopupContent(["Share", "Report", "Cancel"]);
-        break;
-      default:
-        setPopupContent([]);
-    }
-    setIsPopupOpen(true);
+  const handleMoreButtonClickWrapper = (
+    buttonId: string,
+    commentId?: string
+  ) => {
+    handleMoreButtonClick(
+      buttonId,
+      setPopupContent,
+      setIsPopupOpen,
+      setCurrentCommentId,
+      commentId
+    );
   };
 
   const closePopup = () => {
@@ -101,6 +102,37 @@ const PostDetail: React.FC<PostDetailProps> = ({
     }
   };
 
+  const handleDeleteComment = async (commentId: string) => {
+    if (!postData) return;
+
+    const confirmDelete = window.confirm("정말로 삭제하시겠습니까?");
+    if (!confirmDelete) return;
+
+    try {
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_URL}/api/posts/${postId}/comment/${commentId}`
+      );
+
+      if (response.status === 200) {
+        const updatedComments = postData.content.comments.filter(
+          (comment) => comment._id.toString() !== commentId
+        );
+        setPostData({
+          ...postData,
+          content: {
+            ...postData.content,
+            comments: updatedComments,
+          },
+        });
+        setIsPopupOpen(false);
+      } else {
+        console.error("Failed to delete the comment");
+      }
+    } catch (error) {
+      console.error("An error occurred while deleting the comment:", error);
+    }
+  };
+
   const handleContainerClick = (
     e: React.MouseEvent<HTMLDivElement>,
     isPopupOpen: boolean,
@@ -113,12 +145,15 @@ const PostDetail: React.FC<PostDetailProps> = ({
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/posts/${postId}`
-      );
-      const data = await response.json();
-      setPostData(data.data);
-      setPastDate(new Date(data.data.publishedAt));
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/posts/${postId}`
+        );
+        setPostData(response.data.data);
+        setPastDate(new Date(response.data.data.publishedAt));
+      } catch (error) {
+        console.error("Failed to fetch post data:", error);
+      }
     };
 
     fetchData();
@@ -192,7 +227,10 @@ const PostDetail: React.FC<PostDetailProps> = ({
                 <span>{postData?.name}</span>
               </StyledLink>
             </ClubInfo>
-            <StyledMoreButton buttonId="post" onClick={handleMoreButtonClick} />
+            <StyledMoreButton
+              buttonId="post"
+              onClick={handleMoreButtonClickWrapper}
+            />
           </PostHeader>
           <PostCommentViewSection>
             <span>
@@ -220,7 +258,12 @@ const PostDetail: React.FC<PostDetailProps> = ({
                       <TimeAgo date={comment.createdAt} />
                       <StyledMoreButton
                         buttonId="comment"
-                        onClick={handleMoreButtonClick}
+                        onClick={() =>
+                          handleMoreButtonClickWrapper(
+                            "comment",
+                            comment._id.toString()
+                          )
+                        }
                       />
                     </CommentLower>
                   </CommentMain>
@@ -250,11 +293,28 @@ const PostDetail: React.FC<PostDetailProps> = ({
       </ContentContainer>
       <Popup isOpen={isPopupOpen} onClose={closePopup}>
         {popupContent.map((option, index) => (
-          <PopupOption key={index} onClick={closePopup}>
+          <PopupOption
+            key={index}
+            onClick={
+              option === "Delete"
+                ? () => handleDeleteComment(currentCommentId!)
+                : closePopup
+            }
+          >
             {option}
           </PopupOption>
         ))}
       </Popup>
+      {isConfirmOpen && (
+        <ConfirmPopup
+          message="정말로 삭제하시겠습니까?"
+          onConfirm={() => {
+            handleDeleteComment(currentCommentId!);
+            setIsConfirmOpen(false);
+          }}
+          onCancel={() => setIsConfirmOpen(false)}
+        />
+      )}
     </PostDetailContainer>
   );
 };

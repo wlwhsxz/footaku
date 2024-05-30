@@ -6,8 +6,6 @@ import InputComment from "./InputComment";
 import { ObjectId } from "mongodb";
 import { NewComment } from "../../../../types";
 import { useLikeStore } from "../../../../store/useLikeStore";
-import useAuthStore from "../../../../store/useAuthStore";
-import Popup from "../../../common/popup/Popup"; // Popup 컴포넌트 import
 
 interface FooterProps {
   _id: ObjectId;
@@ -24,8 +22,6 @@ const Footer: React.FC<FooterProps> = ({ _id, postId, summary, comments }) => {
     comments || []
   );
   const likes = useLikeStore((state) => state.postLikes[postId] || []);
-  const user = useAuthStore((state) => state.user);
-  const userId = user?.userId;
 
   const addComment = (newComment: NewComment) => {
     setCommentsData((prevComments) => [

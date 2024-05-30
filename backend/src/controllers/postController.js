@@ -54,6 +54,24 @@ const createPostComment = async (req, res, next) => {
   }
 };
 
+const deletePostComment = async (req, res, next) => {
+  try {
+    const { postId, commentId } = req.params;
+
+    const { statusCode, message, data } = await postService.deletePostComment(
+      postId,
+      commentId
+    );
+
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
+
+    res.status(200).json({ message, data });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, "Internal Server Error"));
+  }
+};
+
 const likePost = async (req, res, next) => {
   try {
     const { postId } = req.params;
@@ -134,6 +152,7 @@ module.exports = {
   getAllPosts,
   getPostById,
   createPostComment,
+  deletePostComment,
   likePostComment,
   likePost,
   unlikePost,
