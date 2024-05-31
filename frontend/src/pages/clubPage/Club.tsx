@@ -43,7 +43,7 @@ interface ClubDetailsType {
 
 const Club = () => {
   const { clubName } = useParams<{ clubName: string }>();
-  const formattedClubName = clubName && clubName.replace("_", " ");
+  const formattedClubName = clubName && clubName.replaceAll("_", " ");
 
   const [clubDetails, setClubDetails] = useState<ClubDetailsType | null>(null);
   const [youtubeVideos, setYoutubeVideos] = useState<YouTubeVideoResponse>({
