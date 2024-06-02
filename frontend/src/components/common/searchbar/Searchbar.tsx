@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import SearchResult from "./SearchResult";
 import axios from "axios";
 
@@ -12,7 +12,6 @@ const SearchBar: React.FC<SearchProps> = ({ visible }) => {
   const [searchResult, setSearchResult] = useState([]);
   const [searching, setSearching] = useState(false);
 
-  // Delay the search function 500 ms
   useEffect(() => {
     const handler = setTimeout(() => {
       if (searchQuery) {
@@ -39,7 +38,7 @@ const SearchBar: React.FC<SearchProps> = ({ visible }) => {
   if (!visible) return null;
 
   return (
-    <SearchBarContainer>
+    <SearchBarContainer visible={visible}>
       <SearchHeaderBox>Search</SearchHeaderBox>
       <SearchContentBox>
         <SearchBox>
@@ -59,13 +58,40 @@ const SearchBar: React.FC<SearchProps> = ({ visible }) => {
 
 export default SearchBar;
 
-const SearchBarContainer = styled.div`
+const slideIn = keyframes`
+  from {
+    transform: translateX(-10%);
+  }
+  to {
+    transform: translateX(0);
+  }
+`;
+
+const slideOut = keyframes`
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+`;
+
+const SearchBarContainer = styled.div<{ visible: boolean }>`
+  position: fixed;
+  top: 0;
+  left: 140px;
   width: 397px;
   height: 100vh;
 
   justify-content: center;
 
   padding: 8px 0;
+
+  background: white;
+  box-shadow: 8px 8px 12px rgba(0, 0, 0, 0.5);
+
+  transform: translateX(${(props) => (props.visible ? "0" : "-100%")});
+  animation: ${(props) => (props.visible ? slideIn : slideOut)} 0.5s forwards;
 `;
 
 const SearchContentBox = styled.div`
@@ -79,7 +105,7 @@ const SearchHeaderBox = styled.div`
   font-weight: 600;
 
   margin: 8px 0;
-  padding: 12px 14px 36px 24px;
+  padding: 25px 14px 36px 24px;
 `;
 
 const SearchBox = styled.div`
