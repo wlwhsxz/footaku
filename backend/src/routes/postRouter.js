@@ -5,6 +5,7 @@ const postController = require("../controllers/postController");
 
 //[ 포스트 전체 요청 ]
 router.get("/", postController.getAllPosts);
+router.get("/likes", postController.getLikedPosts);
 
 router.get("/:postId", postController.getPostById);
 

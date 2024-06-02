@@ -18,6 +18,21 @@ const getAllPosts = async (req, res, next) => {
   }
 };
 
+const getLikedPosts = async (req, res, next) => {
+  try {
+    const userId = req.query.userId;
+    const { statusCode, message, data } = await postService.getLikedPosts(
+      userId
+    );
+
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
+
+    res.status(200).json({ message, data });
+  } catch (error) {
+    return next(new AppError(500, "Internal Server Error"));
+  }
+};
+
 const getPostById = async (req, res, next) => {
   try {
     const { postId } = req.params;
@@ -150,6 +165,7 @@ const unlikePostComment = async (req, res, next) => {
 
 module.exports = {
   getAllPosts,
+  getLikedPosts,
   getPostById,
   createPostComment,
   deletePostComment,
