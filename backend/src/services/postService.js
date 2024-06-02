@@ -31,6 +31,22 @@ const getAllPosts = async () => {
   }
 };
 
+const getLikedPosts = async (userId) => {
+  userId = new ObjectId(userId);
+
+  try {
+    const likedPosts = await Post.find({ "likes._id": userId });
+
+    return {
+      statusCode: 200,
+      message: "포스트 전체 요청 성공",
+      data: likedPosts,
+    };
+  } catch (error) {
+    return new AppError(500, "Internal Server Error");
+  }
+};
+
 const getPostById = async (postId) => {
   try {
     const foundPost = await Post.findOne({ postId }).populate(
@@ -93,7 +109,6 @@ const createPostComment = async (comment) => {
 
 const deletePostComment = async (postId, commentId) => {
   commentId = new ObjectId(commentId);
-  console.log(postId, commentId);
 
   try {
     const foundPost = await Post.findOne({ postId });
@@ -227,6 +242,7 @@ const unlikePostComment = async (commentId, userId) => {
 
 module.exports = {
   getAllPosts,
+  getLikedPosts,
   getPostById,
   createPostComment,
   deletePostComment,

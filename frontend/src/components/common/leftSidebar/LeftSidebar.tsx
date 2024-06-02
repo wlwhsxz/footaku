@@ -6,14 +6,25 @@ import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import useAuthStore from "../../../store/useAuthStore";
+import Likesbar from "../../likesbar/Likesbar";
 
 const LeftSidebar: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [showSearchBar, setShowSearchBar] = useState(false);
+  const [showSearchbar, setShowSearchbar] = useState(false);
+  const [showLikesbar, setShowLikesbar] = useState(false);
+  const user = useAuthStore((state) => state.user);
+  const userId = user?.userId;
 
-  const handleSearchBar = () => {
+  const handleNavBar = (nav: string) => {
     setIsExpanded(!isExpanded);
-    setShowSearchBar(!showSearchBar);
+    if (nav === "search") {
+      setShowSearchbar(!showSearchbar);
+      setShowLikesbar(false);
+    } else {
+      setShowLikesbar(!showLikesbar);
+      setShowSearchbar(false);
+    }
   };
 
   return (
@@ -30,40 +41,31 @@ const LeftSidebar: React.FC = () => {
             </HomeBox>
           </StyledLink>
         </NavBox>
-        <NavBox onClick={handleSearchBar}>
+        <NavBox onClick={() => handleNavBar("search")}>
           <SearchBox>
             <SearchIcon />
             <NavLabel>Search</NavLabel>
           </SearchBox>
         </NavBox>
-        <NavBox>
+        <NavBox onClick={() => handleNavBar("likes")}>
           <LikesBox>
             <FavoriteBorderIcon />
             <NavLabel>Likes</NavLabel>
           </LikesBox>
         </NavBox>
         <NavBox>
-          <StyledLink to={`/96minu`}>
+          <StyledLink to={`${userId}`}>
             <LikesBox>
               <AccountCircleOutlinedIcon />
               <NavLabel>Profile</NavLabel>
             </LikesBox>
           </StyledLink>
         </NavBox>
-        {/* {leftSidebarLinks.map((nav: Nav) => (
-        <Link to={nav.route} key={nav.label}>
-          <NavBox>
-            <NavIcon>
-              <nav.icon />
-            </NavIcon>
-            <NavLabel>{nav.label}</NavLabel>
-          </NavBox>
-        </Link>
-      ))} */}
       </NavContainer>
-      <SearchContainer>
-        <Searchbar visible={showSearchBar} />
-      </SearchContainer>
+      <SideNavbarContainer>
+        <Searchbar visible={showSearchbar} />
+        <Likesbar visible={showLikesbar} />
+      </SideNavbarContainer>
     </LeftSidebarContainer>
   );
 };
@@ -106,7 +108,7 @@ const NavBox = styled.div`
 
   &:hover {
     cursor: pointer;
-    background: rgb(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.2);
   }
 
   color: white;
@@ -124,7 +126,7 @@ const NavLabel = styled.span`
   padding: 0px 0px 0px 16px;
 `;
 
-const SearchContainer = styled.div``;
+const SideNavbarContainer = styled.div``;
 
 const StyledLink = styled(Link)`
   text-decoration: none;
