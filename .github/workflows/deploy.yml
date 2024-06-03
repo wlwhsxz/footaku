@@ -33,6 +33,12 @@ jobs:
         working-directory: ./backend
         run: npm install
 
+      - name: Start SSH Agent
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-passphrase: ${{ secrets.SSH_PASSPHRASE }}
+
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
