@@ -21,7 +21,7 @@ const Chat = () => {
   const sendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     socket.emit("sendMessage", message, (res: any) => {
-      console.log("Res :", res);
+      console.log("socket Res :", res);
     });
     setMessage("");
   };
