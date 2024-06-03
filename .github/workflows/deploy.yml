@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
@@ -40,14 +40,27 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: |
             ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
+           script: |
+            # GitHub의 호스트 키를 known_hosts에 추가
+            mkdir -p ~/.ssh
+            ssh-keyscan github.com >> ~/.ssh/known_hosts
+            
+            # 프로젝트 디렉토리 이동 및 Git 업데이트
             cd /home/ubuntu/footaku
             git config --global --add safe.directory /home/ubuntu/footaku
-            git pull origin main
+            git pull origin master
+            
+            # 프론트엔드 설치 및 빌드
             cd frontend
+            sudo chown -R ubuntu:ubuntu /home/ubuntu/footaku/frontend/node_modules
             npm install
             npm run build
+            
+            # 백엔드 설치
             cd ../backend
+            sudo chown -R ubuntu:ubuntu /home/ubuntu/footaku/backend/node_modules
             npm install
-            pm2 restart all
+            
+            # PM2 및 Nginx 재시작
+            sudo pm2 restart all
             sudo systemctl restart nginx
