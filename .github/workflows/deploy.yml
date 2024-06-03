@@ -45,20 +45,21 @@ jobs:
             mkdir -p ~/.ssh
             ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-            # 프로젝트 디렉토리 이동 및 Git 업데이트
-            cd /home/ubuntu/footaku
-            git config --global --add safe.directory /home/ubuntu/footaku
+            # 프로젝트 디렉토리 이동 및 소유권 변경
+            sudo chown -R ${{ secrets.EC2_USER }}:${{ secrets.EC2_USER }} /home/${{ secrets.EC2_USER }}/footaku
+
+            # Git 업데이트
+            cd /home/${{ secrets.EC2_USER }}/footaku
+            git config --global --add safe.directory /home/${{ secrets.EC2_USER }}/footaku
             git pull origin master
 
             # 프론트엔드 설치 및 빌드
             cd frontend
-            sudo chown -R ubuntu:ubuntu /home/ubuntu/footaku/frontend/node_modules
             npm install
             npm run build
 
             # 백엔드 설치
             cd ../backend
-            sudo chown -R ubuntu:ubuntu /home/ubuntu/footaku/backend/node_modules
             npm install
 
             # PM2 및 Nginx 재시작
