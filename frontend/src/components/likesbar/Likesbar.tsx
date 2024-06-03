@@ -73,7 +73,11 @@ const LikesPage: React.FC<LikesPageProps> = ({ visible }) => {
               </Link>
             </PostHeader>
             <PostContent>
-              <PostImage src={post.content.postImg} alt="Post" />
+              <PostImage
+                src={post.content.postImg}
+                alt="Post"
+                onClick={() => window.open(post.postURL)}
+              />
               <PostLike>❤️</PostLike>
             </PostContent>
             <PostSummary>
@@ -187,6 +191,7 @@ const PostImage = styled.img`
   max-width: 90%;
   border-radius: 5px;
   margin-bottom: 10px;
+  cursor: pointer;
 `;
 
 const PostLike = styled.span`
