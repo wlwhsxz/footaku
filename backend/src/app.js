@@ -14,10 +14,9 @@ const postRouter = require("./routes/postRouter");
 const clubRouter = require("./routes/clubRouter.js");
 const allowedOrigins = [
   "http://localhost:3000",
-  "http://localhost:8080",
+  "http://localhost:8000",
   "https://footaku.com",
-  "https://footaku.com:8080",
-  "https://footaku.com:443"
+  "https://footaku.com:8000",
 ];
 
 const corsOptions = {
@@ -44,15 +43,15 @@ connectToDatabase()
 
     // await insertDummyUsers();
     // await insertDummyPosts();
-    // cron.schedule(
-    //   "00 00 * * *",
-    //   async () => {
-    //     await fetchClubNewsData();
-    //   },
-    //   { scheduled: true, timezone: "Asia/Seoul" }
-    // );
+    cron.schedule(
+      "00 00 * * *",
+      async () => {
+        await fetchYoutubeData();
+      },
+      { scheduled: true, timezone: "Asia/Seoul" }
+    );
+    // await fetchClubNewsData();
     // await fetchClubData();
-    // await fetchYoutubeData();
   })
   .catch((err) => {
     console.error(err);
