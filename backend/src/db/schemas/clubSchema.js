@@ -54,6 +54,12 @@ const clubSchema = new mongoose.Schema({
     playlistId: String,
     videos: Array,
   },
+  followers: [
+    {
+      type: String,
+      ref: "User",
+    },
+  ],
   updatedAt: String,
 });
 
