@@ -67,6 +67,8 @@ const logIn = async (req, res, next) => {
       httpOnly: true,
       secure: env.NODE_ENV === "production",
       sameSite: "strict",
+      path: "/",
+      domain: "footaku.com",
     };
 
     res.cookie("accessToken", accessToken, {
