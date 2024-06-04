@@ -69,7 +69,6 @@ const logIn = async (userId, password) => {
       userId: foundUser.userId,
       userName: foundUser.userName,
       email: foundUser.email,
-      password: foundUser.password,
     };
 
     //[accessToken 생성]
