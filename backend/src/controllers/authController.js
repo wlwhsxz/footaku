@@ -64,7 +64,7 @@ const logIn = async (req, res, next) => {
     if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     const cookieOptions = {
-      httpOnly: env.NODE_ENV === "production",
+      httpOnly: true,
       secure: env.NODE_ENV === "production",
       sameSite: "strict",
     };

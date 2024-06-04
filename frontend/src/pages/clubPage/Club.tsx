@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, useParams } from "react-router-dom";
 import styled from "styled-components";
 import LeftSidebar from "../../components/common/leftSidebar/LeftSidebar";
+import FollowButton from "../../components/common/buttons/FollowButton";
 interface VideoItem {
   snippet: {
     resourceId: {
@@ -49,6 +50,14 @@ const Club = () => {
   const [youtubeVideos, setYoutubeVideos] = useState<YouTubeVideoResponse>({
     items: [],
   });
+  const [isFollowing, setIsFollowing] = useState(false);
+
+  const handleFollowButtonClick = () => {
+    const response = axios.post(
+      `${process.env.REACT_APP_API_URL}/api/clubs/${formattedClubName}/follow`
+    );
+    setIsFollowing(!isFollowing);
+  };
 
   // 클럽 정보를 가져오는 useEffect
   useEffect(() => {
@@ -95,9 +104,13 @@ const Club = () => {
             )}
           </ProfileImgBox>
           <BioBox>
-            <div>
+            <BioHeader>
               <h2>{clubDetails?.name}</h2>
-            </div>
+              <FollowButton
+                isFollowing={isFollowing}
+                onClick={handleFollowButtonClick}
+              />
+            </BioHeader>
             <div>
               {`${clubDetails?.league.countryName} - ${clubDetails?.league.name}`}
             </div>
@@ -244,6 +257,11 @@ const BioBox = styled.div`
   flex-basis: 30px;
   flex-shrink: 1;
   justify-content: center;
+`;
+
+const BioHeader = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const TabBox = styled.div`
