@@ -3,6 +3,7 @@ const {
   AppError,
   errorMessageHandler,
 } = require("../middlewares/errorHandler");
+const env = require("../envconfig");
 // const {
 //   signUpSchema,
 //   logInSchema,
@@ -62,12 +63,17 @@ const logIn = async (req, res, next) => {
 
     if (statusCode !== 200) return next(new AppError(statusCode, message));
 
-    //[accessToken, refreshToken 각각 response 헤더, 쿠키 세팅]
+    const cookieOptions = {
+      httpOnly: env.NODE_ENV === "production",
+      secure: env.NODE_ENV === "production",
+      sameSite: "strict",
+    };
+
     res.cookie("accessToken", accessToken, {
-      httpOnly: false,
+      ...cookieOptions,
     });
     res.cookie("refreshToken", refreshToken, {
-      httpOnly: false, //배포 시 httpOnly: true, secure: true,
+      ...cookieOptions,
     });
 
     res.status(200).json({
