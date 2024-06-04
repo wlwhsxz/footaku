@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-24.04
 
     steps:
@@ -33,34 +33,44 @@ jobs:
         working-directory: ./backend
         run: npm install
 
+      - name: Start SSH Agent and add key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
-          key: |
-            ${{ secrets.SSH_PRIVATE_KEY }}
-           script: |
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
             # GitHub의 호스트 키를 known_hosts에 추가
             mkdir -p ~/.ssh
             ssh-keyscan github.com >> ~/.ssh/known_hosts
-            
-            # 프로젝트 디렉토리 이동 및 Git 업데이트
-            cd /home/ubuntu/footaku
-            git config --global --add safe.directory /home/ubuntu/footaku
+
+            # SSH config 설정
+            echo "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+
+            # 프로젝트 디렉토리 이동 및 소유권 변경
+            sudo chown -R ${{ secrets.EC2_USER }}:${{ secrets.EC2_USER }} /home/${{ secrets.EC2_USER }}/footaku
+
+            # Git 업데이트
+            cd /home/${{ secrets.EC2_USER }}/footaku
+            git config --global --add safe.directory /home/${{ secrets.EC2_USER }}/footaku
             git pull origin master
-            
+
             # 프론트엔드 설치 및 빌드
             cd frontend
-            sudo chown -R ubuntu:ubuntu /home/ubuntu/footaku/frontend/node_modules
+            sudo chown -R ${{ secrets.EC2_USER }}:${{ secrets.EC2_USER }} /home/${{ secrets.EC2_USER }}/footaku/frontend
             npm install
             npm run build
-            
+
             # 백엔드 설치
             cd ../backend
-            sudo chown -R ubuntu:ubuntu /home/ubuntu/footaku/backend/node_modules
+            sudo chown -R ${{ secrets.EC2_USER }}:${{ secrets.EC2_USER }} /home/${{ secrets.EC2_USER }}/footaku/backend
             npm install
-            
+
             # PM2 및 Nginx 재시작
             sudo pm2 restart all
             sudo systemctl restart nginx

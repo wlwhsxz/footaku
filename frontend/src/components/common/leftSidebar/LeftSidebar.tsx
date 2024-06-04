@@ -33,14 +33,14 @@ const LeftSidebar: React.FC = () => {
         <LogoBox>
           <h2>Footaku</h2>
         </LogoBox>
-        <NavBox>
-          <StyledLink to="/">
+        <StyledLink to="/">
+          <NavBox>
             <HomeBox>
               <HomeIcon />
               <NavLabel>Home</NavLabel>
             </HomeBox>
-          </StyledLink>
-        </NavBox>
+          </NavBox>
+        </StyledLink>
         <NavBox onClick={() => handleNavBar("search")}>
           <SearchBox>
             <SearchIcon />
