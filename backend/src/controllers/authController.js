@@ -66,7 +66,6 @@ const logIn = async (req, res, next) => {
     const cookieOptions = {
       httpOnly: true,
       secure: env.NODE_ENV === "production",
-      sameSite: "strict",
     };
 
     res.setHeader("Authorization", `Bearer ${accessToken}`);
