@@ -1,25 +1,37 @@
-const fs = require('fs');
-const { createServer } = require("https");
+const fs = require("fs");
 const app = require("./app");
 const { Server } = require("socket.io");
 const env = require("./envconfig");
-const options = {
-  key: fs.readFileSync('/etc/letsencrypt/live/footaku.com/privkey.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/footaku.com/fullchain.pem')
-};
+const { createServer } =
+  env.NODE_ENV === "production" ? require("https") : require("http");
+
+const options =
+  env.NODE_ENV === "production"
+    ? {
+        key: fs.readFileSync("/etc/letsencrypt/live/footaku.com/privkey.pem"),
+        cert: fs.readFileSync(
+          "/etc/letsencrypt/live/footaku.com/fullchain.pem"
+        ),
+      }
+    : {};
+
 const allowedOrigins = [
   "http://localhost:3000",
-  "http://localhost:8000",
+  "http://localhost:8080",
   "https://footaku.com",
   "https://footaku.com:8000",
 ];
 
-const httpServer = createServer(options, app);
-const io = new Server(httpServer, {
-  cors: {
-    allowedOrigins
-  },
-});
+const httpsServer = createServer(options, app);
+const httpServer = createServer(app);
+const io = new Server(
+  env.NODE_ENV === "production" ? httpsServer : httpServer,
+  {
+    cors: {
+      allowedOrigins,
+    },
+  }
+);
 
 require("./utils/io")(io);
 httpServer.listen(env.PORT || process.env.production.PORT, () => {
