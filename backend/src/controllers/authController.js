@@ -67,6 +67,8 @@ const logIn = async (req, res, next) => {
       httpOnly: true,
       secure: env.NODE_ENV === "production",
       sameSite: "strict",
+      path: "/", // 기본 경로 설정
+      domain: "yourdomain.com", // 필요한 경우 도메인 설정
     };
 
     res.cookie("accessToken", accessToken, {
