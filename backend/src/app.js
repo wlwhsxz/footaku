@@ -14,7 +14,7 @@ const postRouter = require("./routes/postRouter");
 const clubRouter = require("./routes/clubRouter.js");
 const allowedOrigins = [
   "http://localhost:3000",
-  "http://localhost:8000",
+  "http://localhost:8080",
   "https://footaku.com",
   "https://footaku.com:8000",
 ];
