@@ -42,7 +42,6 @@ const LikesPage: React.FC<LikesPageProps> = ({ visible }) => {
           },
         }
       );
-      console.log(response);
       setLikedPosts(response.data.data);
     } catch (error) {
       console.error("Failed to fetch liked posts:", error);
