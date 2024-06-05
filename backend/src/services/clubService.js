@@ -56,10 +56,82 @@ const getClubByName = async (clubName) => {
   }
 };
 
+const addClubFollower = async (clubName, userId) => {
+  try {
+    const foundClubs = await Club.find({
+      name: new RegExp(clubName, "i"), // 대소문자를 구분하지 않음
+    });
+
+    if (foundClubs.length === 0) {
+      return {
+        statusCode: 404,
+        message: "클럽을 찾을 수 없습니다.",
+      };
+    }
+
+    const clubToFollow = foundClubs[0];
+
+    if (clubToFollow.followers && !clubToFollow.followers.includes(userId)) {
+      clubToFollow.followers.push(userId);
+      await clubToFollow.save();
+    }
+
+    return {
+      statusCode: 200,
+      message: "팔로잉 성공",
+      data: clubToFollow.followers,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      statusCode: 500,
+      message: "Internal Server Error",
+    };
+  }
+};
+
+const removeClubFollower = async (clubName, userId) => {
+  try {
+    const foundClubs = await Club.find({
+      name: new RegExp(clubName, "i"),
+    });
+
+    if (foundClubs.length === 0) {
+      return {
+        statusCode: 404,
+        message: "클럽을 찾을 수 없습니다.",
+      };
+    }
+
+    const clubToUnfollow = foundClubs[0];
+
+    if (clubToUnfollow.followers && clubToUnfollow.followers.includes(userId)) {
+      clubToUnfollow.followers = clubToUnfollow.followers.filter(
+        (follower) => follower !== userId
+      );
+      await clubToUnfollow.save();
+    }
+
+    return {
+      statusCode: 200,
+      message: "언팔로우 성공",
+      data: clubToUnfollow.followers,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      statusCode: 500,
+      message: "Internal Server Error",
+    };
+  }
+};
+
 const getYoutubeVideos = async (clubName, _id) => {};
 
 module.exports = {
   getAllClubs,
   getAllYoutubeVideos,
   getClubByName,
+  addClubFollower,
+  removeClubFollower,
 };

@@ -4,6 +4,8 @@ import { Link, NavLink, useParams } from "react-router-dom";
 import styled from "styled-components";
 import LeftSidebar from "../../components/common/leftSidebar/LeftSidebar";
 import FollowButton from "../../components/common/buttons/FollowButton";
+import useAuthStore from "../../store/useAuthStore";
+
 interface VideoItem {
   snippet: {
     resourceId: {
@@ -51,15 +53,25 @@ const Club = () => {
     items: [],
   });
   const [isFollowing, setIsFollowing] = useState(false);
+  const user = useAuthStore((state) => state.user);
+  const userId = user?.userId;
 
-  const handleFollowButtonClick = () => {
-    const response = axios.post(
-      `${process.env.REACT_APP_API_URL}/api/clubs/${formattedClubName}/follow`
-    );
+  const handleFollowButtonClick = async () => {
+    if (isFollowing) {
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/clubs/${formattedClubName}/follow`,
+        {},
+        { withCredentials: true }
+      );
+    } else {
+      await axios.delete(
+        `${process.env.REACT_APP_API_URL}/api/clubs/${formattedClubName}/follow`,
+        { withCredentials: true }
+      );
+    }
     setIsFollowing(!isFollowing);
   };
 
-  // 클럽 정보를 가져오는 useEffect
   useEffect(() => {
     const fetchClubDetails = async () => {
       try {
@@ -67,6 +79,7 @@ const Club = () => {
           `${process.env.REACT_APP_API_URL}/api/clubs/${formattedClubName}`
         );
         setClubDetails(data.data[0]);
+        setIsFollowing(data.data[0].followers.includes(userId));
       } catch (error) {
         console.error("Error fetching club details:", error);
       }
@@ -75,7 +88,6 @@ const Club = () => {
     fetchClubDetails();
   }, [formattedClubName]);
 
-  // YouTube 비디오를 가져오는 useEffect
   useEffect(() => {
     const fetchYouTubeVideos = async () => {
       if (clubDetails?.youtube.playlistId) {
@@ -100,7 +112,7 @@ const Club = () => {
         <ProfileBox>
           <ProfileImgBox>
             {clubDetails && clubDetails.image && (
-              <img src={clubDetails?.image} alt={clubDetails?.name} />
+              <img src={clubDetails.image} alt={clubDetails.name} />
             )}
           </ProfileImgBox>
           <BioBox>

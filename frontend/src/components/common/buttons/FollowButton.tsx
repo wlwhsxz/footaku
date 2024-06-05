@@ -11,7 +11,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({
   onClick,
 }) => {
   return (
-    <FollowButtonContainer isFollowing={isFollowing} onClick={onClick}>
+    <FollowButtonContainer $isFollowing={isFollowing} onClick={onClick}>
       {isFollowing ? "Following" : "Follow"}
     </FollowButtonContainer>
   );
@@ -19,7 +19,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({
 
 export default FollowButton;
 
-const FollowButtonContainer = styled.div<FollowButtonProps>`
+const FollowButtonContainer = styled.div<{ $isFollowing: boolean }>`
   height: fit-content;
   font-size: 14px;
   font-weight: 500;
@@ -28,8 +28,8 @@ const FollowButtonContainer = styled.div<FollowButtonProps>`
   margin-left: 24px;
   border-radius: 8px;
   border: none;
-  color: ${({ isFollowing }) => (isFollowing ? "black" : "white")};
-  background-color: ${({ isFollowing }) =>
-    isFollowing ? "#eaeaea" : "#0095f6"};
+  color: ${({ $isFollowing }) => ($isFollowing ? "black" : "white")};
+  background-color: ${({ $isFollowing }) =>
+    $isFollowing ? "#e3e3e3" : "#0095f6"};
   cursor: pointer;
 `;
