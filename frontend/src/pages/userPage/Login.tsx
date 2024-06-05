@@ -38,7 +38,6 @@ const Login: React.FC = () => {
         setUser(userData);
 
         socket.emit("login", user, (res: any) => {
-          console.log("Res :", res);
           localStorage.setItem("userObjectId", res.data.userId);
         });
         navigate("/");
