@@ -22,10 +22,9 @@ const allowedOrigins = [
   "https://footaku.com:8000",
 ];
 
-const httpsServer = createServer(options, app);
-const httpServer = createServer(app);
+const server = createServer(options, app);
 const io = new Server(
-  env.NODE_ENV === "production" ? httpsServer : httpServer,
+  server,
   {
     cors: {
       allowedOrigins,
@@ -34,7 +33,7 @@ const io = new Server(
 );
 
 require("./utils/io")(io);
-httpServer.listen(env.PORT || process.env.production.PORT, () => {
+server.listen(env.PORT || process.env.production.PORT, () => {
   console.log("PORT:", env.PORT);
   console.log("ENV:", env.NODE_ENV);
   console.log("DB_HOST:", env.DB_HOST);

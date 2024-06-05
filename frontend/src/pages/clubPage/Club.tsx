@@ -57,7 +57,6 @@ const Club = () => {
   const userId = user?.userId;
 
   const handleFollowButtonClick = async () => {
-    console.log(isFollowing);
     try {
       if (isFollowing) {
         await axios.delete(
