@@ -57,19 +57,24 @@ const Club = () => {
   const userId = user?.userId;
 
   const handleFollowButtonClick = async () => {
-    if (isFollowing) {
-      await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/clubs/${formattedClubName}/follow`,
-        {},
-        { withCredentials: true }
-      );
-    } else {
-      await axios.delete(
-        `${process.env.REACT_APP_API_URL}/api/clubs/${formattedClubName}/follow`,
-        { withCredentials: true }
-      );
+    console.log(isFollowing);
+    try {
+      if (isFollowing) {
+        await axios.delete(
+          `${process.env.REACT_APP_API_URL}/api/clubs/${formattedClubName}/follow`,
+          { withCredentials: true }
+        );
+      } else {
+        await axios.post(
+          `${process.env.REACT_APP_API_URL}/api/clubs/${formattedClubName}/follow`,
+          {},
+          { withCredentials: true }
+        );
+      }
+      setIsFollowing(!isFollowing);
+    } catch (error) {
+      console.error("Error following/unfollowing club:", error);
     }
-    setIsFollowing(!isFollowing);
   };
 
   useEffect(() => {
