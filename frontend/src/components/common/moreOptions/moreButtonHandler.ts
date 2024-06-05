@@ -10,7 +10,6 @@ export const handleMoreButtonClick = (
       setPopupContent(["Delete", "Cancel"]);
       if (setCurrentCommentId && commentId) {
         setCurrentCommentId(commentId);
-        console.log(commentId);
       }
 
       break;

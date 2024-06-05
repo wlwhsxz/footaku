@@ -62,7 +62,6 @@ const LikeButton: React.FC<LikeButtonProps> = ({
       if (userId) {
         try {
           if (!clicked) {
-            console.log("like", type);
             const response = await axios.post(
               `${process.env.REACT_APP_API_URL}/api/posts/${postId}${
                 type === "post" ? `` : `/comments/${commentId}`

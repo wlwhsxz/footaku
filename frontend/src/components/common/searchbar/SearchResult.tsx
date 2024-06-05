@@ -16,7 +16,7 @@ const SearchResult: React.FC<SearchResultProps> = ({ searchResult }) => {
             state={{ clubDetails: item }}
             key={item._id}
           >
-            <ProfileBox onClick={(e) => console.log("Clicked:", item.name, e)}>
+            <ProfileBox>
               <ResultImgBox>
                 <img src={item.image} alt={item.name} />
               </ResultImgBox>
