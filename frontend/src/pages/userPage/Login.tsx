@@ -28,7 +28,8 @@ const Login: React.FC = () => {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/auths/login`,
-        credentials
+        credentials,
+        { withCredentials: true }
       );
       if (response.data.statusCode === 200) {
         const user = response.data.data;
