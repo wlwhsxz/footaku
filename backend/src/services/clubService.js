@@ -1,4 +1,4 @@
-const { Club } = require("../db/models/index");
+const { Club, User } = require("../db/models/index");
 const { AppError } = require("../middlewares/errorHandler");
 
 //[ 포스트 전체 요청 ]
@@ -62,10 +62,19 @@ const addClubFollower = async (clubName, userId) => {
       name: new RegExp(clubName, "i"), // 대소문자를 구분하지 않음
     });
 
+    const foundUser = await User.findOne({ userId });
+
     if (foundClubs.length === 0) {
       return {
         statusCode: 404,
         message: "클럽을 찾을 수 없습니다.",
+      };
+    }
+
+    if (!foundUser) {
+      return {
+        statusCode: 404,
+        message: "유저를 찾을 수 없습니다.",
       };
     }
 
@@ -76,10 +85,15 @@ const addClubFollower = async (clubName, userId) => {
       await clubToFollow.save();
     }
 
+    if (foundUser.followings && !foundUser.followings.includes(clubName)) {
+      foundUser.followings.push(clubName);
+      await foundUser.save();
+    }
+
     return {
       statusCode: 200,
       message: "팔로잉 성공",
-      data: clubToFollow.followers,
+      data: foundUser.followings,
     };
   } catch (error) {
     console.error(error);
@@ -96,10 +110,19 @@ const removeClubFollower = async (clubName, userId) => {
       name: new RegExp(clubName, "i"),
     });
 
+    const foundUser = await User.findOne({ userId });
+
     if (foundClubs.length === 0) {
       return {
         statusCode: 404,
         message: "클럽을 찾을 수 없습니다.",
+      };
+    }
+
+    if (!foundUser) {
+      return {
+        statusCode: 404,
+        message: "유저를 찾을 수 없습니다.",
       };
     }
 
@@ -112,10 +135,18 @@ const removeClubFollower = async (clubName, userId) => {
       await clubToUnfollow.save();
     }
 
+    if (foundUser.followings && foundUser.followings.includes(clubName)) {
+      console.log(clubName, foundUser.followings);
+      foundUser.followings = foundUser.followings.filter(
+        (following) => following !== clubName
+      );
+      await foundUser.save();
+    }
+
     return {
       statusCode: 200,
       message: "언팔로우 성공",
-      data: clubToUnfollow.followers,
+      data: foundUser.followers,
     };
   } catch (error) {
     console.error(error);
