@@ -11,7 +11,7 @@ interface SignUpFormData {
 }
 
 interface StyledInputProps {
-  errRef?: string;
+  $errRef?: string;
 }
 
 interface ErrorMessages {
@@ -52,7 +52,7 @@ const SignUp: React.FC = () => {
     } catch (err) {
       if (axios.isAxiosError(err)) {
         const errMessage = err.response?.data.message;
-        alert(errMessage); // Handle error
+        alert(errMessage);
 
         const fieldName = errorMessages[errMessage];
         if (fieldName) {
@@ -65,7 +65,7 @@ const SignUp: React.FC = () => {
   return (
     <StyledForm onSubmit={handleSubmit}>
       <StyledInput
-        errRef={errRef}
+        $errRef={errRef}
         type="text"
         name="userId"
         placeholder="User ID"
@@ -74,7 +74,7 @@ const SignUp: React.FC = () => {
         required
       />
       <StyledInput
-        errRef={errRef}
+        $errRef={errRef}
         type="email"
         name="email"
         placeholder="Email"
@@ -83,7 +83,7 @@ const SignUp: React.FC = () => {
         required
       />
       <StyledInput
-        errRef={errRef}
+        $errRef={errRef}
         type="text"
         name="userName"
         placeholder="UserName"
@@ -100,6 +100,9 @@ const SignUp: React.FC = () => {
         required
       />
       <StyledButton type="submit">Sign Up</StyledButton>
+      <SignupButton onClick={() => navigate("/login")}>
+        Back to Login
+      </SignupButton>
     </StyledForm>
   );
 };
@@ -125,8 +128,8 @@ const StyledInput = styled.input<StyledInputProps>`
     border-color: #007bff;
   }
 
-  ${({ errRef, name }) =>
-    errRef === name &&
+  ${({ $errRef, name }) =>
+    $errRef === name &&
     css`
       border-color: red;
       border-width: 2px;
@@ -143,5 +146,12 @@ const StyledButton = styled.button`
   cursor: pointer;
   &:hover {
     background-color: #0056b3;
+  }
+`;
+
+const SignupButton = styled(StyledButton)`
+  background-color: #cacaca;
+  &:hover {
+    background-color: #ababab;
   }
 `;
