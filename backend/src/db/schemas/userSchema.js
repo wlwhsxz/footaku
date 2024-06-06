@@ -57,6 +57,10 @@ const UserSchema = new Schema(
         type: String,
       },
     },
+    followings: {
+      type: Array,
+      default: [],
+    },
   },
   {
     timestamps: true,

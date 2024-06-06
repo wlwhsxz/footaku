@@ -38,7 +38,7 @@ const SearchBar: React.FC<SearchProps> = ({ visible }) => {
   if (!visible) return null;
 
   return (
-    <SearchBarContainer visible={visible}>
+    <SearchBarContainer $visible={visible}>
       <SearchHeaderBox>Search</SearchHeaderBox>
       <SearchContentBox>
         <SearchBox>
@@ -76,7 +76,7 @@ const slideOut = keyframes`
   }
 `;
 
-const SearchBarContainer = styled.div<{ visible: boolean }>`
+const SearchBarContainer = styled.div<{ $visible: boolean }>`
   position: fixed;
   top: 0;
   left: 140px;
@@ -90,8 +90,8 @@ const SearchBarContainer = styled.div<{ visible: boolean }>`
   background: white;
   box-shadow: 8px 8px 12px rgba(0, 0, 0, 0.5);
 
-  transform: translateX(${(props) => (props.visible ? "0" : "-100%")});
-  animation: ${(props) => (props.visible ? slideIn : slideOut)} 0.5s forwards;
+  transform: translateX(${(props) => (props.$visible ? "0" : "-100%")});
+  animation: ${(props) => (props.$visible ? slideIn : slideOut)} 0.5s forwards;
 `;
 
 const SearchContentBox = styled.div`

@@ -33,18 +33,28 @@ const Login: React.FC = () => {
       );
       if (response.data.statusCode === 200) {
         const user = response.data.data;
-        const userData = { _id: user._id, userId: user.userId };
+        const userData = {
+          _id: user._id,
+          userId: user.userId,
+          followings: user.followings ?? [],
+          isFirstLogin: user.isFirstLogin ?? true,
+        };
         localStorage.setItem("user", JSON.stringify(user));
         setUser(userData);
 
         socket.emit("login", user, (res: any) => {
           localStorage.setItem("userObjectId", res.data.userId);
         });
-        navigate("/");
+
+        if (user.isFirstLogin) {
+          navigate("/onboard");
+        } else {
+          navigate("/");
+        }
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        setError(error.response?.data.error); // Handle error
+        setError(error.response?.data.error);
       }
     }
   };
@@ -52,7 +62,7 @@ const Login: React.FC = () => {
   return (
     <StyledForm onSubmit={handleSubmit}>
       <StyledInput
-        type="string"
+        type="text"
         name="userId"
         placeholder="User ID"
         value={credentials.userId}
@@ -67,8 +77,9 @@ const Login: React.FC = () => {
         onChange={handleChange}
         required
       />
-      {error && <div>{error}</div>}
+      {error && <ErrorMessage>{error}</ErrorMessage>}
       <StyledButton type="submit">Login</StyledButton>
+      <SignupButton onClick={() => navigate("/signup")}>Sign Up</SignupButton>
     </StyledForm>
   );
 };
@@ -103,9 +114,20 @@ const StyledButton = styled.button`
   border-radius: 4px;
   background-color: #007bff;
   color: white;
-  font-size: 16px;
   cursor: pointer;
   &:hover {
     background-color: #0056b3;
   }
+`;
+
+const SignupButton = styled(StyledButton)`
+  background-color: #cacaca;
+  &:hover {
+    background-color: #ababab;
+  }
+`;
+
+const ErrorMessage = styled.div`
+  color: red;
+  font-size: 14px;
 `;

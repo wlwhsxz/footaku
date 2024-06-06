@@ -1,10 +1,11 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, NavLink, useParams } from "react-router-dom";
 import styled from "styled-components";
+import axios from "axios";
 import LeftSidebar from "../../components/common/leftSidebar/LeftSidebar";
 import FollowButton from "../../components/common/buttons/FollowButton";
 import useAuthStore from "../../store/useAuthStore";
+import useFollow from "../../hooks/useFollow";
 
 interface VideoItem {
   snippet: {
@@ -47,34 +48,14 @@ interface ClubDetailsType {
 const Club = () => {
   const { clubName } = useParams<{ clubName: string }>();
   const formattedClubName = clubName && clubName.replaceAll("_", " ");
-
   const [clubDetails, setClubDetails] = useState<ClubDetailsType | null>(null);
   const [youtubeVideos, setYoutubeVideos] = useState<YouTubeVideoResponse>({
     items: [],
   });
-  const [isFollowing, setIsFollowing] = useState(false);
   const user = useAuthStore((state) => state.user);
   const userId = user?.userId;
 
-  const handleFollowButtonClick = async () => {
-    try {
-      if (isFollowing) {
-        await axios.delete(
-          `${process.env.REACT_APP_API_URL}/api/clubs/${formattedClubName}/follow`,
-          { withCredentials: true }
-        );
-      } else {
-        await axios.post(
-          `${process.env.REACT_APP_API_URL}/api/clubs/${formattedClubName}/follow`,
-          {},
-          { withCredentials: true }
-        );
-      }
-      setIsFollowing(!isFollowing);
-    } catch (error) {
-      console.error("Error following/unfollowing club:", error);
-    }
-  };
+  const { isFollowing, toggleFollow } = useFollow(formattedClubName!, userId);
 
   useEffect(() => {
     const fetchClubDetails = async () => {
@@ -83,7 +64,6 @@ const Club = () => {
           `${process.env.REACT_APP_API_URL}/api/clubs/${formattedClubName}`
         );
         setClubDetails(data.data[0]);
-        setIsFollowing(data.data[0].followers.includes(userId));
       } catch (error) {
         console.error("Error fetching club details:", error);
       }
@@ -122,10 +102,7 @@ const Club = () => {
           <BioBox>
             <BioHeader>
               <h2>{clubDetails?.name}</h2>
-              <FollowButton
-                isFollowing={isFollowing}
-                onClick={handleFollowButtonClick}
-              />
+              <FollowButton isFollowing={isFollowing} onClick={toggleFollow} />
             </BioHeader>
             <div>
               {`${clubDetails?.league.countryName} - ${clubDetails?.league.name}`}
@@ -169,7 +146,9 @@ const Club = () => {
                 .join("_")}`}
               state={{ clubDetails }}
               key={clubDetails._id}
-              className={({ isActive }) => (isActive ? "active" : "")}
+              className={({ isActive }: { isActive: boolean }) =>
+                isActive ? "active" : ""
+              }
             >
               Youtube
             </StyledNavLink>
@@ -180,7 +159,9 @@ const Club = () => {
               .toLowerCase()
               .split(" ")
               .join("_")}/news`}
-            className={({ isActive }) => (isActive ? "active" : "")}
+            className={({ isActive }: { isActive: boolean }) =>
+              isActive ? "active" : ""
+            }
           >
             News
           </StyledNavLink>
@@ -189,7 +170,9 @@ const Club = () => {
               .toLowerCase()
               .split(" ")
               .join("_")}/social_media`}
-            className={({ isActive }) => (isActive ? "active" : "")}
+            className={({ isActive }: { isActive: boolean }) =>
+              isActive ? "active" : ""
+            }
           >
             Social Media
           </StyledNavLink>
