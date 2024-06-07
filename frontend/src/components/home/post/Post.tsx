@@ -1,5 +1,6 @@
 import React, { useEffect, useState, Fragment, Suspense, lazy } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import { PostData } from "../../../types";
 import { useLikeStore } from "../../../store/useLikeStore";
 
@@ -14,10 +15,11 @@ const Post: React.FC = () => {
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/posts`
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/posts`,
+        { withCredentials: true }
       );
-      const data = (await response.json()) as { data: PostData[] };
+      const data = response.data as { data: PostData[] };
       setPostData(data.data);
 
       data.data.forEach((club) => {
