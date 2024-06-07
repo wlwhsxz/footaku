@@ -43,7 +43,7 @@ const Header: React.FC<HeaderProps> = ({ name, profileImg, pastDate }) => {
   );
 };
 
-export default Header;
+export default React.memo(Header);
 
 const HeaderContainer = styled.div`
   display: flex;

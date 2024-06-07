@@ -25,20 +25,16 @@ const useFollow = (clubName: string, userId: string | undefined) => {
   const toggleFollow = async () => {
     try {
       if (isFollowing) {
-        await axios
-          .delete(
-            `${process.env.REACT_APP_API_URL}/api/clubs/${clubName}/follow`,
-            { withCredentials: true }
-          )
-          .then((res) => console.log(res));
+        await axios.delete(
+          `${process.env.REACT_APP_API_URL}/api/clubs/${clubName}/follow`,
+          { withCredentials: true }
+        );
       } else {
-        await axios
-          .post(
-            `${process.env.REACT_APP_API_URL}/api/clubs/${clubName}/follow`,
-            {},
-            { withCredentials: true }
-          )
-          .then((res) => console.log(res));
+        await axios.post(
+          `${process.env.REACT_APP_API_URL}/api/clubs/${clubName}/follow`,
+          {},
+          { withCredentials: true }
+        );
       }
       setIsFollowing(!isFollowing);
     } catch (error) {
