@@ -6,8 +6,9 @@ const {
 
 //[ 포스트 전체 요청 ]
 const getAllPosts = async (req, res, next) => {
+  const userId = req.user.userId;
   try {
-    const { statusCode, message, data } = await postService.getAllPosts();
+    const { statusCode, message, data } = await postService.getAllPosts(userId);
 
     if (statusCode !== 200) return next(new AppError(statusCode, message));
 

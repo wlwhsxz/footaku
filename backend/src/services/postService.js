@@ -3,30 +3,42 @@ const { AppError } = require("../middlewares/errorHandler");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 //[ 포스트 전체 요청 ]
-const getAllPosts = async () => {
-  const foundPosts = [];
-
+const getAllPosts = async (userId) => {
   try {
     const foundClubs = await Club.find();
-    for (let club of foundClubs) {
-      const posts = await club.populate({
+    const foundUser = await User.findOne({ userId });
+    if (!foundUser) {
+      return {
+        statusCode: 404,
+        message: "User not found",
+      };
+    }
+
+    const userFollowedClubs = foundUser.followings;
+    const userClubs = foundClubs.filter((club) =>
+      userFollowedClubs.includes(club.name)
+    );
+
+    const postPromises = userClubs.map((club) =>
+      club.populate({
         path: "posts",
         options: { limit: 3, sort: { publishedAt: -1 } },
         populate: {
-          path: "content.comments", // content.comments를 populate
+          path: "content.comments",
           model: "Comment",
         },
-      });
+      })
+    );
 
-      foundPosts.push(posts);
-    }
+    const foundPosts = await Promise.all(postPromises);
+
     return {
       statusCode: 200,
       message: "포스트 전체 요청 성공",
       data: foundPosts,
     };
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching posts:", error);
     return new AppError(500, "Internal Server Error");
   }
 };
