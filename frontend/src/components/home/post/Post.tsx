@@ -1,10 +1,11 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState, Fragment, Suspense, lazy } from "react";
 import styled from "styled-components";
-import Content from "./Content";
-import Footer from "./footer/Footer";
-import Header from "./Header";
 import { PostData } from "../../../types";
 import { useLikeStore } from "../../../store/useLikeStore";
+
+const Header = lazy(() => import("./Header"));
+const Content = lazy(() => import("./Content"));
+const Footer = lazy(() => import("./footer/Footer"));
 
 const Post: React.FC = () => {
   const [postData, setPostData] = useState<PostData[]>([]);
@@ -46,24 +47,26 @@ const Post: React.FC = () => {
 
   return (
     <Fragment>
-      {postData.map((club) =>
-        club.posts.map((post) => (
-          <PostContainer key={post.postId}>
-            <Header
-              name={post.name}
-              profileImg={post.profileImg}
-              pastDate={new Date(post.publishedAt)}
-            />
-            <Content postImg={post.content?.postImg} postURL={post.postURL} />
-            <Footer
-              _id={post._id}
-              postId={post.postId}
-              comments={post.content?.comments}
-              summary={post.content?.summary}
-            />
-          </PostContainer>
-        ))
-      )}
+      <Suspense fallback={<div>Loading...</div>}>
+        {postData.map((club) =>
+          club.posts.map((post) => (
+            <PostContainer key={post.postId}>
+              <Header
+                name={post.name}
+                profileImg={post.profileImg}
+                pastDate={new Date(post.publishedAt)}
+              />
+              <Content postImg={post.content?.postImg} postURL={post.postURL} />
+              <Footer
+                _id={post._id}
+                postId={post.postId}
+                comments={post.content?.comments}
+                summary={post.content?.summary}
+              />
+            </PostContainer>
+          ))
+        )}
+      </Suspense>
     </Fragment>
   );
 };

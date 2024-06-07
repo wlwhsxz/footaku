@@ -99,7 +99,7 @@ const Footer: React.FC<FooterProps> = ({ _id, postId, summary, comments }) => {
   );
 };
 
-export default Footer;
+export default React.memo(Footer);
 
 const FooterContainer = styled.div`
   display: flex;

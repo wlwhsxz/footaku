@@ -16,7 +16,7 @@ const Content: React.FC<ContentProps> = ({ postImg, postURL }) => {
   );
 };
 
-export default Content;
+export default React.memo(Content);
 
 const PostMedia = styled.div`
   img {
