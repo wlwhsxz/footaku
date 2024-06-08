@@ -37,7 +37,7 @@ const Login: React.FC = () => {
           _id: user._id,
           userId: user.userId,
           followings: user.followings ?? [],
-          isFirstLogin: user.isFirstLogin ?? true,
+          isFirstLogin: user.isFirstLogin,
         };
         localStorage.setItem("user", JSON.stringify(user));
         setUser(userData);

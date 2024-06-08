@@ -80,6 +80,14 @@ const logIn = async (userId, password) => {
     const refreshToken = jwt.sign(payload, REFRESH_TOKEN_SECRET, {
       expiresIn: REFRESH_TOKEN_EXPIRES_IN,
     });
+
+    const initialIsFirstLogin = foundUser.isFirstLogin;
+
+    if (initialIsFirstLogin) {
+      foundUser.isFirstLogin = false;
+      await foundUser.save();
+    }
+
     return {
       statusCode: 200,
       message: "로그인 성공",
@@ -93,6 +101,8 @@ const logIn = async (userId, password) => {
         role: foundUser.role,
         profile: foundUser.profile,
         online: true,
+        isFirstLogin: initialIsFirstLogin,
+        followings: foundUser.followings,
       },
     };
   } catch (error) {
