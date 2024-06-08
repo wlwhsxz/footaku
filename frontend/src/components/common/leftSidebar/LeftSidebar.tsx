@@ -27,6 +27,23 @@ const LeftSidebar: React.FC = () => {
     }
   };
 
+  const clearCookies = () => {
+    document.cookie.split(";").forEach((cookie) => {
+      const name = cookie.split("=")[0].trim();
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    });
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("userObjectId");
+    localStorage.removeItem("auth-storage");
+
+    clearCookies();
+
+    window.location.reload();
+  };
+
   return (
     <LeftSidebarContainer>
       <NavContainer $isExpanded={isExpanded}>
@@ -53,13 +70,11 @@ const LeftSidebar: React.FC = () => {
             <NavLabel>Likes</NavLabel>
           </LikesBox>
         </NavBox>
-        <NavBox>
-          <StyledLink to={`${userId}`}>
-            <LikesBox>
-              <AccountCircleOutlinedIcon />
-              <NavLabel>Profile</NavLabel>
-            </LikesBox>
-          </StyledLink>
+        <NavBox onClick={handleLogout}>
+          <LogoutBox>
+            <AccountCircleOutlinedIcon />
+            <NavLabel>Log out</NavLabel>
+          </LogoutBox>
         </NavBox>
       </NavContainer>
       <SideNavbarContainer>
@@ -119,6 +134,8 @@ const SearchBox = styled.div``;
 const HomeBox = styled.div``;
 
 const LikesBox = styled.div``;
+
+const LogoutBox = styled.div``;
 
 const NavIcon = styled.div``;
 
