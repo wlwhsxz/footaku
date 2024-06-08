@@ -61,6 +61,10 @@ const UserSchema = new Schema(
       type: Array,
       default: [],
     },
+    isFirstLogin: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,

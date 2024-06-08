@@ -36,7 +36,9 @@ const SignUp: React.FC = () => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    errRef && setErrRef("");
+    if (errRef) {
+      setErrRef("");
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -65,7 +67,7 @@ const SignUp: React.FC = () => {
   return (
     <StyledForm onSubmit={handleSubmit}>
       <StyledInput
-        $errRef={errRef}
+        $errRef={errRef === "userId" ? "userId" : undefined}
         type="text"
         name="userId"
         placeholder="User ID"
@@ -74,7 +76,7 @@ const SignUp: React.FC = () => {
         required
       />
       <StyledInput
-        $errRef={errRef}
+        $errRef={errRef === "email" ? "email" : undefined}
         type="email"
         name="email"
         placeholder="Email"
@@ -83,7 +85,7 @@ const SignUp: React.FC = () => {
         required
       />
       <StyledInput
-        $errRef={errRef}
+        $errRef={errRef === "userName" ? "userName" : undefined}
         type="text"
         name="userName"
         placeholder="UserName"
@@ -100,7 +102,7 @@ const SignUp: React.FC = () => {
         required
       />
       <StyledButton type="submit">Sign Up</StyledButton>
-      <SignupButton onClick={() => navigate("/login")}>
+      <SignupButton type="button" onClick={() => navigate("/login")}>
         Back to Login
       </SignupButton>
     </StyledForm>
@@ -128,8 +130,8 @@ const StyledInput = styled.input<StyledInputProps>`
     border-color: #007bff;
   }
 
-  ${({ $errRef, name }) =>
-    $errRef === name &&
+  ${({ $errRef }) =>
+    $errRef &&
     css`
       border-color: red;
       border-width: 2px;
