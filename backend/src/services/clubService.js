@@ -57,6 +57,8 @@ const getClubByName = async (clubName) => {
 };
 
 const addClubFollower = async (clubName, userId) => {
+  clubName = clubName.toLowerCase();
+
   try {
     const foundClubs = await Club.find({
       name: new RegExp(clubName, "i"), // 대소문자를 구분하지 않음
@@ -105,6 +107,8 @@ const addClubFollower = async (clubName, userId) => {
 };
 
 const removeClubFollower = async (clubName, userId) => {
+  clubName = clubName.toLowerCase();
+
   try {
     const foundClubs = await Club.find({
       name: new RegExp(clubName, "i"),

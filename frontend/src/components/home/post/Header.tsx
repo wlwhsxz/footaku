@@ -48,6 +48,7 @@ export default React.memo(Header);
 const HeaderContainer = styled.div`
   display: flex;
   width: 100%;
+  height: auto;
   justify-content: space-between;
   align-items: center;
 

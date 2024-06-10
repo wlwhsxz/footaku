@@ -21,6 +21,7 @@ export default React.memo(Content);
 const PostMedia = styled.div`
   img {
     width: 100%;
+    height: auto;
     &:hover {
       cursor: pointer;
       width: 101%;

@@ -105,6 +105,7 @@ const FooterContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: auto;
   border-bottom: 1px solid gray;
 
   img {
