@@ -8,7 +8,6 @@ Footaku는 사용자가 축구에 관한 게시물을 공유하고 상호작용�
 - [주요 기능](#주요-기능)
 - [사용법](#사용법)
 - [API 문서](#api-문서)
-- [기여하기](#기여하기)
 - [라이선스](#라이선스)
 - [연락처](#연락처)
 
@@ -104,37 +103,6 @@ Footaku를 시작하려면 다음 단계를 따르세요:
 - **게시물 작성**: 축구에 관한 생각과 업데이트를 공유.
 - **게시물 상호작용**: 다른 사용자의 게시물에 좋아요 및 댓글 작성.
 
-## API 문서
-
-백엔드는 애플리케이션과 상호작용할 수 있는 RESTful API를 제공합니다. 주요 엔드포인트는 다음과 같습니다:
-
-- **사용자 인증**
-  - `POST /api/auth/register`: 새로운 사용자 등록
-  - `POST /api/auth/login`: 사용자 로그인
-  - `POST /api/auth/refresh`: JWT 토큰 갱신
-
-- **게시물**
-  - `GET /api/posts`: 게시물 목록 가져오기
-  - `POST /api/posts`: 새 게시물 작성
-  - `GET /api/posts/:id`: 단일 게시물 가져오기
-  - `PUT /api/posts/:id`: 게시물 업데이트
-  - `DELETE /api/posts/:id`: 게시물 삭제
-
-- **댓글**
-  - `POST /api/posts/:id/comments`: 게시물에 댓글 추가
-  - `GET /api/posts/:id/comments`: 게시물의 댓글 가져오기
-
-## 기여하기
-
-이 프로젝트에 기여해주시면 감사하겠습니다. 기여 방법은 다음과 같습니다:
-
-1. 저장소를 포크
-2. 새로운 브랜치 생성 (`git checkout -b feature/your-feature`)
-3. 변경 사항 커밋 (`git commit -m 'Add some feature'`)
-4. 브랜치 푸시 (`git push origin feature/your-feature`)
-5. 풀 리퀘스트 생성
-
-코드가 프로젝트의 코딩 표준을 준수하고 모든 테스트를 통과하는지 확인해 주세요.
 
 ## 라이선스
 
@@ -144,7 +112,7 @@ Footaku를 시작하려면 다음 단계를 따르세요:
 
 문의 사항이나 문제가 있으면 다음 연락처로 연락해 주세요:
 
-- **이름**: [Your Name]
-- **이메일**: [your.email@example.com]
+- **이름**: [이민우]
+- **이메일**: [wlwhsxz@gmail.com]
 
 또는 [GitHub 저장소](https://github.com/wlwhsxz/footaku/issues)에 이슈를 등록할 수 있습니다.
