@@ -1,29 +1,83 @@
-import React, { useEffect, useState, Fragment, Suspense, lazy } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  Fragment,
+  Suspense,
+  lazy,
+  memo,
+} from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { PostData } from "../../../types";
+import { Helmet, HelmetProvider } from "react-helmet-async";
+import { PostType } from "../../../types";
 import { useLikeStore } from "../../../store/useLikeStore";
+import SkeletonPost from "./SkeletonPost";
 
 const Header = lazy(() => import("./Header"));
 const Content = lazy(() => import("./Content"));
 const Footer = lazy(() => import("./footer/Footer"));
 
 const Post: React.FC = () => {
-  const [postData, setPostData] = useState<PostData[]>([]);
+  const [postData, setPostData] = useState<PostType[]>([]);
+  const [nextPageToken, setNextPageToken] = useState<number | null>(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const observer = useRef<IntersectionObserver | null>(null);
   const updatePostLikes = useLikeStore((state) => state.updatePostLikes);
   const updateCommentLikes = useLikeStore((state) => state.updateCommentLikes);
 
-  const fetchPosts = async () => {
+  const lastPostElementRef = useCallback(
+    (node: any) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (
+            entries[0].isIntersecting &&
+            hasMore &&
+            !loading &&
+            nextPageToken !== null
+          ) {
+            fetchPosts();
+          }
+        },
+        {
+          rootMargin: "100px",
+          threshold: 0.1,
+        }
+      );
+      if (node) observer.current.observe(node);
+    },
+    [hasMore, loading, nextPageToken]
+  );
+
+  const fetchPosts = useCallback(async () => {
+    if (nextPageToken === null || loading) return;
+
+    setLoading(true);
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/posts`,
-        { withCredentials: true }
+        {
+          params: {
+            pageToken: nextPageToken,
+            limit: 3,
+          },
+          withCredentials: true,
+        }
       );
-      const data = response.data as { data: PostData[] };
-      setPostData(data.data);
+      const data = response.data as {
+        data: PostType[];
+        nextPageToken: number | null;
+      };
 
-      data.data.forEach((club) => {
-        club.posts.forEach((post) => {
+      if (data && data.data) {
+        setPostData((prevPosts) => [...prevPosts, ...data.data]);
+        setNextPageToken(data.nextPageToken);
+        setHasMore(data.data.length > 0 && data.nextPageToken !== null);
+
+        data.data.forEach((post) => {
           updatePostLikes(
             post.postId,
             post.likes.map((like) => like)
@@ -35,24 +89,49 @@ const Post: React.FC = () => {
             );
           });
         });
-      });
+      } else {
+        setHasMore(false);
+      }
     } catch (error) {
       console.error("Failed to fetch posts:", error);
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [nextPageToken, hasMore, loading, updatePostLikes, updateCommentLikes]);
 
   useEffect(() => {
     fetchPosts();
   }, []);
 
-  if (postData.length === 0) return <div>Loading...</div>;
+  if (postData.length === 0 && !loading) return <div>Loading...</div>;
 
   return (
-    <Fragment>
-      <Suspense fallback={<div>Loading...</div>}>
-        {postData.map((club) =>
-          club.posts.map((post) => (
-            <PostContainer key={post.postId}>
+    <HelmetProvider>
+      <Fragment>
+        <Helmet>
+          {postData.map((post) => (
+            <link
+              key={post.postId}
+              rel="preload"
+              href={post.content?.postImg}
+              as="image"
+            />
+          ))}
+        </Helmet>
+        <Suspense
+          fallback={
+            <Fragment>
+              {Array.from({ length: 3 }).map((_, index) => (
+                <SkeletonPost key={index} />
+              ))}
+            </Fragment>
+          }
+        >
+          {postData.map((post, index) => (
+            <PostContainer
+              key={`${post.postId}+${index}`}
+              ref={index === postData.length - 1 ? lastPostElementRef : null}
+            >
               <Header
                 name={post.name}
                 profileImg={post.profileImg}
@@ -66,20 +145,31 @@ const Post: React.FC = () => {
                 summary={post.content?.summary}
               />
             </PostContainer>
-          ))
-        )}
-      </Suspense>
-    </Fragment>
+          ))}
+          {loading && (
+            <Fragment>
+              {Array.from({ length: 3 }).map((_, index) => (
+                <SkeletonPost key={index} />
+              ))}
+            </Fragment>
+          )}
+        </Suspense>
+      </Fragment>
+    </HelmetProvider>
   );
 };
 
-export default Post;
+export default memo(Post);
 
 const PostContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 468px;
+  width: 100%;
+  max-width: 468px;
   margin-bottom: 20px;
+  padding: 0 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
 `;
