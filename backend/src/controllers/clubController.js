@@ -4,7 +4,7 @@ const {
   errorMessageHandler,
 } = require("../middlewares/errorHandler");
 
-//[ 포스트 전체 요청 ]
+//[ 클럽 전체 리스트 요청 ]
 const getAllClubs = async (req, res, next) => {
   try {
     const { statusCode, message, data } = await clubService.getAllClubs();
