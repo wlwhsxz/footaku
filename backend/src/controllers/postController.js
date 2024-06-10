@@ -7,12 +7,15 @@ const {
 //[ 포스트 전체 요청 ]
 const getAllPosts = async (req, res, next) => {
   const userId = req.user.userId;
+  const { pageToken = 0, limit = 3 } = req.query;
+
   try {
-    const { statusCode, message, data } = await postService.getAllPosts(userId);
+    const { statusCode, message, data, nextPageToken } =
+      await postService.getAllPosts(userId, pageToken, limit);
 
     if (statusCode !== 200) return next(new AppError(statusCode, message));
 
-    res.status(200).json({ message, data });
+    res.status(200).json({ message, data, nextPageToken });
   } catch (error) {
     console.error(error);
     return next(new AppError(500, "Internal Server Error"));

@@ -1,11 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  lazy,
+  Suspense,
+} from "react";
 import { Link, NavLink, useParams } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
-import LeftSidebar from "../../components/common/leftSidebar/LeftSidebar";
-import FollowButton from "../../components/common/buttons/FollowButton";
 import useAuthStore from "../../store/useAuthStore";
 import useFollow from "../../hooks/useFollow";
+import LeftSidebar from "../../components/common/leftSidebar/LeftSidebar";
+
+const FollowButton = lazy(
+  () => import("../../components/common/buttons/FollowButton")
+);
 
 interface VideoItem {
   snippet: {
@@ -49,9 +59,24 @@ const Club = () => {
   const { clubName } = useParams<{ clubName: string }>();
   const formattedClubName = clubName && clubName.replaceAll("_", " ");
   const [clubDetails, setClubDetails] = useState<ClubDetailsType | null>(null);
-  const [youtubeVideos, setYoutubeVideos] = useState<YouTubeVideoResponse>({
-    items: [],
-  });
+  const [youtubeVideos, setYoutubeVideos] = useState<VideoItem[]>([]);
+  const [nextPageToken, setNextPageToken] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(true);
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastVideoElementRef = useCallback(
+    (node: any) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          fetchYouTubeVideos();
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [hasMore, nextPageToken]
+  );
+
   const user = useAuthStore((state) => state.user);
   const userId = user?.userId;
 
@@ -72,20 +97,34 @@ const Club = () => {
     fetchClubDetails();
   }, [formattedClubName]);
 
-  useEffect(() => {
-    const fetchYouTubeVideos = async () => {
-      if (clubDetails?.youtube.playlistId) {
-        try {
-          const { data } = await axios.get<YouTubeVideoResponse>(
-            `${process.env.REACT_APP_YOUTUBE_API_URL}/playlistItems?part=snippet&playlistId=${clubDetails.youtube.playlistId}&maxResults=48&key=${process.env.REACT_APP_YOUTUBE_API_KEY}`
-          );
-          setYoutubeVideos(data);
-        } catch (error) {
-          console.error("Error fetching playlist videos:", error);
-        }
+  const fetchYouTubeVideos = async () => {
+    if (
+      clubDetails?.youtube.playlistId &&
+      (nextPageToken || nextPageToken === null)
+    ) {
+      try {
+        const { data } = await axios.get(
+          `${process.env.REACT_APP_YOUTUBE_API_URL}/playlistItems`,
+          {
+            params: {
+              part: "snippet",
+              playlistId: clubDetails.youtube.playlistId,
+              maxResults: 9,
+              pageToken: nextPageToken,
+              key: process.env.REACT_APP_YOUTUBE_API_KEY,
+            },
+          }
+        );
+        setYoutubeVideos((prevVideos) => [...prevVideos, ...data.items]);
+        setNextPageToken(data.nextPageToken);
+        setHasMore(data.items.length > 0);
+      } catch (error) {
+        console.error("Error fetching playlist videos:", error);
       }
-    };
+    }
+  };
 
+  useEffect(() => {
     fetchYouTubeVideos();
   }, [clubDetails?.youtube.playlistId]);
 
@@ -95,14 +134,33 @@ const Club = () => {
       <ClubContainer>
         <ProfileBox>
           <ProfileImgBox>
-            {clubDetails && clubDetails.image && (
-              <img src={clubDetails.image} alt={clubDetails.name} />
+            {clubDetails && clubDetails.image ? (
+              <picture>
+                <source
+                  srcSet={clubDetails.image.replace(".jpg", ".webp")}
+                  type="image/webp"
+                />
+                <img
+                  src={clubDetails.image}
+                  alt={clubDetails.name}
+                  width="150"
+                  height="150"
+                  style={{ aspectRatio: "1/1" }}
+                />
+              </picture>
+            ) : (
+              <Placeholder width={150} height={150} />
             )}
           </ProfileImgBox>
           <BioBox>
             <BioHeader>
               <h2>{clubDetails?.name}</h2>
-              <FollowButton isFollowing={isFollowing} onClick={toggleFollow} />
+              <Suspense fallback={<div>Loading...</div>}>
+                <FollowButton
+                  isFollowing={isFollowing}
+                  onClick={toggleFollow}
+                />
+              </Suspense>
             </BioHeader>
             <div>
               {`${clubDetails?.league.countryName} - ${clubDetails?.league.name}`}
@@ -119,11 +177,17 @@ const Club = () => {
                 onClick={() => window.open(`https://${clubDetails?.website}`)}
                 src={clubDetails?.image}
                 alt={clubDetails?.website}
+                width="30"
+                height="30"
+                style={{ aspectRatio: "1/1" }}
               />
               <StyledImg
                 onClick={() => window.open(`${clubDetails?.youtube.url}`)}
                 src="/youtube.png"
                 alt="YouTube"
+                width="30"
+                height="30"
+                style={{ aspectRatio: "1/1" }}
               />
               <StyledImg
                 onClick={() =>
@@ -133,6 +197,9 @@ const Club = () => {
                 }
                 src="/tm.jpg"
                 alt="Transfermarkt"
+                width="30"
+                height="30"
+                style={{ aspectRatio: "1/1" }}
               />
             </div>
           </BioBox>
@@ -178,7 +245,7 @@ const Club = () => {
           </StyledNavLink>
         </TabBox>
         <PostBox>
-          {youtubeVideos.items.map((item) => (
+          {youtubeVideos.map((item, index) => (
             <PostImg
               key={item.snippet.resourceId.videoId}
               onClick={() =>
@@ -187,9 +254,14 @@ const Club = () => {
                 )
               }
               src={`https://i.ytimg.com/vi/${item.snippet.resourceId.videoId}/hqdefault.jpg`}
-              width={300}
-              height={200}
+              width="300"
+              height="200"
               alt="YouTube Video Thumbnail"
+              loading="lazy"
+              style={{ aspectRatio: "4/3" }}
+              ref={
+                index === youtubeVideos.length - 1 ? lastVideoElementRef : null
+              }
             />
           ))}
         </PostBox>
@@ -239,12 +311,19 @@ const ProfileImgBox = styled.div`
     border: 1px double rgb(150, 150, 150);
     border-radius: 100%;
     padding: 8px;
+    object-fit: cover;
   }
+`;
+
+const Placeholder = styled.div<{ width: number; height: number }>`
+  width: ${(props) => props.width}px;
+  height: ${(props) => props.height}px;
+  background-color: #ccc;
 `;
 
 const StyledImg = styled.img`
   width: 30px;
-  height: 30px;
+  height: auto;
   margin-right: 8px;
   &:hover {
     cursor: pointer;
@@ -269,7 +348,7 @@ const TabBox = styled.div`
   align-items: center;
 
   width: 100%;
-  height: 52px;
+  aspect-ratio: 10/1;
 
   border-top: 1px solid rgb(219, 219, 219);
 `;
@@ -302,16 +381,21 @@ const PostBox = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+
+  width: 100%;
+  height: auto;
+  min-height: 200px;
 `;
 
 const PostImg = styled.img`
-  width: 33%;
+  width: 32%;
   height: auto;
   margin-bottom: 1px;
   margin-right: 1px;
+  aspect-ratio: 4/3;
 
   &:hover {
     cursor: pointer;
-    width: 33.3%;
+    width: 33%;
   }
 `;

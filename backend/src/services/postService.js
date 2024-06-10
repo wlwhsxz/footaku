@@ -3,9 +3,10 @@ const { AppError } = require("../middlewares/errorHandler");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 //[ 포스트 전체 요청 ]
-const getAllPosts = async (userId) => {
+const getAllPosts = async (userId, pageToken = 0, limit = 3) => {
+  pageToken = parseInt(pageToken);
+
   try {
-    const foundClubs = await Club.find();
     const foundUser = await User.findOne({ userId });
     if (!foundUser) {
       return {
@@ -14,28 +15,35 @@ const getAllPosts = async (userId) => {
       };
     }
 
-    const userFollowedClubs = foundUser.followings;
-    const userClubs = foundClubs.filter((club) =>
-      userFollowedClubs.includes(club.name)
+    const userFollowingClubs = foundUser.followings.map((following) =>
+      following.toLowerCase()
     );
 
-    const postPromises = userClubs.map((club) =>
-      club.populate({
-        path: "posts",
-        options: { limit: 3, sort: { publishedAt: -1 } },
-        populate: {
-          path: "content.comments",
-          model: "Comment",
-        },
-      })
+    const allPosts = await Post.find({
+      name: {
+        $in: userFollowingClubs.map(
+          (clubName) => new RegExp(`^${clubName}$`, "i")
+        ),
+      },
+    })
+      .sort({ publishedAt: -1 })
+      .populate({
+        path: "content.comments",
+        model: "Comment",
+      });
+
+    const paginatedPosts = allPosts.slice(
+      pageToken * limit,
+      (pageToken + 1) * limit
     );
 
-    const foundPosts = await Promise.all(postPromises);
+    const hasMore = allPosts.length > (pageToken + 1) * limit;
 
     return {
       statusCode: 200,
       message: "포스트 전체 요청 성공",
-      data: foundPosts,
+      data: paginatedPosts,
+      nextPageToken: hasMore ? pageToken + 1 : null,
     };
   } catch (error) {
     console.error("Error fetching posts:", error);
