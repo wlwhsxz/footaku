@@ -19,9 +19,7 @@ const Home = () => {
           </PostSection>
         </ContentWrapper>
       </MainContent>
-      <RightSidebar>
-        <Chat />
-      </RightSidebar>
+      {/* <RightSidebar><Chat /></RightSidebar> */}
     </HomePageLayout>
   );
 };
