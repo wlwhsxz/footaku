@@ -92,6 +92,10 @@ const SearchBarContainer = styled.div<{ $visible: boolean }>`
 
   transform: translateX(${(props) => (props.$visible ? "0" : "-100%")});
   animation: ${(props) => (props.$visible ? slideIn : slideOut)} 0.5s forwards;
+
+  @media (max-width: 768px) {
+    left: 80px;
+  }
 `;
 
 const SearchContentBox = styled.div`
