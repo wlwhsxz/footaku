@@ -50,14 +50,14 @@ const LeftSidebar: React.FC = () => {
         <LogoBox>
           <h2>Footaku</h2>
         </LogoBox>
-        <StyledLink to="/">
-          <NavBox>
+        <NavBox>
+          <StyledLink to="/">
             <HomeBox>
               <HomeIcon />
               <NavLabel>Home</NavLabel>
             </HomeBox>
-          </NavBox>
-        </StyledLink>
+          </StyledLink>
+        </NavBox>
         <NavBox onClick={() => handleNavBar("search")}>
           <SearchBox>
             <SearchIcon />
@@ -104,11 +104,22 @@ const NavContainer = styled.div<{ $isExpanded: boolean }>`
   background-color: black;
   color: white;
   transition: width 0.3s;
+
+  @media (max-width: 768px) {
+    width: 60px;
+    align-items: center;
+  }
 `;
 
 const LogoBox = styled.div`
   margin: 0px 0px 19px;
   padding: 25px 12px 16px;
+
+  @media (max-width: 768px) {
+    h2 {
+      display: none;
+    }
+  }
 `;
 
 const NavBox = styled.div`
@@ -127,20 +138,38 @@ const NavBox = styled.div`
   }
 
   color: white;
+
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
 `;
 
-const SearchBox = styled.div``;
+const SearchBox = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
-const HomeBox = styled.div``;
+const HomeBox = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
-const LikesBox = styled.div``;
+const LikesBox = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
-const LogoutBox = styled.div``;
-
-const NavIcon = styled.div``;
+const LogoutBox = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
 const NavLabel = styled.span`
   padding: 0px 0px 0px 16px;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const SideNavbarContainer = styled.div``;

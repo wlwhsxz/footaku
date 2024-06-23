@@ -26,7 +26,9 @@ const SearchBar: React.FC<SearchProps> = ({ visible }) => {
   const searchHandler = async (query: string) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/clubs/${query}`
+        `${
+          process.env.REACT_APP_API_URL
+        }/api/clubs/${query.toLocaleLowerCase()}`
       );
       setSearchResult(response.data.data);
     } catch (error) {
@@ -92,6 +94,10 @@ const SearchBarContainer = styled.div<{ $visible: boolean }>`
 
   transform: translateX(${(props) => (props.$visible ? "0" : "-100%")});
   animation: ${(props) => (props.$visible ? slideIn : slideOut)} 0.5s forwards;
+
+  @media (max-width: 768px) {
+    left: 80px;
+  }
 `;
 
 const SearchContentBox = styled.div`
