@@ -28,14 +28,15 @@ export default Home;
 
 const HomePageLayout = styled.div`
   display: flex;
+  height: 100%;
 `;
 
 const MainContent = styled.div`
   display: flex;
   justify-content: center;
-  width: 100vw;
+  width: calc(100% - 200px);
   @media (max-width: 768px) {
-    width: 100%;
+    width: calc(100% - 100px);
     padding: 0 10px;
   }
 `;
