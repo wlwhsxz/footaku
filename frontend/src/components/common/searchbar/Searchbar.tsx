@@ -26,7 +26,9 @@ const SearchBar: React.FC<SearchProps> = ({ visible }) => {
   const searchHandler = async (query: string) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/clubs/${query}`
+        `${
+          process.env.REACT_APP_API_URL
+        }/api/clubs/${query.toLocaleLowerCase()}`
       );
       setSearchResult(response.data.data);
     } catch (error) {
